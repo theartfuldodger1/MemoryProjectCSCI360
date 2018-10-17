@@ -1,4 +1,4 @@
-# 
+# MemoryProjectCSCI360
 	CSCI36000_Project_Part_1
 	Basic Machine UI
 	Cordell Hurst
