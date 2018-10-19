@@ -57,6 +57,12 @@ public:
 	bitset<6> streamToOpCode(istream &cin);
 	void codeRIXA(istream &inFile, bitset<16> &buildSet);//Form --> opCode r, i, x, address;
 	void codeIXA(istream &inFile, bitset<16> &buildSet);//Form --> opCode i, x, address;
+	void codeRimmed(istream &inFile, bitset<16> &buildSet);//Form --> opCode r, immed;
+    void codeR(istream &inFile, bitset<16> &buildSet);//Form --> opCode r;
+    void codeRxRy(istream &inFile, bitset<16> &buildSet);//Form --> opCode rx, ry;
+    void codeRx(istream &inFile, bitset<16> &buildSet);//Form --> opCode rx;
+    void codeRRII(istream &inFile, bitset<16> &buildSet);//Form --> opCode, r, r, i, i;
+
 	void encodeAddress(istream &inFile, bitset<16> &buildSet);//encodes 6 bit address from user input or file
 
 	cache MyCache;

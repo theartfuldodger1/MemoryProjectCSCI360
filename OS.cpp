@@ -360,7 +360,7 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> instructions)
 	{
 		buildSet.reset();
 		
-		//Aquire and encode opCode - BEGIN
+		//Acquire and encode opCode - BEGIN
 		bitset<6> opCode = streamToOpCode(inFile);
 		int j = 10;
 		for (int i = 0; i < 6; i++)
@@ -369,12 +369,29 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> instructions)
 			j++;
 		}
 		opCode = opCode;
-		//Aquire and encode opCode - END
+		//Acquire and encode opCode - END
 
-		if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17 )//Form --> opCode r, i, x, address
+		//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
+		if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17 )
 			codeRIXA(inFile, buildSet);
-		if (opCode == 41 || opCode == 42 || opCode == 10 || opCode ==11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)//Form --> opCode i, x, address
+		//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JUMP(13) //Form --> opCode i, x, address
+		else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode ==11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
 			codeIXA(inFile, buildSet);
+		//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
+		else if (opCode == 6 || opCode == 7)
+			codeRimmed(inFile, buildSet);
+		//-> DEC(8), INC(9) //Form --> opCode, r, immed
+		else if (opCode == 8 || opCode == 9)
+			codeR(inFile, buildSet);
+		//Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
+		else if (opCode == 20 || opCode == 21 || opCode == 22 || opCode == 23 || opCode == 24)
+		    codeRxRx(inFile, buildSet);
+		 //-> NOT(25) //form --> opCode, rx
+		else if (opCode == 25)
+		    codeRx(inFile, buildSet);
+		//-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
+        else if (opCode == 26 || opCode == 26 )
+            codeRRII(inFile, buildSet);
 
 		instructions.push_back(buildSet);
 	}
@@ -401,29 +418,29 @@ void OS::codeRIXA(istream &inFile, bitset<16> &buildSet)
 	*/
 cout << "codeRIXA!" << endl;
 	char delim = ',';
-	//Aquire and encode R - BEGIN
+	//Acquire and encode R - BEGIN
 	bitset<2> twoBits;
 	string rCode = fileIterator(inFile, delim);
 	twoBits = stoi(rCode);
 	buildSet[6] = twoBits[0];
 	buildSet[7] = twoBits[1];
-	//Aquire and encode R - END
+	//Acquire and encode R - END
 
-	//Aquire and encode I - BEGIN
+	//Acquire and encode I - BEGIN
 	delim = ',';
 	string iCode = fileIterator(inFile, delim);
 	buildSet[9] = stoi(iCode);//twoBits[0];
-	//Aquire and encode I - END
+	//Acquire and encode I - END
 
-	//Aquire and encode X - BEGIN
+	//Acquire and encode X - BEGIN
 	delim = ',';
 	string xCode = fileIterator(inFile, delim);
 	buildSet[8] = stoi(xCode);//twoBits[0];
-	//Aquire and encode X - END
+	//Acquire and encode X - END
 
-	//Aquire and encode address BEGIN
+	//Acquire and encode address BEGIN
 	encodeAddress(inFile, buildSet);
-	//Aquire and encode address END
+	//Acquire and encode address END
 }
 //Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JUMP //Form --> opCode i, x, address
 void OS::codeIXA(istream &inFile, bitset<16> &buildSet)
@@ -436,21 +453,21 @@ void OS::codeIXA(istream &inFile, bitset<16> &buildSet)
 	cout << "codeIXA!" << endl;\
 	char delim = ',';
 
-	//Aquire and encode I - BEGIN
+	//Acquire and encode I - BEGIN
 	delim = ',';
 	string iCode = fileIterator(inFile, delim);
 	buildSet[9] = stoi(iCode);//twoBits[0];
-	//Aquire and encode I - END
+	//Acquire and encode I - END
 
-	//Aquire and encode X - BEGIN
+	//Acquire and encode X - BEGIN
 	delim = ',';
 	string xCode = fileIterator(inFile, delim);
 	buildSet[8] = stoi(xCode);//twoBits[0];
-	//Aquire and encode X - END
+	//Acquire and encode X - END
 
-	//Aquire and encode address BEGIN
+	//Acquire and encode address BEGIN
 	encodeAddress(inFile, buildSet);
-	//Aquire and encode address END
+	//Acquire and encode address END
 }
 //encodes 6 bit address from user input or file
 void OS::encodeAddress(istream &inFile, bitset<16> &buildSet)
@@ -485,14 +502,64 @@ bitset<6> OS::streamToOpCode(istream &input)
 	string opCode = fileIterator(input, delim);
 	bitset<6> bitOpCode;
 
-	if (opCode == "LDR")
+	if (opCode == "LDR")//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 1;
-	else if (opCode == "STR")
+	else if (opCode == "STR")//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 2;
-	else if (opCode == "LDX")
+	else if (opCode == "LDX")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 41;
-	else if (opCode == "STX")
+	else if (opCode == "STX")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 42;
+	//Comparison Instruction
+	else if (opCode == "CMP")//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 17;
+	//Transfer Instructions
+	else if (opCode == "JE")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 10;
+	else if (opCode == "JNE")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 11;
+	else if (opCode == "JG")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 12;
+	else if (opCode == "JGE")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 14;
+	else if (opCode == "JL")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 15;
+	else if (opCode == "JLE")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 16;
+	else if (opCode == "JUMP")//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 13;
+	//Basic Arithmetic and Logic Instructions
+	else if (opCode == "AMR")//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 4;
+	else if (opCode == "SMR")//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 5;
+/**********************************************************************************************************************/
+//below has no encoder function fully defined as of yet
+	else if (opCode == "AIR")//Form --> opCode, r, immed --> usus codeRimmed(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 6;
+	else if (opCode == "SIR")//Form --> opCode, r, immed --> usus codeRimmed(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 7;
+	else if (opCode == "DEC")//form --> opCode, r --> usus codeR(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 8;
+	else if (opCode == "INC")//form --> opCode, r --> usus codeR(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 9;
+	//Advanced Arithmetic and Logical Instructions
+	else if (opCode == "MUL")//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 20;
+	else if (opCode == "DIV")//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 21;
+	else if (opCode == "TER")//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 22;
+	else if (opCode == "AND")//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 23;
+	else if (opCode == "ORR")//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 24;
+	else if (opCode == "NOT")//form --> opCode, rx -->uses codeRx(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 25;
+	else if (opCode == "ADD")//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 26;
+	else if (opCode == "SUB")//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
+		bitOpCode = 27;
 
 	return bitOpCode;
 }
