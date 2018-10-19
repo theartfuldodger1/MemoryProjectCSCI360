@@ -469,6 +469,27 @@ void OS::codeIXA(istream &inFile, bitset<16> &buildSet)
 	encodeAddress(inFile, buildSet);
 	//Acquire and encode address END
 }
+void OS::codeRimmed(istream &inFile, bitset<16> &buildSet)//Form --> opCode r, immed;
+{
+
+}
+void OS::codeR(istream &inFile, bitset<16> &buildSet)//Form --> opCode r;
+{
+
+}
+void OS::codeRxRy(istream &inFile, bitset<16> &buildSet)//Form --> opCode rx, ry;
+{
+
+}
+void OS::codeRx(istream &inFile, bitset<16> &buildSet)//Form --> opCode rx;
+{
+
+}
+void OS::codeRRII(istream &inFile, bitset<16> &buildSet)//Form --> opCode, r, r, i, i;
+{
+
+}
+
 //encodes 6 bit address from user input or file
 void OS::encodeAddress(istream &inFile, bitset<16> &buildSet)
 {
