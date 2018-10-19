@@ -385,7 +385,7 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> instructions)
 			codeR(inFile, buildSet);
 		//Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
 		else if (opCode == 20 || opCode == 21 || opCode == 22 || opCode == 23 || opCode == 24)
-		    codeRxRx(inFile, buildSet);
+		    codeRxRy(inFile, buildSet);
 		 //-> NOT(25) //form --> opCode, rx
 		else if (opCode == 25)
 		    codeRx(inFile, buildSet);
