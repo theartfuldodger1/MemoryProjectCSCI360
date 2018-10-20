@@ -91,7 +91,16 @@ void cache::set_ProgramCounter(bitset<6> instIn)
 	programCounter_PC = instIn;
 }
 
+void cache::clear_AllRegisters()
+{
+	for (int i = 0; i < 4; i++)
+		GeneralPurposeRegisters_GPRs[i].word.reset();
 
+	IndexRegister_XO.reset();
+	InstructionRegister_IR.reset();
+	MemoryAddressRegister_MAR.reset();
+	MemoryBufferRegister_MBR.reset();
+}
 void cache::printRegisters()
 {
 

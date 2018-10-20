@@ -50,6 +50,7 @@ public:
 	void set_MemoryBufferRegister_MBR(bitset<16>);
 	void set_ProgramCounter(bitset<6>);
 
+	void clear_AllRegisters();
 	void printRegisters();
 
 private:
