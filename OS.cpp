@@ -165,7 +165,7 @@ unsigned short int OS::menu1A()
 
 	} while (!fileFail);
 
-	processFile(instructionFile, MyMemory.getInstructionSet());
+	processFile(instructionFile, OSInstructionSet);
 	unsigned short int paramOut = menu2();
 	return paramOut;
 }
@@ -257,7 +257,18 @@ unsigned short int OS::menu2()
 			break;
 			case 3://3. Load Program into Main Memory
 			{
-
+				cout << "Switch3" << endl;
+				//for testing BEGIN
+				int temp = 0;
+				list <bitset<16>>::iterator iter = OSInstructionSet.begin();
+				while (iter != OSInstructionSet.end())
+				{
+					cout << "List position:: " << temp << ", Item:: " << *iter << endl;
+					cout << "\tposition:: " << temp << ", size:: " << iter->size() << endl;
+					iter++;
+					temp++;
+				}
+				//for testing END
 			}
 			break;
 			case 4://4. Display Empty Registers
@@ -380,7 +391,7 @@ unsigned short int  OS::menu2A()
 	} while (param != 7);
 	return paramOut;
 }
-void OS::processFile(ifstream &inFile, list <bitset<16>> instructions)
+void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 {
 	/*             R
 	Opcode  I  IX AC  Address

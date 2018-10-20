@@ -47,14 +47,13 @@ public:
 	unsigned short int menu2();//simulation menu, follows addition of instructions (menu1A or 1B). Choice 1 returns the user to Menu 1 (Initialization Menu)
 	unsigned short int menu2A();//follows loading of program into main memory - choice 3 from menu2/simulation menu 
 
-	void processFile(ifstream &inFile, list <bitset<16>>);
+	void processFile(ifstream &inFile, list <bitset<16>>&);
 
 	//void voidLowerCase(string &wordIn);
 	string fileIterator(istream &input, char delim);//uses either space, ' ' or ',' or '\n' as char delimeter per calling function requirements
 	int scrollChars(istream &instructionFile);
 	int scrollWhiteSpace(istream &cin);
 
-	bitset<6> streamToOpCode(istream &cin);
 	void codeRIXA(istream &inFile, bitset<16> &buildSet);//Form --> opCode r, i, x, address;
 	void codeIXA(istream &inFile, bitset<16> &buildSet);//Form --> opCode i, x, address;
 	void codeRimmed(istream &inFile, bitset<16> &buildSet);//Form --> opCode r, immed;
@@ -64,8 +63,10 @@ public:
     void codeRRII(istream &inFile, bitset<16> &buildSet);//Form --> opCode, r, r, i, i;
 
 	void encodeAddress(istream &inFile, bitset<16> &buildSet);//encodes 6 bit address from user input or file
-
+private:
 	cache MyCache;
 	mainMemory MyMemory;
+	bitset<6> streamToOpCode(istream &cin);
+	list <bitset<16>> OSInstructionSet;//all instructions loaded here from file
 };
 #endif /* __OS_H__ */
