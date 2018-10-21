@@ -10,7 +10,6 @@ Opcode  I  IX AC  Address
 000001  0  0  11  101100
 15  10  9  8  76  5    0
 */
-#pragma once
 
 #ifndef __OS_H__
 #define __OS_H__

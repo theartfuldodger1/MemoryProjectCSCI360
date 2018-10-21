@@ -1,4 +1,3 @@
-#pragma once
 
 #ifndef __MAINMEMORY_H__
 #define __MAINMEMORY_H__
