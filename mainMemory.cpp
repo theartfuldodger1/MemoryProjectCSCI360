@@ -2,7 +2,7 @@
 Author: Cordell Hurst, Alex BOrtoc, Johnny Zhu
 Course: CSCI 360, Computer Architecture III
 Instructor: Xiaojie Zhang
-Assignment: Memory Management Simulation
+Assignment: Software Simulator/Multi-Level Memory Memory Hierarchy
 This program...
 */
 
@@ -13,9 +13,7 @@ mainMemory::mainMemory()
 {
 	bitset<16>temp;
 	for (int i = 0; i < 24; i++)
-	{
 		memory.push_back(temp);
-	}
 }
 
 mainMemory::~mainMemory()
@@ -89,9 +87,9 @@ void mainMemory::clearMemory()
 void mainMemory::set_InstructionSet(list <bitset<16>> &instructionsIn)
 {
 
-cout <<"In set_InstructionSet::" << endl;
+//cout <<"In set_InstructionSet::" << endl;
 	instructionSet = instructionsIn;
-	cout << "Still iSn set_InstructionSet::" << endl;
+//cout << "Still iSn set_InstructionSet::" << endl;
 }
 
 //catches failed input cast and resets istream

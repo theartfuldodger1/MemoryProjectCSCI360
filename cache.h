@@ -2,7 +2,7 @@
 Author: Cordell Hurst, Alex BOrtoc, Johnny Zhu
 Course: CSCI 360, Computer Architecture III
 Instructor: Xiaojie Zhang
-Assignment: Memory Management Simulation
+Assignment: Software Simulator/Multi-Level Memory Memory Hierarchy
 This program...
 
 4 General Purpose Registers (GPRs), the four GPRs are numbered 0-3 and can be mnemonically referred to as R0 – R3. They may be used as accumulators.
