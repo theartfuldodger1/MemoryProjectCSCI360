@@ -143,9 +143,9 @@ void cache::printRegisters()
 	for (int i = 0; i < 4; i++)
 	{
 		cout << "\n\t\tR" << i << " ==>";
-		for (int j = 0; j < 16; j++)
+		for (int j = 15; j >= 0; j--)
 		{
-			if (j % 4 == 0)
+			if (j % 4 == 3)
 				cout << "   ";
 			cout << GeneralPurposeRegisters_GPRs[i].word[j];
 		}
@@ -165,9 +165,9 @@ void cache::printRegisters()
 		cout << IndexRegister_XO[i];
 	}
 	cout << "\n\t\tMBR==>";
-	for (int i = 0; i < 16; i++)
+	for (int i = 15; i >= 0; i--)
 	{
-		if (i % 4 == 0)
+		if (i % 4 == 3)
 			cout << "   ";
 		cout << MemoryBufferRegister_MBR[i];
 	}

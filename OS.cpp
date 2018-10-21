@@ -1140,9 +1140,9 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 5; i >= 0; i--)
 			{
 				EA[i] = temp[i];
-				mar[i] = temp[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1161,9 +1161,9 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 15; i >= 0; i--)
 			{
 				EA[i] = address[i];
-				mar[i] = address[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1178,9 +1178,9 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 5; i >= 0; i--)
 			{
 				EA[i] = temp[i];
-				mar[i] = temp[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1199,9 +1199,9 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 15; i >= 0; i--)
 			{
 				EA[i] = address[i];
-				mar[i] = address[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1297,9 +1297,9 @@ void OS::LDX(bitset<16> temp)
 			for (int i = 5; i >= 0; i--)
 			{
 				EA[i] = temp[i];
-				mar[i] = temp[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_IndexRegister_XO(content);
@@ -1319,9 +1319,9 @@ void OS::LDX(bitset<16> temp)
 		for (int i = 15; i >= 0; i--)
 		{
 			EA[i] = address[i];
-			mar[i] = address[i];
 		}
 		unsigned long effective_address = EA.to_ulong();
+		mar = EA.to_ulong();
 		SystemBus.loadAddress(effective_address);
 		content = SystemBus.loadData(effective_address);
 		MyCache.set_IndexRegister_XO(content);
@@ -1335,9 +1335,9 @@ void OS::LDX(bitset<16> temp)
 			for (int i = 5; i >= 0; i--)
 			{
 				EA[i] = temp[i];
-				mar[i] = temp[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_IndexRegister_XO(content);
@@ -1356,9 +1356,9 @@ void OS::LDX(bitset<16> temp)
 			for (int i = 15; i >= 0; i--)
 			{
 				EA[i] = address[i];
-				mar[i] = address[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_IndexRegister_XO(content);
