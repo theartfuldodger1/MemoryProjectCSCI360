@@ -14,7 +14,13 @@ mainMemory::mainMemory()
 	bitset<16>temp;
 	for (int i = 0; i < 2048; i++)
 		memory.push_back(temp);
-	memory[23].flip(); //testing demo purpose
+	//memory[23].flip(); //testing demo purpose below
+	//memory[23]("0000100011001010");
+	memory[23].set(1, 1);
+	memory[23].set(3, 1);
+	memory[23].set(6, 1);
+	memory[23].set(7, 1);
+	memory[23].set(11, 1);
 }
 
 mainMemory::~mainMemory()
@@ -113,4 +119,9 @@ void mainMemory::failCheck(istream &cin)
 bitset<16> mainMemory::search(unsigned long address)
 {
 	return memory[address];
+}
+
+void mainMemory::setSpecMemoryLoc(unsigned long address, bitset<16> setIn)
+{
+	memory[address] = setIn;
 }

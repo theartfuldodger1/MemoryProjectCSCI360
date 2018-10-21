@@ -98,6 +98,8 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 				cout << "\t\nHelp File incomplete..." << endl;
 				bitset<16> tt("0000010011010111");
 				LDR(tt);
+				bitset<16> aa = MyCache.get_GeneralPurposeRegisters_GPRs(3);
+				STR(aa);
 			}
 			break;
 			case 7: //Quit
@@ -1121,6 +1123,7 @@ bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 void OS::LDR(bitset<16> temp)
 {
 	bitset<2> reg;
+	bitset<6> mar;
 	reg[1] = temp[7];
 	reg[0] = temp[6];
 	unsigned long gpr_num = reg.to_ulong();
@@ -1133,11 +1136,14 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 5; i >= 0; i--)
 			{
 				EA[i] = temp[i];
+				mar[i] = temp[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 		else if (temp[8] == 1)
 		{
@@ -1151,11 +1157,14 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 15; i >= 0; i--)
 			{
 				EA[i] = address[i];
+				mar[i] = address[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 	}
 	else if (temp[9] == 1)
@@ -1165,11 +1174,14 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 5; i >= 0; i--)
 			{
 				EA[i] = temp[i];
+				mar[i] = temp[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 		else if (temp[8] == 1)
 		{
@@ -1183,11 +1195,88 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 15; i >= 0; i--)
 			{
 				EA[i] = address[i];
+				mar[i] = address[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content);
+		}
+	}
+}
+
+void OS::STR(bitset<16> setIn)
+{
+	bitset<2> reg;
+	reg[1] = setIn[7];
+	reg[0] = setIn[6];
+	unsigned long gpr_num = reg.to_ulong();
+	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
+	bitset<16> content;
+	if (setIn[9] == 0)
+	{
+		if (setIn[8] == 0)
+		{
+			for (int i = 5; i >= 0; i--)
+			{
+				EA[i] = setIn[i];
+			}
+			unsigned long effective_address = EA.to_ulong();
+			SystemBus.loadAddress(effective_address);
+			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			MyMemory.setSpecMemoryLoc(effective_address, content);
+		}
+		else if (setIn[8] == 1)
+		{
+			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> address;
+			for (int i = 5; i >= 0; i--)
+			{
+				address[i] = setIn[i];
+			}
+			address = addBitSets(address, index);
+			for (int i = 15; i >= 0; i--)
+			{
+				EA[i] = address[i];
+			}
+			unsigned long effective_address = EA.to_ulong();
+			SystemBus.loadAddress(effective_address);
+			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			MyMemory.setSpecMemoryLoc(effective_address, content);
+		}
+	}
+	else if (setIn[9] == 1)
+	{
+		if (setIn[8] == 0)
+		{
+			for (int i = 5; i >= 0; i--)
+			{
+				EA[i] = setIn[i];
+			}
+			unsigned long effective_address = EA.to_ulong();
+			SystemBus.loadAddress(effective_address);
+			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			MyMemory.setSpecMemoryLoc(effective_address, content);
+		}
+		else if (setIn[8] == 1)
+		{
+			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> address;
+			for (int i = 5; i >= 0; i--)
+			{
+				address[i] = setIn[i];
+			}
+			address = addBitSets(address, index);
+			for (int i = 15; i >= 0; i--)
+			{
+				EA[i] = address[i];
+			}
+			unsigned long effective_address = EA.to_ulong();
+			SystemBus.loadAddress(effective_address);
+			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			MyMemory.setSpecMemoryLoc(effective_address, content);
 		}
 	}
 }

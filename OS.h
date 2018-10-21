@@ -73,7 +73,8 @@ public:
     void codeRRII(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode, r, r, i, i;
 
 	void encodeAddress(istream &inFile, bitset<16> &buildSet, bool);//encodes 6 bit address from user input or file
-	void LDR(bitset<16> temp);
+	void LDR(bitset<16> setIn);
+	void STR(bitset<16> setIn);
 
 private:
 	Bus SystemBus;

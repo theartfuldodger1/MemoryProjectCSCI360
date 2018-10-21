@@ -29,6 +29,7 @@ public:
 	void printMemory();
 	void failCheck(istream &cin);
 	bitset<16> search(unsigned long address);
+	void setSpecMemoryLoc(unsigned long address, bitset<16> setIn);
 
 private:
 	list <bitset<16>> instructionSet;//all instructions loaded here from file
