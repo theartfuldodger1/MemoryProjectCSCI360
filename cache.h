@@ -1,10 +1,16 @@
 /*
- 4 General Purpose Registers (GPRs), the four GPRs are numbered 0-3 and can be mnemonically referred to as R0 – R3. They may be used as accumulators.
- 1 Index Registers, the index register is referred to as X0, contains a 16-bit base address that supports base register addressing of memory.
- 1 Program Counter, address of next instruction to be executed, referred to as PC.
- 1 Instruction Register, holds the instruction to be executed, referred to as IR.
- Memory Address Register MAR: holds the address of the word to be fetched from memory.
- Memory Buffer Register MBR: holds the data just fetched from or stored into memory.
+Author: Cordell Hurst, Alex BOrtoc, Johnny Zhu
+Course: CSCI 360, Computer Architecture III
+Instructor: Xiaojie Zhang
+Assignment: Memory Management Simulation
+This program...
+
+4 General Purpose Registers (GPRs), the four GPRs are numbered 0-3 and can be mnemonically referred to as R0 – R3. They may be used as accumulators.
+1 Index Registers, the index register is referred to as X0, contains a 16-bit base address that supports base register addressing of memory.
+1 Program Counter, address of next instruction to be executed, referred to as PC.
+1 Instruction Register, holds the instruction to be executed, referred to as IR.
+Memory Address Register MAR: holds the address of the word to be fetched from memory.
+Memory Buffer Register MBR: holds the data just fetched from or stored into memory.
 */
 /*
 Opcode  I  IX AC  Address

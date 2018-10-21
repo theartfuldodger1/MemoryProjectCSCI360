@@ -1,3 +1,10 @@
+/*
+Author: Cordell Hurst, Alex BOrtoc, Johnny Zhu
+Course: CSCI 360, Computer Architecture III
+Instructor: Xiaojie Zhang
+Assignment: Memory Management Simulation
+This program...
+*/
 
 #ifndef __MAINMEMORY_H__
 #define __MAINMEMORY_H__

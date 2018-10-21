@@ -1,4 +1,10 @@
-
+/*
+Author: Cordell Hurst, Alex BOrtoc, Johnny Zhu
+Course: CSCI 360, Computer Architecture III
+Instructor: Xiaojie Zhang
+Assignment: Memory Management Simulation
+This program...
+*/
 
 #include "mainMemory.h"
 #include <iomanip> //for cout.setf, etc
@@ -82,7 +88,10 @@ void mainMemory::clearMemory()
 //"loads" instructions into main memory
 void mainMemory::set_InstructionSet(list <bitset<16>> &instructionsIn)
 {
+
+cout <<"In set_InstructionSet::" << endl;
 	instructionSet = instructionsIn;
+	cout << "Still iSn set_InstructionSet::" << endl;
 }
 
 //catches failed input cast and resets istream

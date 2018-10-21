@@ -1,9 +1,9 @@
 /*
-Author: Cordell Hurst
-Course: 340, Operating Systems
-Instructor: Prof Pavel Shostak
-Assignment: OperatingSystem/Memory Management Simulation
-computer
+Author: Cordell Hurst, Alex BOrtoc, Johnny Zhu
+Course: CSCI 360, Computer Architecture III
+Instructor: Xiaojie Zhang
+Assignment: Memory Management Simulation
+This program...
 */
 /*
 Opcode  I  IX AC  Address

@@ -1,9 +1,9 @@
 /*
-Author: Cordell Hurst
-Course: 340, Operating Systems
-Instructor: Prof Pavel Shostak
-Assignment: OperatingSystem/Memory Management Simulation
-computer
+Author: Cordell Hurst, Alex BOrtoc, Johnny Zhu
+Course: CSCI 360, Computer Architecture III
+Instructor: Xiaojie Zhang
+Assignment: Memory Management Simulation
+This program...
 */
 /*             R
 Opcode  I  IX AC  Address
@@ -40,22 +40,40 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 	==>>
 	*/
 	unsigned short int param = 0;
+	bool check = 0;
 	do
 	{
+		
 		cout << "\n";
-		initializationMenu();
-		cin >> param;
+		//initializationMenu();
+		//cin >> param;
 
-		cin.clear();
-		cin.ignore(255, '\n');
-		failCheck(cin);
+		param = 0;
 
-		if (param <= 0 || param > 8)
+		if (param < 0 || param > 8)
 		{
+		cout << "param: " << param << endl;
 			cout << "\n\tIncorrect input:" << endl;
+			cout << "param: " << param << endl;
 			param = 0;
 		}
-
+		if (param == 0)
+		{
+			if (check == 0)
+				initializationMenu();
+			cin >> param;
+		}
+		check = 0;
+		//cin.clear();
+		//cin.ignore(255, '\n');
+		//failCheck(cin);
+		if (cin.fail())
+		{
+			cout << "check!:" << endl;
+			check = 1;
+			cin.clear();
+			cin.ignore(255, '\n');
+		}
 		if (param > 0 || param < 9)
 			switch (param)
 			{
@@ -198,6 +216,7 @@ unsigned short int OS::menu1B()
 
 	=>>
 	*/
+	cin.ignore(255, '\n');
 	cout << right;
 	cout << setw(45) << "Add Individual Instructions"
 		<< "\n\t---------------------------------------------------"
@@ -210,19 +229,19 @@ unsigned short int OS::menu1B()
 	//cin >> instructionIn;
 
 	int peek = cin.peek();
-	cout << "PEEK: " << peek << endl;
+	cout << "PEEK IND INST: " << peek << endl;
 	//do
 	while (peek != 81 && peek != 113)
 	{
 		peek = cin.peek();
-		cout << "PEEK2: " << peek << endl;
+		cout << "PEEK2 IND INST: " << peek << endl;
 		processFile(cin);
 
 		cout << "\n\t=>>";
 		//cin >> instructionIn;
 		//cout << "INSTRUCTION IN: " << instructionIn << endl;
 		peek = cin.peek();
-		cout << "PEEK3: " << peek << endl;
+		cout << "PEEK3 IND INST: " << peek << endl;
 	}//while (instructionIn != "81" && instructionIn != "113");
 
 	unsigned short int paramOut = 0;//menu2();
@@ -324,18 +343,31 @@ unsigned short int OS::menu2()
 	unsigned short int paramOut = 0;
 	unsigned short int param = 0;
 //cout << "MENU2: " << param << endl;
-	cin.ignore(255, '\n');
+		cout << "Stuck 1?" << endl;
+
+		//cin.ignore(255, '\n');
+
+		
+		int temp2 = scrollWhiteSpace(cin);
+//		int peek;
+		cout << "Stuck 2?" << endl;
+	bool check = 0;
+	int first = 0;
 	do
 	{
+	/*
 		//cin.clear();
-		
+		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		failCheck(cin);
+
+		peek = cin.peek();
+		cout << "PEEK:: " << peek << " temp2::  " << temp2 << endl;
 		//failCheck(cin);
 		//char cleaner[256];
 		//cin.getline(cleaner, 256);
 		param = 0;
-
+		//cin.clear();
 		cout << "\n";
-
 		cout << right;
 		cout << setw(40) << setfill(' ') << "Simulation Menu"
 			<< "\n\t---------------------------------------------------"
@@ -352,9 +384,17 @@ unsigned short int OS::menu2()
 //cout << "MENU2.1: " << param << endl;
 		cin >> param;
 		cout << "POST: " << param << endl;
-
+	//	int temp2 = scrollWhiteSpace(cin);
+		peek = cin.peek();
+		cout << "PEEK 2:: " << peek << " temp2.2::  " << temp2 << endl;
+		
+		//cin.ignore(255, '\n');cin.clear();
 		//cin.clear();
-		cin.ignore(255, '\n');
+		//cin.ignore(255, '\n');
+		//char cleaner[256];
+		//cin.fail();
+		//cin.getline(cleaner, 256);
+		
 		//failCheck(cin);
 		//cout << "You entered: " << input << endl;
 
@@ -363,7 +403,65 @@ unsigned short int OS::menu2()
 			cout << "\n\tIncorrect input:" << endl;
 			param = 0;
 		}
+		*/
+		
+		//if (first == 0)
+		{
+			if (cin.fail())
+			{
+				cout << "check!:" << endl;
+				check = 1;
+				cin.clear();
+				cin.ignore(255, '\n');
+			}
+			//first = 1;
+		}cin.clear();
+		cout << "\n";
+		//initializationMenu();
+		//cin >> param;
 
+		param = 0;
+		cout << "param TOP: " << param << endl;
+		
+		if (param < 0 || param > 8)
+		{
+			cout << "param: " << param << endl;
+			cout << "\n\tIncorrect input:" << endl;
+			cout << "param: " << param << endl;
+			param = 0;
+		}
+		if (param == 0)
+		{
+			if (check == 0)
+			{
+				//initializationMenu();
+				//cout << "\n";
+				cout << right;
+				cout << setw(40) << setfill(' ') << "Simulation Menu"
+					<< "\n\t---------------------------------------------------"
+					<< "\n\t1. Clear All Data and Start Over"
+					<< "\n\t2. Add Instruction Line to End of Queue"
+					<< "\n\t3. Load Program into Main Memory"
+					<< "\n\t4. Display Empty Registers"
+					<< "\n\t5. Display Instructions"
+					<< "\n\t6. Display Empty Memory"
+					<< "\n\t7. Help"
+					<< "\n\t8. Quit"
+					<< "\n\n\t=>> ";
+			}
+			cin >> param;
+		}
+		check = 0;
+		//cin.clear();
+		//cin.ignore(255, '\n');
+		//failCheck(cin);
+		if (cin.fail())
+		{
+			cout << "check!:" << endl;
+			check = 1;
+			cin.clear();
+			cin.ignore(255, '\n');
+		}
 		else //if (param > 0 || param < 9)
 			switch (param)
 			{
@@ -381,6 +479,9 @@ unsigned short int OS::menu2()
 				case 3://3. Load Program into Main Memory
 				{
 					loadInstructionsIntoMain();
+					paramOut = menu2A();
+					if(paramOut == 7)
+						param = 8;
 				}
 				break;
 				case 4://4. Display Empty Registers
@@ -434,8 +535,10 @@ unsigned short int  OS::menu2A()
 	*/
 	unsigned short int paramOut = 0;
 	unsigned short int param = 0;
+	bool check = 0;
 	do
 	{
+	/*
 		cout << "\n";
 		cout << right;
 		cout << setw(40) << setfill(' ') << "Simulation Menu"
@@ -462,7 +565,62 @@ unsigned short int  OS::menu2A()
 			cout << "\n\tIncorrect input:" << endl;
 			param = 0;
 		}
+		*/
+		{
+			if (cin.fail())
+			{
+				cout << "check!:" << endl;
+				check = 1;
+				cin.clear();
+				cin.ignore(255, '\n');
+			}
+			//first = 1;
+		}cin.clear();
+		cout << "\n";
+		//initializationMenu();
+		//cin >> param;
 
+		param = 0;
+		cout << "param TOP: " << param << endl;
+
+		if (param < 0 || param > 8)
+		{
+			cout << "param: " << param << endl;
+			cout << "\n\tIncorrect input:" << endl;
+			cout << "param: " << param << endl;
+			param = 0;
+		}
+		if (param == 0)
+		{
+			if (check == 0)
+			{
+				//initializationMenu();
+				//cout << "\n";
+				cout << setw(40) << setfill(' ') << "Simulation Menu"
+					<< "\n\t---------------------------------------------------"
+					<< "\n\t1. Clear All Data and Start Over"
+					<< "\n\t2. Add Instruction Line to End of Queue"
+
+					<< "\n\t3. Display Registers"
+					<< "\n\t4. Display Instructions"
+					<< "\n\t5. Display Memory"
+					<< "\n\t6. Help"
+					<< "\n\t7. Quit"
+					<< "\n\n\t=>> ";
+			}
+			cin >> param;
+		}
+		check = 0;
+		//cin.clear();
+		//cin.ignore(255, '\n');
+		//failCheck(cin);
+		if (cin.fail())
+		{
+			cout << "check!:" << endl;
+			check = 1;
+			cin.clear();
+			cin.ignore(255, '\n');
+		}
 		if (param > 0 || param < 9)
 			switch (param)
 			{
@@ -839,6 +997,7 @@ void OS::loadInstructionsIntoMain()
 		<< "\nPlease add instructions before attempting to load to main memory" << endl;
 	else
 		MyMemory.set_InstructionSet(InstructionSet_OS);
+	cout << "In OS::loadInstructionIntoMain()" << endl;
 }
 //when isntructions are not yet loaded
 void OS::printInstructions()
@@ -924,6 +1083,8 @@ void OS::stepInstructions()
 	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
 	bitset<16> instruction;
 	string opCodeString;
+
+	cin.ignore(255, '\n');
 
 	instruction = *iSetIter;
 	int z = 0;
