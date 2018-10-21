@@ -63,6 +63,7 @@ bitset<6> cache::get_MemoryAddressRegister_MAR()
 {
 	return MemoryAddressRegister_MAR;
 }
+
 bitset<16> cache::get_MemoryBufferRegister_MBR()
 {
 	return MemoryBufferRegister_MBR;
@@ -74,22 +75,27 @@ void cache::set_GeneralPurposeRegisters_GPRs(int gprIn, bitset<16> setIn)
 {
 	GeneralPurposeRegisters_GPRs[gprIn].word = setIn;
 }
+
 void cache::set_IndexRegister_XO(bitset<16> setIn)
 {
 	IndexRegister_XO = setIn;
 }
+
 void cache::set_InstructionRegister_IR(bitset<16> setIn)
 {
 	InstructionRegister_IR = setIn;
 }
+
 void cache::set_MemoryAddressRegister_MAR(bitset<6> setIn)
 {
 	MemoryAddressRegister_MAR = setIn;
 }
+
 void cache::set_MemoryBufferRegister_MBR(bitset<16> setIn)
 {
 	MemoryBufferRegister_MBR = setIn;
 }
+
 void cache::set_ProgramCounter(bitset<6> instIn)
 {
 	programCounter_PC = instIn;
@@ -105,6 +111,7 @@ void cache::clear_AllRegisters()
 	MemoryAddressRegister_MAR.reset();
 	MemoryBufferRegister_MBR.reset();
 }
+
 void cache::printRegisters()
 {
 /*

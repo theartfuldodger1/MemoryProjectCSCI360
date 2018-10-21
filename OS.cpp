@@ -12,12 +12,10 @@ Opcode  I  IX AC  Address
 */
 
 #include "OS.h"
-
 using namespace std;
 
 OS::OS()
 {
-	
 }
 //Destructor
 OS::~OS()
@@ -238,6 +236,7 @@ unsigned short int OS::menu1B()
 	unsigned short int paramOut = 0;//menu2();
 	return paramOut;
 }
+
 void OS::processFile(istream &cin)
 {
 	/*             R
@@ -741,26 +740,32 @@ void OS::codeIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 //cout << "BUILD SET in codeIXA: " << buildSet << endl;
 	//for testing END
 }
+
 void OS::codeRimmed(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode r, immed;
 {
 
 }
+
 void OS::codeR(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode r;
 {
 
 }
+
 void OS::codeRxRy(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode rx, ry;
 {
 
 }
+
 void OS::codeRx(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode rx;
 {
 
 }
+
 void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode, r, r, i, i;
 {
 
 }
+
 
 //encodes 6 bit address from user input or file
 void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
@@ -865,6 +870,7 @@ bitset<6> OS::streamToOpCode(istream &input)
 //cout << "streamToOpCode end" << endl;
 	return bitOpCode;
 }
+
 string OS::opCodeToString(bitset<6>&opCode)
 {
 	string opCodeString;
@@ -930,6 +936,7 @@ string OS::opCodeToString(bitset<6>&opCode)
 	return opCodeString;
 	//cout << opCodeString;
 }
+
 void OS::loadInstructionsIntoMain()
 {
 	if (InstructionSet_OS.size() == 0)

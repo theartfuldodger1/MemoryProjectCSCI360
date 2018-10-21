@@ -13,7 +13,7 @@ This program...
 
 using namespace std;
 
-void failCheckMain(istream &cin);
+void failCheckMain(istream &cin);//catches failed input cast and resets istream
 
 int main()
 {

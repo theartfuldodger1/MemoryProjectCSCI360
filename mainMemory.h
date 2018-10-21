@@ -28,6 +28,7 @@ public:
 	void clearMemory();
 	void printMemory();
 	void failCheck(istream &cin);
+
 private:
 	list <bitset<16>> instructionSet;//all instructions loaded here from file
 	vector <bitset<16>> memory;

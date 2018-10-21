@@ -45,12 +45,14 @@ public:
 	unsigned short int menu1B();// add individual instructions from Menu1, choice 2
 	unsigned short int menu2();//simulation menu, follows addition of instructions (menu1A or 1B). Choice 1 returns the user to Menu 1 (Initialization Menu)
 	unsigned short int menu2A();//follows loading of program into main memory - choice 3 from menu2/simulation menu 
-
-	void processFile(ifstream &inFile, list <bitset<16>>&);//
-	void processFile(istream & cin);//
+	
 	bitset<6> streamToOpCode(istream &cin);
 	string opCodeToString(bitset<6>&);
+	void processFile(istream & cin);//modified version of file version of processFile, esp for istream cin
+	void processFile(ifstream &inFile, list <bitset<16>>&);//For file processing only
+	
 	void loadInstructionsIntoMain();
+
 	void clearAllData();
 	void printInstructions();//when isntructions are not yet loaded
 	void stepInstructions();//instructions loaded in main memory
@@ -60,7 +62,7 @@ public:
 	int scrollChars(istream &instructionFile);
 	int scrollWhiteSpace(istream &cin);
 
-	//instruction encoding
+	//Instruction encoding
 	void codeRIXA(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode r, i, x, address;
 	void codeIXA(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode i, x, address;
 	void codeRimmed(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode r, immed;
@@ -74,7 +76,6 @@ public:
 private:
 	cache MyCache;
 	mainMemory MyMemory;
-	
 	list <bitset<16>> InstructionSet_OS;//all instructions loaded here from file
 };
 #endif /* __OS_H__ */
