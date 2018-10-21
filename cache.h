@@ -20,6 +20,7 @@ Opcode  I  IX AC  Address
 #include <string>
 #include <iostream>
 #include <array>
+#include <iomanip> //for cout.setf, etc
 
 using namespace std;
 //thought about inserting just the bitset into the array rather than this struct but I feel this gives us flexability to expand if reqired.
@@ -51,6 +52,7 @@ public:
 
 	void clear_AllRegisters();
 	void printRegisters();
+	void failCheck(istream &);//catches failed input cast and resets istream
 
 private:
 	bitset<6> programCounter_PC; //address of next instruction to be executed

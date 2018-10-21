@@ -48,9 +48,12 @@ public:
 
 	void processFile(ifstream &inFile, list <bitset<16>>&);//
 	void processFile(istream & cin);//
+	bitset<6> streamToOpCode(istream &cin);
+	string opCodeToString(bitset<6>&);
 	void loadInstructionsIntoMain();
 	void clearAllData();
-
+	void printInstructions();//when isntructions are not yet loaded
+	void stepInstructions();//instructions loaded in main memory
 
 	//void voidLowerCase(string &wordIn);
 	string fileIterator(istream &input, char delim);//uses either space, ' ' or ',' or '\n' as char delimeter per calling function requirements
@@ -71,7 +74,7 @@ public:
 private:
 	cache MyCache;
 	mainMemory MyMemory;
-	bitset<6> streamToOpCode(istream &cin);
+	
 	list <bitset<16>> InstructionSet_OS;//all instructions loaded here from file
 };
 #endif /* __OS_H__ */

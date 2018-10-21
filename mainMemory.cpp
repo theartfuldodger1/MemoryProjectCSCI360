@@ -12,7 +12,6 @@ mainMemory::mainMemory()
 	}
 }
 
-
 mainMemory::~mainMemory()
 {
 }
@@ -67,7 +66,11 @@ void mainMemory::printMemory()
 		failCheck(cin);
 
 		//calls for display of a range and help file needed
-		
+		if (input == 'H' || input == 'h')
+			cout << "\t\nHelp File incomplete..." << endl;
+		if (input == 'R' || input == 'r')
+			cout << "\t\nRange Display incomplete..." << endl;
+
 	}while(input != 'Q' && input != 'q');
 }
 //Removes all elements, leaving all containers with a size of 0.

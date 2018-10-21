@@ -101,5 +101,116 @@ void cache::clear_AllRegisters()
 }
 void cache::printRegisters()
 {
+/*
+	//'Q' option returns to main menu
+	//'H' option provides explanation of the viewed environment	
 
+					Registers
+		------------------------------------
+		GPRx4
+		R0 == >	0000	0000	0000	0000
+		R1 == >	0000	0000	0000	0000
+		R2 == > 0000 	0000	0000	0000
+		R3 == > 0000	0000	0000	0000
+
+		IR == > 0000	0000	0000	0000
+		PC == > 0000	0000	0000	0000
+		X0 == >	0000 	0000 	0000	0000
+		MA == > 0000 	0000	0000	0000
+		MB == > 0000 	0000	0000	0000
+		------------------------------------
+		Enter Q for Menu or H for Help
+*/
+	cout << "\n";
+	cout << right;
+	cout << setw(38) << "Registers"
+		<< "\n\t\t----------------------------------"
+		<< "\n\t\tGPRx4";
+
+	for (int i = 0; i < 4; i++)
+	{
+		cout << "\n\t\tR" << i << " ==>";
+		for (int j = 0; j < 16; j++)
+		{
+			if (j % 4 == 0)
+				cout << "   ";
+			cout << GeneralPurposeRegisters_GPRs[i].word[j];
+		}
+	}
+	cout << "\n\t\tIR ==>";
+	for (int i = 0; i < 16; i++)
+	{
+		if (i % 4 == 0)
+			cout << "   ";
+		cout << InstructionRegister_IR[i];
+	}
+	cout << "\n\t\tXO ==>";
+	for (int i = 0; i < 16; i++)
+	{
+		if (i % 4 == 0)
+			cout << "   ";
+		cout << IndexRegister_XO[i];
+	}
+	cout << "\n\t\tMBR==>";
+	for (int i = 0; i < 16; i++)
+	{
+		if (i % 4 == 0)
+			cout << "   ";
+		cout << MemoryBufferRegister_MBR[i];
+	}
+	cout << "\n\t\tMAR==>";
+	bool firstPass = 0;
+	for (int i = 0; i < 6; i++)
+	{
+		if (i % 3 == 0)
+			if (firstPass == 0)
+			{
+				cout << "   ";
+				firstPass = 1;
+			}
+			else
+				cout << "    ";
+		cout << MemoryAddressRegister_MAR[i];
+	}
+	cout << "\n\t\tPC ==>";
+	firstPass = 0;
+	for (int i = 0; i < 6; i++)
+	{
+		if (i % 3 == 0)
+			if (firstPass == 0)
+			{
+				cout << "   ";
+				firstPass = 1;
+			}
+			else
+				cout << "    ";
+		cout << programCounter_PC[i];
+	}
+
+	cout << "\n\t\t----------------------------------"
+		<< "\n\t\t" << setw(10) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
+		<< "\n\n\t\t==>> ";
+
+	char input;
+	do
+	{
+		cin >> input;
+		cin.ignore(255, '\n');
+		failCheck(cin);
+
+		//call help file needed
+		if (input == 'H' || input == 'h')
+			cout << "\t\nHelp File incomplete..." << endl;
+
+	} while (input != 'Q' && input != 'q');
+}
+//catches failed input cast and resets istream
+void cache::failCheck(istream &cin)
+{
+	if (cin.fail())
+	{
+		cout << "Incorrect input:" << endl;
+		cin.clear();
+		cin.ignore(255, '\n');
+	}
 }

@@ -32,7 +32,7 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 	1. Add Instruction File
 	2. Add Instruction Line By Line
 	3. Display Empty Registers
-	4. Display Instruction Display with Default Values
+	4. Display Instructions
 	5. Display Empty Memory
 	6. Help
 	7. Quit
@@ -71,12 +71,12 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			break;
 			case 3: //Display Empty Registers
 			{
-
+				MyCache.printRegisters();
 			}
 			break;
-			case 4: //Display Instruction Display with Default Values
+			case 4: //Display Instructions
 			{
-
+				printInstructions();//no stepping
 			}
 			break;
 			case 5: //Display Empty Memory
@@ -86,7 +86,8 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			break;
 			case 6: //Help
 			{
-
+				//call help file needed
+				cout << "\t\nHelp File incomplete..." << endl;
 			}
 			break;
 			case 7: //Quit
@@ -190,7 +191,9 @@ unsigned short int OS::menu1B()
 	/*
 	Add Individual Instructions
 	---------------------------------------------------
-	Enter Instructions in the following form: MOV 0100 0011
+	Enter Instructions in the following form: 
+	LDR 3, 1, 1, 54 or LDR 3,1,1,54
+	Press Enter after each instruction.
 	Enter Q if you are finished.
 
 	=>>
@@ -198,8 +201,9 @@ unsigned short int OS::menu1B()
 	cout << right;
 	cout << setw(45) << "Add Individual Instructions"
 		<< "\n\t---------------------------------------------------"
-		<< "\n\tEnter Instructions in the following form: LDR 3, 1, 1, 54 or LDR 3,1,1,54"
-		<< "\n\tand Enter after each instruction."
+		<< "\n\tEnter Instructions in the following form: "
+		<< "\n\tLDR 3, 1, 1, 54 or LDX 1,0,54 as appropriate"
+		<< "\n\tPress Enter after each instruction."
 		<< "\n\tEnter Q if you are finished."
 		<< "\n\n\t=>> ";
 	string instructionIn;
@@ -317,19 +321,21 @@ unsigned short int OS::menu2()
 
 	==>>
 	*/
-
 	unsigned short int paramOut = 0;
 	unsigned short int param = 0;
+//cout << "MENU2: " << param << endl;
+	cin.ignore(255, '\n');
 	do
 	{
-		cin.clear();
-		cin.ignore(255, '\n');
-		failCheck(cin);
-		char cleaner[256];
-		cin.getline(cleaner, 256);
+		//cin.clear();
+		
+		//failCheck(cin);
+		//char cleaner[256];
+		//cin.getline(cleaner, 256);
+		param = 0;
 
 		cout << "\n";
-		cout << "MENU2: " << param << endl;
+
 		cout << right;
 		cout << setw(40) << setfill(' ') << "Simulation Menu"
 			<< "\n\t---------------------------------------------------"
@@ -337,18 +343,19 @@ unsigned short int OS::menu2()
 			<< "\n\t2. Add Instruction Line to End of Queue"
 			<< "\n\t3. Load Program into Main Memory"
 			<< "\n\t4. Display Empty Registers"
-			<< "\n\t5. Display Instruction with Default Values"
+			<< "\n\t5. Display Instructions"
 			<< "\n\t6. Display Empty Memory"
 			<< "\n\t7. Help"
 			<< "\n\t8. Quit" 
 			<< "\n\n\t=>> ";
 //		initializationMenu();
+//cout << "MENU2.1: " << param << endl;
 		cin >> param;
 		cout << "POST: " << param << endl;
 
-		cin.clear();
+		//cin.clear();
 		cin.ignore(255, '\n');
-		failCheck(cin);
+		//failCheck(cin);
 		//cout << "You entered: " << input << endl;
 
 		if (param <= 0 || param > 8)
@@ -378,12 +385,12 @@ unsigned short int OS::menu2()
 				break;
 				case 4://4. Display Empty Registers
 				{
-
+					MyCache.printRegisters();
 				}
 				break;
-				case 5://5. Display Instruction with Default Values
+				case 5://5. Display Instructions
 				{
-
+					printInstructions();//no stepping
 				}
 				break;
 				case 6://6. Display Empty Memory
@@ -393,7 +400,8 @@ unsigned short int OS::menu2()
 				break;
 				case 7://7. Help
 				{
-
+					//call help file needed
+					cout << "\t\nHelp File incomplete..." << endl;
 				}
 				break;
 				case 8://8. Quit
@@ -435,9 +443,9 @@ unsigned short int  OS::menu2A()
 			<< "\n\t1. Clear All Data and Start Over"
 			<< "\n\t2. Add Instruction Line to End of Queue"
 
-			<< "\n\t3. Display Empty Registers"
-			<< "\n\t4. Display Instruction with Default Values"
-			<< "\n\t5. Display Empty Memory"
+			<< "\n\t3. Display Registers"
+			<< "\n\t4. Display Instructions"
+			<< "\n\t5. Display Memory"
 			<< "\n\t6. Help"
 			<< "\n\t7. Quit"
 			<< "\n\n\t=>> ";
@@ -469,24 +477,25 @@ unsigned short int  OS::menu2A()
 				param = menu1B();
 			}
 			break;
-			case 3://3. Display Empty Registers
+			case 3://3. Display Registers
 			{
-
+				MyCache.printRegisters();	
 			}
 			break;
-			case 4://4. Display Instruction with Default Values
+			case 4://4. Display Instructions
 			{
-
+				printInstructions();//no stepping
 			}
 			break;
-			case 5://5. Display Empty Memory
+			case 5://5. Display Memory
 			{
 				MyMemory.printMemory();
 			}
 			break;
 			case 6://6. Help
 			{
-
+				//call help file needed
+				cout << "\t\nHelp File incomplete..." << endl;
 			}
 			break;
 			case 7://7. Quit
@@ -758,7 +767,71 @@ cout << "streamToOpCode begin" << endl;
 cout << "streamToOpCode end" << endl;
 	return bitOpCode;
 }
+string OS::opCodeToString(bitset<6>&opCode)
+{
+	string opCodeString;
+	if (opCode == 1)//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "LDR";
+	else if (opCode == 2)//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "STR";
+	else if (opCode == 41)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "LDX";
+	else if (opCode == 42)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "STX";
+	//Comparison Instruction
+	else if (opCode == 17)//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "CMP";
+	//Transfer Instructions
+	else if (opCode == 10)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "JE";
+	else if (opCode == 11)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "JNE";
+	else if (opCode == 12)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "JG";
+	else if (opCode == 14)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "JGE";
+	else if (opCode == 15)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "JL";
+	else if (opCode == 16)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "JLE";
+	else if (opCode == 13)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "JUMP";
+	//Basic Arithmetic and Logic Instructions
+	else if (opCode == 4)//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "AMR";
+	else if (opCode == 5)//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "SMR";
 
+	//below has no encoder function fully defined as of yet
+	else if (opCode == 6)//Form --> opCode, r, immed --> usus codeRimmed(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "AIR";
+	else if (opCode == 7)//Form --> opCode, r, immed --> usus codeRimmed(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "SIR";
+	else if (opCode == 8)//form --> opCode, r --> usus codeR(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "DEC";
+	else if (opCode == 9)//form --> opCode, r --> usus codeR(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "INC";
+	//Advanced Arithmetic and Logical Instructions
+	else if (opCode == 20)//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "MUL";
+	else if (opCode == 21)//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "DIV";
+	else if (opCode == 22)//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "TER";
+	else if (opCode == 23)//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "AND";
+	else if (opCode == 24)//form --> opCode, rx, ry -->uses codeRxRy(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "ORR";
+	else if (opCode == 25)//form --> opCode, rx -->uses codeRx(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "NOT";
+	else if (opCode == 26)//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "ADD";
+	else if (opCode == 27)//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
+		opCodeString = "SUB";
+
+	return opCodeString;
+	//cout << opCodeString;
+}
 void OS::loadInstructionsIntoMain()
 {
 	if (InstructionSet_OS.size() == 0)
@@ -766,6 +839,100 @@ void OS::loadInstructionsIntoMain()
 		<< "\nPlease add instructions before attempting to load to main memory" << endl;
 	else
 		MyMemory.set_InstructionSet(InstructionSet_OS);
+}
+//when isntructions are not yet loaded
+void OS::printInstructions()
+{
+/*
+							 Instructions
+		------------------------------------------------------
+		0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
+		1         STR  R1, 0, 0, 5    000000  0  0  00  000000
+		------------------------------------------------------
+		     R.Run	     S.Step       Q.Menu    	H.Help
+*/
+	/*             R
+	Opcode  I  IX AC  Address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<6> opCode;
+	bitset<2> reg;
+	bitset<6> addy;
+	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
+	bitset<16> instruction;
+	string opCodeString;
+
+	cout << "\n";
+	cout << right;
+	cout << setw(40) << "Instructions"
+		<< "\n\t\t----------------------------------";
+
+	int count = 0;
+	while (iSetIter != InstructionSet_OS.end())
+	{
+		instruction = *iSetIter;
+		int z = 0;
+		for (int i = 10; i < 16; i++)
+		{
+			opCode[z] = instruction[i];
+			z++;
+		}
+		z = 0;
+		for (int i = 6; i < 8; i++)
+		{
+			reg[z] = instruction[i];
+			z++;
+		}
+		z = 0;
+		for (int i = 0; i < 6; i++)
+		{
+			addy[z] = instruction[i];
+			z++;
+		}
+		cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
+			<< " R" << reg.to_ulong() << ", " << instruction[9] << ", " 
+			<< instruction[8] << ", " << addy;
+
+		iSetIter++;
+	}
+
+	cout << "\n\t\t----------------------------------"
+		<< "\n\t" << setw(13) << setfill(' ') << "R. Run" << setw(10) << setfill(' ') 
+		<< setw(10) << setfill(' ') << "S. Step" << setw(10) << setfill(' ') << "Q. Menu" 
+		<< setw(10) << setfill(' ') << "H. Help"
+		<< "\n\n\t\t==>> ";
+
+	char input;
+	do
+	{
+		cin >> input;
+		cin.ignore(255, '\n');
+		failCheck(cin);
+
+		//call help file needed
+		if (input == 'H' || input == 'h')
+			cout << "\t\nHelp File incomplete..." << endl;
+
+	} while (input != 'Q' && input != 'q');
+	
+}
+//instructions loaded in main memory
+void OS::stepInstructions()
+{
+	bitset<6> opCode;
+	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
+	bitset<16> instruction;
+	string opCodeString;
+
+	instruction = *iSetIter;
+	int z = 0;
+	for (int i = 10; i < 16; i++)
+	{
+		opCode[z] = instruction[i];
+		z++;
+	}
+	opCodeToString(opCode);
 }
 
 void OS::clearAllData()
