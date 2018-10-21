@@ -11,12 +11,9 @@ computer
 #include <limits>
 
 #include "OS.h"
-//#include "mainMemory.h"
 
 using namespace std;
 
-//constructor for simulated computer
-void makeComputer(unsigned int &, unsigned int &, int &);//uns int memSizeIn, int pgSizeIn, int HDDquantity
 void failCheckMain(istream &cin);
 
 int main()
@@ -77,40 +74,4 @@ void failCheckMain(istream &cin)
 		cin.clear();
 		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
-}
-//Constructor for the computer
-void makeComputer(unsigned int &memorySizeIn, unsigned int &pageSizeIn, int &numOfHDDIn)
-{
-	unsigned int check = 4000000000;
-	do
-	{
-		failCheckMain(cin);
-
-		cout << "How much DRAM do I have?" << endl;
-		cin >> memorySizeIn;
-
-		if (memorySizeIn < 1 || memorySizeIn > check)
-			cout << " Memory Size must be greater than zero (0) and less than or equal to 4 "
-			<< "billion bytes (4000000000). Do not enter commas or any other puntuation or letters." << endl;
-
-	} while (cin.fail() || memorySizeIn < 1 || memorySizeIn > check);
-
-	do
-	{
-		failCheckMain(cin);
-
-		cout << "What is my page/frame size?" << endl;
-		cin >> pageSizeIn;
-
-	} while (cin.fail() || pageSizeIn < 1 || pageSizeIn > check);
-
-	int HDDIn = 0;
-	do
-	{
-		failCheckMain(cin);
-		cout << "How many hard disks do I have?" << endl;
-		cin >> HDDIn;
-	} while (cin.fail() || HDDIn < 1);
-
-	numOfHDDIn = HDDIn;
 }

@@ -47,7 +47,7 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 		cin >> param;
 
 		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cin.ignore(255, '\n');
 		failCheck(cin);
 
 		if (param <= 0 || param > 8)
@@ -117,7 +117,7 @@ void OS::failCheck(istream &cin)
 	{
 		cout << "Incorrect input:" << endl;
 		cin.clear();
-		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		cin.ignore(255, '\n');
 	}
 }
 
@@ -139,7 +139,7 @@ void OS::initializationMenu()
 	*/
 
 	cout << right;
-	cout << setw(45) << "Initialization Menu"
+ 	cout << setw(45) << setfill(' ') << "Initialization Menu"
 		<< "\n\t----------------------------------------------------"
 		<< "\n\t1. Add Instruction File"
 		<< "\n\t2. Add Instruction Line By Line"
@@ -182,6 +182,46 @@ unsigned short int OS::menu1A()
 
 	processFile(instructionFile, InstructionSet_OS);
 	unsigned short int paramOut = menu2();
+	return paramOut;
+}
+// add individual instructions from Menu1, choice 2
+unsigned short int OS::menu1B()
+{
+	/*
+	Add Individual Instructions
+	---------------------------------------------------
+	Enter Instructions in the following form: MOV 0100 0011
+	Enter Q if you are finished.
+
+	=>>
+	*/
+	cout << right;
+	cout << setw(45) << "Add Individual Instructions"
+		<< "\n\t---------------------------------------------------"
+		<< "\n\tEnter Instructions in the following form: LDR 3, 1, 1, 54 or LDR 3,1,1,54"
+		<< "\n\tand Enter after each instruction."
+		<< "\n\tEnter Q if you are finished."
+		<< "\n\n\t=>> ";
+	string instructionIn;
+	//cin >> instructionIn;
+
+	int peek = cin.peek();
+	cout << "PEEK: " << peek << endl;
+	//do
+	while (peek != 81 && peek != 113)
+	{
+		peek = cin.peek();
+		cout << "PEEK2: " << peek << endl;
+		processFile(cin);
+
+		cout << "\n\t=>>";
+		//cin >> instructionIn;
+		//cout << "INSTRUCTION IN: " << instructionIn << endl;
+		peek = cin.peek();
+		cout << "PEEK3: " << peek << endl;
+	}//while (instructionIn != "81" && instructionIn != "113");
+
+	unsigned short int paramOut = 0;//menu2();
 	return paramOut;
 }
 void OS::processFile(istream &cin)
@@ -240,8 +280,8 @@ void OS::processFile(istream &cin)
 		InstructionSet_OS.push_back(buildSet);
 		cout << "pushed processFile!" << endl;
 		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		failCheck(cin);
+		cin.ignore(255, '\n');
+
 		cout << "Cleared processFile" << endl;
 	}
 
@@ -259,46 +299,7 @@ void OS::processFile(istream &cin)
 	//for testing END
 	cout << "passed testing processFile" << endl;
 }
-// add individual instructions from Menu1, choice 2
-unsigned short int OS::menu1B()
-{
-	/*
-	Add Individual Instructions
-	---------------------------------------------------
-	Enter Instructions in the following form: MOV 0100 0011
-	Enter Q if you are finished.
 
-	=>>
-	*/
-	cout << right;
-	cout << setw(45) << "Add Individual Instructions"
-		<< "\n\t---------------------------------------------------"
-		<< "\n\tEnter Instructions in the following form: MOV 0100 0011"
-		<< "\n\tand Enter after each instruction."
-		<< "\n\tEnter Q if you are finished."
-		<< "\n\n\t=>> ";
-	string instructionIn;
-	//cin >> instructionIn;0
-
-	int peek = cin.peek();
-	cout << "PEEK: " << peek << endl;
-	do
-	//while (peek != 81 && peek != 113)
-	{
-		peek = cin.peek();
-		cout << "PEEK2: " << peek << endl;
-		processFile(cin);
-
-		cout << "\n\t=>>";
-		cin >> instructionIn;
-		cout << "INSTRUCTION IN: " << instructionIn << endl;
-		peek = cin.peek();
-		cout << "PEEK3: " << peek << endl;
-	}while (instructionIn != "Q" && instructionIn != "q");
-
-	unsigned short int paramOut = menu2();
-	return paramOut;
-}
 //simulation menu, follows addition of instructions (menu1A or 1B). Choice 1 returns the user to Menu 1 (Initialization Menu)
 unsigned short int OS::menu2()
 {
@@ -322,7 +323,7 @@ unsigned short int OS::menu2()
 	do
 	{
 		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cin.ignore(255, '\n');
 		failCheck(cin);
 		char cleaner[256];
 		cin.getline(cleaner, 256);
@@ -330,7 +331,7 @@ unsigned short int OS::menu2()
 		cout << "\n";
 		cout << "MENU2: " << param << endl;
 		cout << right;
-		cout << setw(40) << "Simulation Menu"
+		cout << setw(40) << setfill(' ') << "Simulation Menu"
 			<< "\n\t---------------------------------------------------"
 			<< "\n\t1. Clear All Data and Start Over"
 			<< "\n\t2. Add Instruction Line to End of Queue"
@@ -346,7 +347,7 @@ unsigned short int OS::menu2()
 		cout << "POST: " << param << endl;
 
 		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cin.ignore(255, '\n');
 		failCheck(cin);
 		//cout << "You entered: " << input << endl;
 
@@ -361,26 +362,18 @@ unsigned short int OS::menu2()
 			{
 				case 1://1. Clear All Data and Start Over ////Return to Initialization Menu
 				{
-					MyCache.clear_AllRegisters();//resets all bitsets via bitset<x>.reset()
-					InstructionSet_OS.clear();//removes all elements leaving the container with a size of 0
-					//paramOut = 0;
+					clearAllData();
 					param = 8;
 				}
 				break;
 				case 2://2. Add Instruction Line to End of Queue
 				{
 						menu1B();
-						cout << "OUT OF MENU1B" << endl;
 				}
 				break;
 				case 3://3. Load Program into Main Memory
 				{
-
-					if (InstructionSet_OS.size() == 0)
-						cout << "Instruction Set is empty."
-						<< "\nPlease add instructions before attempting to load to main memory" << endl;
-					//else
-						//MyMemory.set_InstructionSet(InstructionSet_OS);
+					loadInstructionsIntoMain();
 				}
 				break;
 				case 4://4. Display Empty Registers
@@ -437,7 +430,7 @@ unsigned short int  OS::menu2A()
 	{
 		cout << "\n";
 		cout << right;
-		cout << setw(40) << "Simulation Menu"
+		cout << setw(40) << setfill(' ') << "Simulation Menu"
 			<< "\n\t---------------------------------------------------"
 			<< "\n\t1. Clear All Data and Start Over"
 			<< "\n\t2. Add Instruction Line to End of Queue"
@@ -452,7 +445,7 @@ unsigned short int  OS::menu2A()
 		cin >> param;
 
 		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cin.ignore(255, '\n');
 		failCheck(cin);
 		//cout << "You entered: " << input << endl;
 
@@ -467,10 +460,7 @@ unsigned short int  OS::menu2A()
 			{
 			case 1://1. Clear All Data and Start Over ////Return to Initialization Menu
 			{
-				MyCache.clear_AllRegisters();
-				InstructionSet_OS.clear();//removes all elements leaving the container with a size of 0
-				
-				//paramOut = 0;
+				clearAllData();
 				param = 7;
 			}
 			break;
@@ -590,25 +580,25 @@ cout << "codeRIXA!" << endl;
 	buildSet[6] = twoBits[0];
 	buildSet[7] = twoBits[1];
 	//Acquire and encode R - END
-	cout << "HERE 1!" << endl;
+
 	//Acquire and encode I - BEGIN
 	delim = ',';
 	string iCode = fileIterator(inFile, delim);
 	buildSet[9] = stoi(iCode);
 	//Acquire and encode I - END
-	cout << "HERE 2!" << endl;
+
 	//Acquire and encode X - BEGIN
 	delim = ',';
 	string xCode = fileIterator(inFile, delim);
 	buildSet[8] = stoi(xCode);
 	//Acquire and encode X - END
-	cout << "HERE 3!" << endl;
+
 	//Acquire and encode address BEGIN
 	encodeAddress(inFile, buildSet, stringFlag);
 	//Acquire and encode address END
-	cout << "HERE 4!" << endl;
+
 	//for testing BEGIN
-		cout << "BUILD SET in codeRIXA: " << buildSet << endl;
+cout << "BUILD SET in codeRIXA: " << buildSet << endl;
 	//for testing END
 }
 //Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JUMP //Form --> opCode i, x, address
@@ -641,7 +631,7 @@ void OS::codeIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	encodeAddress(inFile, buildSet, stringFlag);
 	//Acquire and encode address END
 	//for testing BEGIN
-	cout << "BUILD SET in codeIXA: " << buildSet << endl;
+cout << "BUILD SET in codeIXA: " << buildSet << endl;
 	//for testing END
 }
 void OS::codeRimmed(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode r, immed;
@@ -670,14 +660,14 @@ void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
 	//if (stringFlag)
 	//	temp = scrollWhiteSpace(inFile);
-	cout << "HERE 1.1 encodeAddress!" << endl;
+//cout << "HERE 1.1 encodeAddress!" << endl;
 	char delim = '\n';
 	string addyCode;
 	if (stringFlag)
 		cin >> addyCode;
 	else
 		addyCode = fileIterator(inFile, delim);
-	cout << "HERE 2.1 encodeAddress!" << endl;
+//cout << "HERE 2.1 encodeAddress!" << endl;
 	bitset<6> sixBits(stoi(addyCode));
 cout << "addyCode:: ! " << addyCode /*<< " addyInt:: " <<  addyInt */<< " sixBits:: " << sixBits << endl;
 	for (int i = 0; i < 6; i++)
@@ -769,22 +759,21 @@ cout << "streamToOpCode end" << endl;
 	return bitOpCode;
 }
 
-/*
-//Scrolls through file data for processing specific fields as required
-//Returns next data field as a string
-string OS::fileIterator(istream &instructionFile, int skip)
+void OS::loadInstructionsIntoMain()
 {
-	string newString;
-	int endFlag = 0;
-
-	for (int i = 0; i < skip; i++)
-	{
-		getline(instructionFile, newString, ',');
-		endFlag = scrollChars(instructionFile);
-	}
-	return newString;
+	if (InstructionSet_OS.size() == 0)
+		cout << "Instruction Set is empty."
+		<< "\nPlease add instructions before attempting to load to main memory" << endl;
+	else
+		MyMemory.set_InstructionSet(InstructionSet_OS);
 }
-*/
+
+void OS::clearAllData()
+{
+	MyCache.clear_AllRegisters();//resets all bitsets to 0's
+	InstructionSet_OS.clear();//removes all elements leaving the container with a size of 0
+	MyMemory.clearMemory();//removes all elements leaving the container with a size of 0
+}
 //Scrolls through file data for processing specific fields as required
 //Returns next data field as a string.
 string OS::fileIterator(istream &input, char delim)

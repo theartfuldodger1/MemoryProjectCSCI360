@@ -1,6 +1,7 @@
 
 
 #include "mainMemory.h"
+#include <iomanip> //for cout.setf, etc
 
 mainMemory::mainMemory()
 {
@@ -30,17 +31,64 @@ bitset<16> mainMemory::getNextInstruction()
 
 void mainMemory::printMemory()
 {
+	int countFront= 0;
+	int countBack = 2;
+	cout << "\n";
+	cout << right;
+	cout << setw(50) << "Memory Display"
+		<< "\n\t\t---------------------------------------------------";
+
 	memory[23].flip();
 	for (int i = 0; i < 24; i++)
 	{
 		if ( i % 3 != 0)
 		{
-			cout << memory[i] << " ";
+			cout << memory[i] << "   ";
 		}
 		else
 		{
 			cout << endl;
-			cout << memory[i] << " ";
+			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+			cout << "   " << memory[i] << "   ";
 		}
+		countFront++;
+		countBack++;
+	}
+
+	cout << "\n\t\t---------------------------------------------------\n"
+		<< setw(29) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
+		<< "\n\n\t==>> ";
+
+	char input;
+	do
+	{
+		cin >> input;
+		cin.ignore(255, '\n');
+		failCheck(cin);
+
+		//calls for display of a range and help file needed
+		
+	}while(input != 'Q' && input != 'q');
+}
+//Removes all elements, leaving all containers with a size of 0.
+void mainMemory::clearMemory()
+{
+	instructionSet.clear();//Removes all elements, leaving the container with a size of 0.
+	memory.clear();//Removes all elements, leaving the container with a size of 0.
+}
+//"loads" instructions into main memory
+void mainMemory::set_InstructionSet(list <bitset<16>> &instructionsIn)
+{
+	instructionSet = instructionsIn;
+}
+
+//catches failed input cast and resets istream
+void mainMemory::failCheck(istream &cin)
+{
+	if (cin.fail())
+	{
+		cout << "Incorrect input:" << endl;
+		cin.clear();
+		cin.ignore(255, '\n');
 	}
 }

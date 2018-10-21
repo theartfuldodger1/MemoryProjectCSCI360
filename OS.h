@@ -41,7 +41,6 @@ public:
 	void failCheck(istream &cin);
 
 	void initializationMenu();//main menu, Menu1
-
 	unsigned short int menu1A();//add instruction file from Menu1, choice 1
 	unsigned short int menu1B();// add individual instructions from Menu1, choice 2
 	unsigned short int menu2();//simulation menu, follows addition of instructions (menu1A or 1B). Choice 1 returns the user to Menu 1 (Initialization Menu)
@@ -49,6 +48,10 @@ public:
 
 	void processFile(ifstream &inFile, list <bitset<16>>&);//
 	void processFile(istream & cin);//
+	void loadInstructionsIntoMain();
+	void clearAllData();
+
+
 	//void voidLowerCase(string &wordIn);
 	string fileIterator(istream &input, char delim);//uses either space, ' ' or ',' or '\n' as char delimeter per calling function requirements
 	int scrollChars(istream &instructionFile);
