@@ -34,16 +34,19 @@ bitset<16> mainMemory::getNextInstruction()
 
 void mainMemory::printMemory()
 {
+	
 	int countFront= 0;
 	int countBack = 2;
 	cout << "\n";
 	cout << right;
 	cout << setw(50) << "Memory Display"
 		<< "\n\t\t---------------------------------------------------";
-
+	if (memory.empty())
+		cout << "Memory is empty" << endl;
 	memory[23].flip();
 	for (int i = 0; i < 24; i++)
 	{
+		
 		if ( i % 3 != 0)
 		{
 			cout << memory[i] << "   ";
@@ -86,10 +89,10 @@ void mainMemory::clearMemory()
 //"loads" instructions into main memory
 void mainMemory::set_InstructionSet(list <bitset<16>> &instructionsIn)
 {
-
-//cout <<"In set_InstructionSet::" << endl;
-	instructionSet = instructionsIn;
-//cout << "Still iSn set_InstructionSet::" << endl;
+	if (!instructionsIn.empty())
+		instructionSet = instructionsIn;
+	else
+		cout << "No instructions to load!" << endl;
 }
 
 //catches failed input cast and resets istream

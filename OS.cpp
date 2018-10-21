@@ -140,7 +140,7 @@ void OS::initializationMenu()
 	2. Add Instruction Line By Line
 	3. Load Program to Main Memory
 	4. Display Empty Registers
-	5. Display Instruction Display with Default Values
+	5. Display Instructions
 	6. Display Empty Memory
 	7. Help
 	8. Quit
@@ -154,7 +154,7 @@ void OS::initializationMenu()
 		<< "\n\t1. Add Instruction File"
 		<< "\n\t2. Add Instruction Line By Line"
 		<< "\n\t3. Display Empty Registers"
-		<< "\n\t4. Display Instruction Display with Default Values"
+		<< "\n\t4. Display Instructions"
 		<< "\n\t5. Display Empty Memory"
 		<< "\n\t6. Help"
 		<< "\n\t7. Quit"
@@ -322,7 +322,7 @@ unsigned short int OS::menu2()
 	2. 	Add Instruction Line to End of Queue
 	3.	Load Program into Main Memory
 	4.	Display Empty Registers
-	5.	Display Instruction with Default Values
+	5.	Display Instructions
 	6. 	Display Empty Memory
 	7.	Help
 	8. 	Quit
@@ -949,6 +949,8 @@ void OS::loadInstructionsIntoMain()
 //when isntructions are not yet loaded
 void OS::printInstructions()
 {
+
+//This function is NOT TO STEP because it is for before instructions are loaded to MM
 /*
 							 Instructions
 		------------------------------------------------------
