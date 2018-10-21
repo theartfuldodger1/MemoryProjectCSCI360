@@ -16,6 +16,9 @@ public:
 	~mainMemory();
 	list <bitset<16>> getInstructionSet();//returns instruction set list
 	bitset<16> getNextInstruction();//returns next instruction in instruction set list
+	void clearInstructionSet();//removes all elements leaving the container with a size of 0
+	void set_InstructionSet(list<bitset<16>> &);
+
 private:
 	list <bitset<16>> instructionSet;//all instructions loaded here from file
 };

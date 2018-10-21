@@ -32,8 +32,6 @@ bitset<6> cache::get_ProgramCounter_PC()
 {
 	return programCounter_PC;
 }
-
-
 //Returns list of registers
 Register* cache::get_GeneralPurposeRegisters_GPRs()
 {
@@ -90,7 +88,7 @@ void cache::set_ProgramCounter(bitset<6> instIn)
 {
 	programCounter_PC = instIn;
 }
-
+//Resets all registers to all 0's
 void cache::clear_AllRegisters()
 {
 	for (int i = 0; i < 4; i++)

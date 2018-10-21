@@ -26,6 +26,19 @@ OS::~OS()
 //Switch - where all the magic happens. 
 void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 {
+	/*
+	Initialization Menu
+	----------------------------------------------------
+	1. Add Instruction File
+	2. Add Instruction Line By Line
+	3. Display Empty Registers
+	4. Display Instruction Display with Default Values
+	5. Display Empty Memory
+	6. Help
+	7. Quit
+
+	==>>
+	*/
 	unsigned short int param = 0;
 	do
 	{
@@ -53,41 +66,49 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			break;
 			case 2: //Add Instruction Line By Line
 			{
-				param = menu1B();//not functional yet
+				param = menu1B();
 			}
 			break;
-			case 3: //Load Program to Main Memory
+			case 3: //Display Empty Registers
 			{
 
 			}
 			break;
-			case 4: //Display Empty Registers
+			case 4: //Display Instruction Display with Default Values
 			{
 
 			}
 			break;
-			case 5: //Display Instruction Display with Default Values
+			case 5: //Display Empty Memory
 			{
 
 			}
 			break;
-			case 6: //Display Empty Memory
+			case 6: //Help
 			{
 
 			}
 			break;
-			case 7: //Help
-			{
-
-			}
-			break;
-			case 8: //Quit
+			case 7: //Quit
 			{
 				//exit
+				cout << "Bye!" << endl;
 			}
 			break;
 			}
-	} while (param != 8);
+	} while (param != 7);
+
+	//for testing BEGIN
+	int temp = 0;
+	list <bitset<16>>::iterator iter = InstructionSet_OS.begin();
+	while (iter != InstructionSet_OS.end())
+	{
+		cout << "List position:: " << temp << ", Item:: " << *iter << endl;
+		cout << "\tposition:: " << temp << ", size:: " << iter->size() << endl;
+		iter++;
+		temp++;
+	}
+	//for testing END
 }
 //catches failed input cast and resets istream
 void OS::failCheck(istream &cin)
@@ -116,20 +137,17 @@ void OS::initializationMenu()
 
 	==>>
 	*/
-	//cout.setf(ios::fixed, ios::floatfield);
-	//cout.setf(ios::showpoint);
-	//cout.precision(2);
+
 	cout << right;
 	cout << setw(45) << "Initialization Menu"
 		<< "\n\t----------------------------------------------------"
 		<< "\n\t1. Add Instruction File"
 		<< "\n\t2. Add Instruction Line By Line"
-		<< "\n\t3. Load Program to Main Memory"
-		<< "\n\t4. Display Empty Registers"
-		<< "\n\t5. Display Instruction Display with Default Values"
-		<< "\n\t6. Display Empty Memory"
-		<< "\n\t7. Help"
-		<< "\n\t8. Quit"
+		<< "\n\t3. Display Empty Registers"
+		<< "\n\t4. Display Instruction Display with Default Values"
+		<< "\n\t5. Display Empty Memory"
+		<< "\n\t6. Help"
+		<< "\n\t7. Quit"
 		<< "\n\n\t==>> ";
 }
 //add instruction file from Menu1, choice 1
@@ -157,17 +175,86 @@ unsigned short int OS::menu1A()
 		instructionFile.open(fileIn);
 
 		if (!instructionFile.is_open())
-		{
 			cerr << "\n\tCould not open file\n\n";
-		}
-		else
-			fileFail = 1;
 
-	} while (!fileFail);
 
-	processFile(instructionFile, OSInstructionSet);
+	} while (!instructionFile.is_open());
+
+	processFile(instructionFile, InstructionSet_OS);
 	unsigned short int paramOut = menu2();
 	return paramOut;
+}
+void OS::processFile(istream &cin)
+{
+	/*             R
+	Opcode  I  IX AC  Address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<16> buildSet;
+	bool firstPass = 1;
+	bool stringFlag = 1;
+	//int peek;
+	string inFile;
+	//cin >> inFile;
+	//inFile = scrollWhiteSpace(cin);
+	cout <<"IN Proc File" <<endl;
+	//while (peek != EOF && peek != 10)
+	{
+		buildSet.reset();
+
+		//Acquire and encode opCode - BEGIN
+		bitset<6> opCode = streamToOpCode(cin);
+		int j = 10;
+		for (int i = 0; i < 6; i++)
+		{
+		cout << "in opcode loop" << endl;
+			buildSet[j] = opCode[i];
+			j++;
+		}
+		cout << "opCode: " << opCode << endl;
+		//Acquire and encode opCode - END
+
+		//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
+		if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17)
+			codeRIXA(cin, buildSet, stringFlag);
+		//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JUMP(13) //Form --> opCode i, x, address
+		else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode == 11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
+			codeIXA(cin, buildSet, stringFlag);
+		//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
+		else if (opCode == 6 || opCode == 7)
+			codeRimmed(cin, buildSet, stringFlag);
+		//-> DEC(8), INC(9) //Form --> opCode, r, immed
+		else if (opCode == 8 || opCode == 9)
+			codeR(cin, buildSet, stringFlag);
+		//Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
+		else if (opCode == 20 || opCode == 21 || opCode == 22 || opCode == 23 || opCode == 24)
+			codeRxRy(cin, buildSet, stringFlag);
+		//-> NOT(25) //form --> opCode, rx
+		else if (opCode == 25)
+			codeRx(cin, buildSet, stringFlag);
+		//-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
+		else if (opCode == 26 || opCode == 26)
+			codeRRII(cin, buildSet, stringFlag);
+
+		InstructionSet_OS.push_back(buildSet);
+
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		failCheck(cin);
+	}
+
+	//for testing BEGIN
+	int tempTest = 0;
+	list <bitset<16>>::iterator iter = InstructionSet_OS.begin();
+	while (iter != InstructionSet_OS.end())
+	{
+		cout << "List position:: " << tempTest << ", Item:: " << *iter << endl;
+		cout << "\tposition:: " << tempTest << ", size:: " << iter->size() << endl;
+		iter++;
+		tempTest++;
+	}
+	//for testing END
 }
 // add individual instructions from Menu1, choice 2
 unsigned short int OS::menu1B()
@@ -184,10 +271,21 @@ unsigned short int OS::menu1B()
 	cout << setw(45) << "Add Individual Instructions"
 		<< "\n\t---------------------------------------------------"
 		<< "\n\tEnter Instructions in the following form: MOV 0100 0011"
+		<< "\n\tand Enter after each instruction."
 		<< "\n\tEnter Q if you are finished."
-		<< "\n\n\t=>>" << endl;
+		<< "\n\n\t=>> ";
 	string instructionIn;
-	cin >> instructionIn;
+	//cin >> instructionIn;
+
+	while (instructionIn != "Q" && instructionIn != "q")
+	{
+		processFile(cin);
+
+		cout << "\n\t=>>";
+		cin >> instructionIn;
+		cout << "INSTRUCTION IN: " << instructionIn << endl;
+
+	}
 
 	unsigned short int paramOut = menu2();
 	return paramOut;
@@ -214,7 +312,12 @@ unsigned short int OS::menu2()
 	unsigned short int param = 0;
 	do
 	{
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		failCheck(cin);
+		param = 0;
 		cout << "\n";
+		cout << "MENU2: " << param << endl;
 		cout << right;
 		cout << setw(40) << "Simulation Menu"
 			<< "\n\t---------------------------------------------------"
@@ -225,9 +328,11 @@ unsigned short int OS::menu2()
 			<< "\n\t5. Display Instruction with Default Values"
 			<< "\n\t6. Display Empty Memory"
 			<< "\n\t7. Help"
-			<< "\n\t8. Quit" << endl;
+			<< "\n\t8. Quit" 
+			<< "\n\n\t=>> ";
 //		initializationMenu();
 		cin >> param;
+		cout << "POST: " << param << endl;
 
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -240,63 +345,67 @@ unsigned short int OS::menu2()
 			param = 0;
 		}
 
-		if (param > 0 || param < 9)
+		else //if (param > 0 || param < 9)
 			switch (param)
 			{
-			case 1://1. Clear All Data and Start Over ////Return to Initialization Menu
-			{
-				MyCache.clear_AllRegisters();
-				//paramOut = 0;
-				param = 8;
-			}
-			break;
-			case 2://2. Add Instruction Line to End of Queue
-			{
-
-			}
-			break;
-			case 3://3. Load Program into Main Memory
-			{
-				cout << "Switch3" << endl;
-				//for testing BEGIN
-				int temp = 0;
-				list <bitset<16>>::iterator iter = OSInstructionSet.begin();
-				while (iter != OSInstructionSet.end())
+				case 1://1. Clear All Data and Start Over ////Return to Initialization Menu
 				{
-					cout << "List position:: " << temp << ", Item:: " << *iter << endl;
-					cout << "\tposition:: " << temp << ", size:: " << iter->size() << endl;
-					iter++;
-					temp++;
+					MyCache.clear_AllRegisters();//resets all bitsets via bitset<x>.reset()
+					InstructionSet_OS.clear();//removes all elements leaving the container with a size of 0
+					//paramOut = 0;
+					param = 8;
 				}
-				//for testing END
-			}
-			break;
-			case 4://4. Display Empty Registers
-			{
+				break;
+				case 2://2. Add Instruction Line to End of Queue
+				{
+						menu1B();
+						cout << "OUT OF MENU1B" << endl;
+						cout << "OUT OF MENU1B" << endl;
+						cout << "OUT OF MENU1B" << endl;
+						cout << "OUT OF MENU1B" << endl;
+						cout << "OUT OF MENU1B" << endl;
+						cout << "OUT OF MENU1B" << endl;
+						cout << "OUT OF MENU1B" << endl;
+				}
+				break;
+				case 3://3. Load Program into Main Memory
+				{
 
-			}
-			break;
-			case 5://5. Display Instruction with Default Values
-			{
+					if (InstructionSet_OS.size() == 0)
+						cout << "Instruction Set is empty."
+						<< "\nPlease add instructions before attempting to load to main memory" << endl;
+					else
+						MyMemory.set_InstructionSet(InstructionSet_OS);
+				}
+				break;
+				case 4://4. Display Empty Registers
+				{
 
-			}
-			break;
-			case 6://6. Display Empty Memory
-			{
+				}
+				break;
+				case 5://5. Display Instruction with Default Values
+				{
 
-			}
-			break;
-			case 7://7. Help
-			{
+				}
+				break;
+				case 6://6. Display Empty Memory
+				{
 
+				}
+				break;
+				case 7://7. Help
+				{
+
+				}
+				break;
+				case 8://8. Quit
+				{
+					paramOut = 7;
+					param = 8;
+				}
+				break;
 			}
-			break;
-			case 8://8. Quit
-			{
-				paramOut = 8;
-			}
-			break;
-			}
+		cout << "POST - POST@@@@: " << param << endl;
 	} while (param != 8);
 	return paramOut;
 }
@@ -332,7 +441,8 @@ unsigned short int  OS::menu2A()
 			<< "\n\t4. Display Instruction with Default Values"
 			<< "\n\t5. Display Empty Memory"
 			<< "\n\t6. Help"
-			<< "\n\t7. Quit" << endl;
+			<< "\n\t7. Quit"
+			<< "\n\n\t=>> ";
 		//		initializationMenu();
 		cin >> param;
 
@@ -353,13 +463,15 @@ unsigned short int  OS::menu2A()
 			case 1://1. Clear All Data and Start Over ////Return to Initialization Menu
 			{
 				MyCache.clear_AllRegisters();
+				InstructionSet_OS.clear();//removes all elements leaving the container with a size of 0
+				
 				//paramOut = 0;
 				param = 7;
 			}
 			break;
 			case 2://2. Add Instruction Line to End of Queue
 			{
-
+				param = menu1B();
 			}
 			break;
 			case 3://3. Display Empty Registers
@@ -384,13 +496,14 @@ unsigned short int  OS::menu2A()
 			break;
 			case 7://7. Quit
 			{
-				paramOut = 8;
+				paramOut = 7;
 			}
 			break;
 			}
 	} while (param != 7);
 	return paramOut;
 }
+
 void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 {
 	/*             R
@@ -400,8 +513,10 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 	*/
 	bitset<16> buildSet;
 	bool firstPass = 1;
+	bool stringFlag = 0;
+	
 	while(!inFile.eof())
-	{
+	{ 
 		buildSet.reset();
 		
 		//Acquire and encode opCode - BEGIN
@@ -412,48 +527,48 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 			buildSet[j] = opCode[i];
 			j++;
 		}
-		opCode = opCode;
+		//opCode = opCode;
 		//Acquire and encode opCode - END
 
 		//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
 		if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17 )
-			codeRIXA(inFile, buildSet);
+			codeRIXA(inFile, buildSet, stringFlag);
 		//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JUMP(13) //Form --> opCode i, x, address
 		else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode ==11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
-			codeIXA(inFile, buildSet);
+			codeIXA(inFile, buildSet, stringFlag);
 		//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
 		else if (opCode == 6 || opCode == 7)
-			codeRimmed(inFile, buildSet);
+			codeRimmed(inFile, buildSet, stringFlag);
 		//-> DEC(8), INC(9) //Form --> opCode, r, immed
 		else if (opCode == 8 || opCode == 9)
-			codeR(inFile, buildSet);
+			codeR(inFile, buildSet, stringFlag);
 		//Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
 		else if (opCode == 20 || opCode == 21 || opCode == 22 || opCode == 23 || opCode == 24)
-		    codeRxRy(inFile, buildSet);
+		    codeRxRy(inFile, buildSet, stringFlag);
 		 //-> NOT(25) //form --> opCode, rx
 		else if (opCode == 25)
-		    codeRx(inFile, buildSet);
+		    codeRx(inFile, buildSet, stringFlag);
 		//-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
         else if (opCode == 26 || opCode == 26 )
-            codeRRII(inFile, buildSet);
+            codeRRII(inFile, buildSet, stringFlag);
 
 		instructions.push_back(buildSet);
 	}
 
 	//for testing BEGIN
-	int temp = 0;
+	int tempTest = 0;
 	list <bitset<16>>::iterator iter = instructions.begin();
 	while (iter != instructions.end())
 	{
-		cout << "List position:: " << temp << ", Item:: " << *iter << endl;
-		cout << "\tposition:: " << temp << ", size:: " << iter->size() << endl;
+		cout << "List position:: " << tempTest << ", Item:: " << *iter << endl;
+		cout << "\tposition:: " << tempTest << ", size:: " << iter->size() << endl;
 		iter++;
-		temp++;
+		tempTest++;
 	}
 	//for testing END
 }
 //Encodes 16 bit instruction for LDR, STR, AMR, SMR, CMP
-void OS::codeRIXA(istream &inFile, bitset<16> &buildSet)
+void OS::codeRIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
 	/*             R
 	Opcode  I  IX AC  Address
@@ -461,6 +576,7 @@ void OS::codeRIXA(istream &inFile, bitset<16> &buildSet)
 	15  10  9  8  76  5    0
 	*/
 cout << "codeRIXA!" << endl;
+//int temp = scrollWhiteSpace(cin);
 	char delim = ',';
 	//Acquire and encode R - BEGIN
 	bitset<2> twoBits;
@@ -469,76 +585,95 @@ cout << "codeRIXA!" << endl;
 	buildSet[6] = twoBits[0];
 	buildSet[7] = twoBits[1];
 	//Acquire and encode R - END
-
+	cout << "HERE 1!" << endl;
 	//Acquire and encode I - BEGIN
 	delim = ',';
 	string iCode = fileIterator(inFile, delim);
-	buildSet[9] = stoi(iCode);//twoBits[0];
+	buildSet[9] = stoi(iCode);
 	//Acquire and encode I - END
-
+	cout << "HERE 2!" << endl;
 	//Acquire and encode X - BEGIN
 	delim = ',';
 	string xCode = fileIterator(inFile, delim);
-	buildSet[8] = stoi(xCode);//twoBits[0];
+	buildSet[8] = stoi(xCode);
 	//Acquire and encode X - END
-
+	cout << "HERE 3!" << endl;
 	//Acquire and encode address BEGIN
-	encodeAddress(inFile, buildSet);
+	encodeAddress(inFile, buildSet, stringFlag);
 	//Acquire and encode address END
+	cout << "HERE 4!" << endl;
+	//for testing BEGIN
+		cout << "BUILD SET in codeRIXA: " << buildSet << endl;
+	//for testing END
 }
 //Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JUMP //Form --> opCode i, x, address
-void OS::codeIXA(istream &inFile, bitset<16> &buildSet)
+void OS::codeIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
 	/*             R
 	Opcode  I  IX AC  Address
 	000001  0  0  11  101100
 	15  10  9  8  76  5    0
 	*/
-	cout << "codeIXA!" << endl;\
+	cout << "codeIXA!" << endl;
+	//if (stringFlag)
+	//	int temp = scrollWhiteSpace(cin);
+
 	char delim = ',';
 
 	//Acquire and encode I - BEGIN
 	delim = ',';
 	string iCode = fileIterator(inFile, delim);
-	buildSet[9] = stoi(iCode);//twoBits[0];
+	buildSet[9] = stoi(iCode);
 	//Acquire and encode I - END
 
 	//Acquire and encode X - BEGIN
 	delim = ',';
 	string xCode = fileIterator(inFile, delim);
-	buildSet[8] = stoi(xCode);//twoBits[0];
+	buildSet[8] = stoi(xCode);
 	//Acquire and encode X - END
 
 	//Acquire and encode address BEGIN
-	encodeAddress(inFile, buildSet);
+	encodeAddress(inFile, buildSet, stringFlag);
 	//Acquire and encode address END
+	//for testing BEGIN
+	cout << "BUILD SET in codeIXA: " << buildSet << endl;
+	//for testing END
 }
-void OS::codeRimmed(istream &inFile, bitset<16> &buildSet)//Form --> opCode r, immed;
+void OS::codeRimmed(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode r, immed;
 {
 
 }
-void OS::codeR(istream &inFile, bitset<16> &buildSet)//Form --> opCode r;
+void OS::codeR(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode r;
 {
 
 }
-void OS::codeRxRy(istream &inFile, bitset<16> &buildSet)//Form --> opCode rx, ry;
+void OS::codeRxRy(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode rx, ry;
 {
 
 }
-void OS::codeRx(istream &inFile, bitset<16> &buildSet)//Form --> opCode rx;
+void OS::codeRx(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode rx;
 {
 
 }
-void OS::codeRRII(istream &inFile, bitset<16> &buildSet)//Form --> opCode, r, r, i, i;
+void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode, r, r, i, i;
 {
 
 }
 
 //encodes 6 bit address from user input or file
-void OS::encodeAddress(istream &inFile, bitset<16> &buildSet)
+void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
+	int temp;
+	//if (stringFlag)
+	//	temp = scrollWhiteSpace(inFile);
+	cout << "HERE 1.1!" << endl;
 	char delim = '\n';
-	string addyCode = fileIterator(inFile, delim);
+	string addyCode;
+	if (stringFlag)
+		cin >> addyCode;
+	else
+		addyCode = fileIterator(inFile, delim);
+	cout << "HERE 2.1!" << endl;
 	bitset<6> sixBits(stoi(addyCode));
 cout << "addyCode:: ! " << addyCode /*<< " addyInt:: " <<  addyInt */<< " sixBits:: " << sixBits << endl;
 	for (int i = 0; i < 6; i++)
