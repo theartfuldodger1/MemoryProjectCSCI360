@@ -4,20 +4,16 @@
 
 mainMemory::mainMemory()
 {
+	bitset<16>temp;
+	for (int i = 0; i < 24; i++)
+	{
+		memory.push_back(temp);
+	}
 }
 
 
 mainMemory::~mainMemory()
 {
-}
-//removes all elements leaving the container with a size of 0
-void mainMemory::clearInstructionSet()
-{
-	instructionSet.clear();
-}
-void mainMemory::set_InstructionSet(list<bitset<16>> &InstructionSet_In)
-{
-	instructionSet = InstructionSet_In;
 }
 //returns instruction set list
 list <bitset<16>> mainMemory::getInstructionSet()
@@ -29,6 +25,22 @@ bitset<16> mainMemory::getNextInstruction()
 {
 	list <bitset<16>>::iterator iter = instructionSet.begin();
 	bitset<16> temp = *iter;
-	instructionSet.pop_front();//deletes first element
 	return temp;
+}
+
+void mainMemory::printMemory()
+{
+	memory[23].flip();
+	for (int i = 0; i < 24; i++)
+	{
+		if ( i % 3 != 0)
+		{
+			cout << memory[i] << " ";
+		}
+		else
+		{
+			cout << endl;
+			cout << memory[i] << " ";
+		}
+	}
 }
