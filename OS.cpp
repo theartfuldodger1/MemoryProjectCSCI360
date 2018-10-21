@@ -238,12 +238,14 @@ void OS::processFile(istream &cin)
 			codeRRII(cin, buildSet, stringFlag);
 
 		InstructionSet_OS.push_back(buildSet);
-
+		cout << "pushed processFile!" << endl;
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		failCheck(cin);
+		cout << "Cleared processFile" << endl;
 	}
 
+	cout << "second Cleared processFile" << endl;
 	//for testing BEGIN
 	int tempTest = 0;
 	list <bitset<16>>::iterator iter = InstructionSet_OS.begin();
@@ -255,6 +257,7 @@ void OS::processFile(istream &cin)
 		tempTest++;
 	}
 	//for testing END
+	cout << "passed testing processFile" << endl;
 }
 // add individual instructions from Menu1, choice 2
 unsigned short int OS::menu1B()
@@ -275,17 +278,23 @@ unsigned short int OS::menu1B()
 		<< "\n\tEnter Q if you are finished."
 		<< "\n\n\t=>> ";
 	string instructionIn;
-	//cin >> instructionIn;
+	//cin >> instructionIn;0
 
-	while (instructionIn != "Q" && instructionIn != "q")
+	int peek = cin.peek();
+	cout << "PEEK: " << peek << endl;
+	do
+	//while (peek != 81 && peek != 113)
 	{
+		peek = cin.peek();
+		cout << "PEEK2: " << peek << endl;
 		processFile(cin);
 
 		cout << "\n\t=>>";
 		cin >> instructionIn;
 		cout << "INSTRUCTION IN: " << instructionIn << endl;
-
-	}
+		peek = cin.peek();
+		cout << "PEEK3: " << peek << endl;
+	}while (instructionIn != "Q" && instructionIn != "q");
 
 	unsigned short int paramOut = menu2();
 	return paramOut;
@@ -315,7 +324,9 @@ unsigned short int OS::menu2()
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		failCheck(cin);
-		param = 0;
+		char cleaner[256];
+		cin.getline(cleaner, 256);
+
 		cout << "\n";
 		cout << "MENU2: " << param << endl;
 		cout << right;
@@ -359,12 +370,6 @@ unsigned short int OS::menu2()
 				case 2://2. Add Instruction Line to End of Queue
 				{
 						menu1B();
-						cout << "OUT OF MENU1B" << endl;
-						cout << "OUT OF MENU1B" << endl;
-						cout << "OUT OF MENU1B" << endl;
-						cout << "OUT OF MENU1B" << endl;
-						cout << "OUT OF MENU1B" << endl;
-						cout << "OUT OF MENU1B" << endl;
 						cout << "OUT OF MENU1B" << endl;
 				}
 				break;
@@ -663,17 +668,16 @@ void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form 
 //encodes 6 bit address from user input or file
 void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
-	int temp;
 	//if (stringFlag)
 	//	temp = scrollWhiteSpace(inFile);
-	cout << "HERE 1.1!" << endl;
+	cout << "HERE 1.1 encodeAddress!" << endl;
 	char delim = '\n';
 	string addyCode;
 	if (stringFlag)
 		cin >> addyCode;
 	else
 		addyCode = fileIterator(inFile, delim);
-	cout << "HERE 2.1!" << endl;
+	cout << "HERE 2.1 encodeAddress!" << endl;
 	bitset<6> sixBits(stoi(addyCode));
 cout << "addyCode:: ! " << addyCode /*<< " addyInt:: " <<  addyInt */<< " sixBits:: " << sixBits << endl;
 	for (int i = 0; i < 6; i++)
@@ -698,6 +702,7 @@ Store Index Register to Memory : EA << c(X0)
 */
 bitset<6> OS::streamToOpCode(istream &input)
 {
+cout << "streamToOpCode begin" << endl;
 	char delim = ' ';
 	string opCode = fileIterator(input, delim);
 	bitset<6> bitOpCode;
@@ -760,7 +765,7 @@ bitset<6> OS::streamToOpCode(istream &input)
 		bitOpCode = 26;
 	else if (opCode == "SUB")//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 27;
-
+cout << "streamToOpCode end" << endl;
 	return bitOpCode;
 }
 

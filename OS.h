@@ -58,7 +58,7 @@ public:
 	//instruction encoding
 	void codeRIXA(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode r, i, x, address;
 	void codeIXA(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode i, x, address;
-	void codeRimmed(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode r, imme0d;
+	void codeRimmed(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode r, immed;
     void codeR(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode r;
     void codeRxRy(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode rx, ry;
     void codeRx(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode rx;
