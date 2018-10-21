@@ -12,8 +12,9 @@ This program...
 mainMemory::mainMemory()
 {
 	bitset<16>temp;
-	for (int i = 0; i < 24; i++)
+	for (int i = 0; i < 2048; i++)
 		memory.push_back(temp);
+	memory[23].flip(); //testing demo purpose
 }
 
 mainMemory::~mainMemory()
@@ -104,4 +105,9 @@ void mainMemory::failCheck(istream &cin)
 		cin.clear();
 		cin.ignore(255, '\n');
 	}
+}
+
+bitset<16> mainMemory::search(unsigned long address)
+{
+	return memory[address];
 }
