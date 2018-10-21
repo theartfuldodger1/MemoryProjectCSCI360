@@ -81,7 +81,7 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			break;
 			case 5: //Display Empty Memory
 			{
-
+				MyMemory.printMemory();
 			}
 			break;
 			case 6: //Help
@@ -379,8 +379,8 @@ unsigned short int OS::menu2()
 					if (InstructionSet_OS.size() == 0)
 						cout << "Instruction Set is empty."
 						<< "\nPlease add instructions before attempting to load to main memory" << endl;
-					else
-						MyMemory.set_InstructionSet(InstructionSet_OS);
+					//else
+						//MyMemory.set_InstructionSet(InstructionSet_OS);
 				}
 				break;
 				case 4://4. Display Empty Registers
@@ -395,7 +395,7 @@ unsigned short int OS::menu2()
 				break;
 				case 6://6. Display Empty Memory
 				{
-
+					MyMemory.printMemory();
 				}
 				break;
 				case 7://7. Help
@@ -491,7 +491,7 @@ unsigned short int  OS::menu2A()
 			break;
 			case 5://5. Display Empty Memory
 			{
-
+				MyMemory.printMemory();
 			}
 			break;
 			case 6://6. Help
