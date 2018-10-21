@@ -34,7 +34,6 @@ bitset<16> mainMemory::getNextInstruction()
 
 void mainMemory::printMemory()
 {
-	
 	int countFront= 0;
 	int countBack = 2;
 	cout << "\n";
@@ -84,7 +83,12 @@ void mainMemory::printMemory()
 void mainMemory::clearMemory()
 {
 	instructionSet.clear();//Removes all elements, leaving the container with a size of 0.
-	memory.clear();//Removes all elements, leaving the container with a size of 0.
+	//memory.clear();//Removes all elements, leaving the container with a size of 0.
+
+	for (int i = 0; i < 24; i++)
+	{
+		memory[i].reset();//does not destroy the elements. only sets all bits to 0;
+	}
 }
 //"loads" instructions into main memory
 void mainMemory::set_InstructionSet(list <bitset<16>> &instructionsIn)
