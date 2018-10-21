@@ -1121,6 +1121,7 @@ bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 void OS::LDR(bitset<16> temp)
 {
 	bitset<2> reg;
+	bitset<6> mar;
 	reg[1] = temp[7];
 	reg[0] = temp[6];
 	unsigned long gpr_num = reg.to_ulong();
@@ -1133,11 +1134,14 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 5; i >= 0; i--)
 			{
 				EA[i] = temp[i];
+				mar[i] = temp[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 		else if (temp[8] == 1)
 		{
@@ -1151,11 +1155,14 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 15; i >= 0; i--)
 			{
 				EA[i] = address[i];
+				mar[i] = address[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 	}
 	else if (temp[9] == 1)
@@ -1165,11 +1172,14 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 5; i >= 0; i--)
 			{
 				EA[i] = temp[i];
+				mar[i] = temp[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 		else if (temp[8] == 1)
 		{
@@ -1183,11 +1193,14 @@ void OS::LDR(bitset<16> temp)
 			for (int i = 15; i >= 0; i--)
 			{
 				EA[i] = address[i];
+				mar[i] = address[i];
 			}
 			unsigned long effective_address = EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 	}
 }
