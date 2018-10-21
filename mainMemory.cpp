@@ -15,7 +15,7 @@ mainMemory::mainMemory()
 	for (int i = 0; i < 2048; i++)
 		memory.push_back(temp);
 	//memory[23].flip(); //testing demo purpose below
-	//memory[23]("0000100011001010");
+	memory[9].flip();
 	memory[23].set(1, 1);
 	memory[23].set(3, 1);
 	memory[23].set(6, 1);

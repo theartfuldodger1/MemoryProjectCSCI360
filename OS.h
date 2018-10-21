@@ -75,6 +75,8 @@ public:
 	void encodeAddress(istream &inFile, bitset<16> &buildSet, bool);//encodes 6 bit address from user input or file
 	void LDR(bitset<16> setIn);
 	void STR(bitset<16> setIn);
+	void LDX(bitset<16> setIn);
+	void STX(bitset<16> setIn);
 
 private:
 	Bus SystemBus;
