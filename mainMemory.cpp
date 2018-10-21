@@ -43,8 +43,7 @@ void mainMemory::printMemory()
 		<< "\n\t\t---------------------------------------------------";
 	if (memory.empty())
 		cout << "Memory is empty" << endl;
-	memory[23].flip();
-	for (int i = 0; i < 24; i++)
+	for (int i = 0; i < 2048; i++)
 	{
 		
 		if ( i % 3 != 0)
@@ -86,7 +85,7 @@ void mainMemory::clearMemory()
 	instructionSet.clear();//Removes all elements, leaving the container with a size of 0.
 	//memory.clear();//Removes all elements, leaving the container with a size of 0.
 
-	for (int i = 0; i < 24; i++)
+	for (int i = 0; i < 2048; i++)
 	{
 		memory[i].reset();//does not destroy the elements. only sets all bits to 0;
 	}

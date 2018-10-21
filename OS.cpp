@@ -1104,6 +1104,20 @@ int OS::scrollWhiteSpace(istream &cin)
 	return temp;
 }
 
+
+//////////////
+
+bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
+{
+	std::bitset<16> const m("1");
+	std::bitset<16> result;
+	for (auto i = 0; i < result.size(); ++i) {
+		std::bitset<16> const diff(((a >> i)&m).to_ullong() + ((b >> i)&m).to_ullong() + (result >> i).to_ullong());
+		result ^= (diff ^ (result >> i)) << i;
+	}
+	return result;
+}
+
 void OS::LDR(bitset<16> temp)
 {
 	bitset<2> reg;

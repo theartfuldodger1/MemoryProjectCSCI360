@@ -19,6 +19,7 @@ Opcode  I  IX AC  Address
 //#include "HDD.h"
 #include "cache.h"
 #include "mainMemory.h"
+#include "bus.h"
 
 #include <iostream>
 #include <limits>
