@@ -1031,6 +1031,36 @@ void OS::printInstructions()
 		cin.ignore(255, '\n');
 		failCheck(cin);
 
+		if(input == 'R' || input == 'r'){ //run the instructions
+			list<bitset<16>>::iterator it ;
+			bitset<16> temp;
+			bitset<6> op;
+			
+			for(it = InstructionSet_OS.begin(); it != InstructionSet_OS.end(); it++){
+				int a = 0;
+				temp = *it;
+				for(int i = 10; i < 16; i++){
+					op[a] = temp[i];
+					a++;
+				}
+				string s = opCodeToString(op);
+				cout << *it << endl;
+				if(s == "LDR"){
+					LDR(temp);
+				}
+				else if(s == "STR"){
+					STR(temp);
+				}
+				else if(s == "LDX"){
+					LDX(temp);
+				}
+				else if(s =="STX"){
+					STX(temp);
+				}
+			}
+			
+			
+		}
 		//call help file needed
 		if (input == 'H' || input == 'h')
 			cout << "\t\nHelp File incomplete..." << endl;
