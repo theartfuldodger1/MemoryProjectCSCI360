@@ -1,3 +1,11 @@
+/*
+Author: Cordell Hurst, Alex BOrtoc, Johnny Zhu
+Course: CSCI 360, Computer Architecture III
+Instructor: Xiaojie Zhang
+Assignment: Software Simulator/Multi-Level Memory Memory Hierarchy
+
+System Bus class
+*/
 #ifndef __BUS_H__
 #define __BUS_H__
 
@@ -10,12 +18,12 @@ class Bus
 	public:
 		Bus() {};
 		~Bus() {};
-		void loadAddress (unsigned long address) { addressBus = address;} // current code is placeholder, needs to search main memory for correct address
-		bitset<16> loadData (unsigned long address) 
+		void loadAddress (unsigned long address) { addressBus = address;} // simply holds the address that is being used in load/store instuctions
+		bitset<16> loadData (unsigned long address) // uses mainMemory function to search the memory for the data, returns in bitset form
 		{ 
 			dataBus = MyMemory.search(address); 
 			return dataBus;
-		} // current code is placeholder, needs to set this to the value of what is in the fetched address 
+		}
 	private:
 		mainMemory MyMemory;
 		unsigned long addressBus;

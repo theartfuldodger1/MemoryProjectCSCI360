@@ -146,11 +146,13 @@ void mainMemory::failCheck(istream &cin)
 	}
 }
 
+//returns the bitset stored at the specified location
 bitset<16> mainMemory::search(unsigned long address)
 {
 	return memory[address];
 }
 
+//sets the bitset at specified location to the provided value
 void mainMemory::setSpecMemoryLoc(unsigned long address, bitset<16> setIn)
 {
 	memory[address] = setIn;

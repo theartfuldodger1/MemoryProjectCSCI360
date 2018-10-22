@@ -1225,7 +1225,7 @@ int OS::scrollWhiteSpace(istream &cin)
 
 
 //////////////
-
+/*Adds 2 bitsets. Helper function.*/
 bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 {
 	std::bitset<16> const m("1");
@@ -1237,15 +1237,17 @@ bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 	return result;
 }
 
+/*Load Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
+effective address. Bus class is used to temporarily hold address and data.*/
 void OS::LDR(bitset<16> temp)
 {
-	bitset<2> reg;
+	bitset<2> reg; //holds bits that identify the register
 	bitset<6> mar;
 	reg[1] = temp[7];
 	reg[0] = temp[6];
 	unsigned long gpr_num = reg.to_ulong();
 	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
-	bitset<16> content;
+	bitset<16> content; //holds values that are being transferred
 	if (temp[9] == 0)
 	{
 		if (temp[8] == 0)
@@ -1324,14 +1326,16 @@ void OS::LDR(bitset<16> temp)
 	}
 }
 
+/*Store Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
+effective address. Bus class is used to temporarily hold address and data.*/
 void OS::STR(bitset<16> setIn)
 {
-	bitset<2> reg;
+	bitset<2> reg; //holds bits that identify the register
 	reg[1] = setIn[7];
 	reg[0] = setIn[6];
 	unsigned long gpr_num = reg.to_ulong();
 	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply buffer the unused bits with 0s
-	bitset<16> content;
+	bitset<16> content; //holds values that are being transferred
 	if (setIn[9] == 0)
 	{
 		if (setIn[8] == 0)
@@ -1398,11 +1402,13 @@ void OS::STR(bitset<16> setIn)
 	}
 }
 
+/*Load Index Register from memory. Takes a 16 bitset and extracts necessary bits to calculate the
+effective address. Bus class is used to temporarily hold address and data.*/
 void OS::LDX(bitset<16> temp)
 {
 	bitset<6> mar;
 	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
-	bitset<16> content;
+	bitset<16> content; //holds values that are being transferred
 	if (temp[9] == 0)
 	{
 		if (temp[8] == 0)
@@ -1481,10 +1487,12 @@ void OS::LDX(bitset<16> temp)
 	}
 }
 
+/*Store Index Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
+effective address. Bus class is used to temporarily hold address and data.*/
 void OS::STX(bitset<16> setIn)
 {
 	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
-	bitset<16> content;
+	bitset<16> content; //holds values that are being transferred
 	if (setIn[9] == 0)
 	{
 		if (setIn[8] == 0)
