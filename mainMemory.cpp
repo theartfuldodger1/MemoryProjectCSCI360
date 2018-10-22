@@ -89,8 +89,8 @@ void mainMemory::printMemory()
 			cin >> to;
 			int start = stoi(from);
 			int end = stoi(to);
-			start = start - (start % 3);
-			end = end + (end % 3);
+			start = start - (start % 3);		//sets it to the first number of the first line to be displayed
+			end = end - (end % 3) + 2;			//sets it to the last number of the last line to be displayed
 			countFront = start;
 			countBack = start + 2;
 			cout << setw(50) << "Memory Display"
@@ -146,11 +146,13 @@ void mainMemory::failCheck(istream &cin)
 	}
 }
 
+//returns the bitset stored at the specified location
 bitset<16> mainMemory::search(unsigned long address)
 {
 	return memory[address];
 }
 
+//sets the bitset at specified location to the provided value
 void mainMemory::setSpecMemoryLoc(unsigned long address, bitset<16> setIn)
 {
 	memory[address] = setIn;
