@@ -49,7 +49,7 @@ void mainMemory::printMemory()
 		<< "\n\t\t---------------------------------------------------";
 	if (memory.empty())
 		cout << "Memory is empty" << endl;
-	for (int i = 0; i < 2048; i++)
+	for (int i = 0; i < 65; i++)
 	{
 		
 		if ( i % 3 != 0)
@@ -80,9 +80,39 @@ void mainMemory::printMemory()
 		//calls for display of a range and help file needed
 		if (input == 'H' || input == 'h')
 			cout << "\t\nHelp File incomplete..." << endl;
-		if (input == 'R' || input == 'r')
-			cout << "\t\nRange Display incomplete..." << endl;
-
+		if (input == 'R' || input == 'r'){
+			string from;
+			string to;
+			cout << "From?" << endl;
+			cin >> from;
+			cout << "To?" << endl;
+			cin >> to;
+			int start = stoi(from);
+			int end = stoi(to);
+			start = start - (start % 3);
+			end = end + (end % 3);
+			countFront = start;
+			countBack = start + 2;
+			cout << setw(50) << "Memory Display"
+			<< "\n\t\t---------------------------------------------------";
+			
+			for (int i = start; i <= end; i++)
+			{
+		
+				if ( i % 3 != 0)
+				{
+					cout << memory[i] << "   ";
+				}
+				else
+				{
+					cout << endl;
+					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+					cout << "   " << memory[i] << "   ";
+				}
+				countFront++;
+				countBack++;
+			}
+		}
 	}while(input != 'Q' && input != 'q');
 }
 //Removes all elements, leaving all containers with a size of 0.
