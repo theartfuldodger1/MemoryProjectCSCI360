@@ -42,7 +42,6 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 	do
 	{
 		cout << "\n";
-
 		param = 0;
 		if (param < 0 || param > 8)
 		{
@@ -539,7 +538,7 @@ unsigned short int  OS::menu2A()
 		cout << "\n";
 
 		param = 0;
-		cout << "param TOP: " << param << endl;
+//cout << "param TOP: " << param << endl;
 
 		if (param < 0 || param > 8)
 		{
@@ -569,7 +568,7 @@ unsigned short int  OS::menu2A()
 		check = 0;
 		if (cin.fail())
 		{
-			cout << "check!:" << endl;
+//cout << "check!:" << endl;
 			check = 1;
 			cin.clear();
 			cin.ignore(255, '\n');
@@ -593,9 +592,10 @@ unsigned short int  OS::menu2A()
 				MyCache.printRegisters();	
 			}
 			break;
-			case 4://4. Display Instructions
+			case 4://4. Display Instructions WITH stepping
 			{
-				printInstructions();//no stepping
+				stepInstructions();
+				//printInstructions();//no stepping
 			}
 			break;
 			case 5://5. Display Memory
@@ -962,7 +962,6 @@ void OS::loadInstructionsIntoMain()
 //when isntructions are not yet loaded
 void OS::printInstructions()
 {
-
 //This function is NOT TO STEP because it is for before instructions are loaded to MM
 /*
 							 Instructions
@@ -983,94 +982,86 @@ void OS::printInstructions()
 	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
 	bitset<16> instruction;
 	string opCodeString;
-
-	cout << "\n";
-	cout << right;
-	cout << setw(40) << "Instructions"
-		<< "\n\t\t----------------------------------";
-
-	int count = 0;
-	while (iSetIter != InstructionSet_OS.end())
-	{
-		instruction = *iSetIter;
-		int z = 0;
-		for (int i = 10; i < 16; i++)
-		{
-			opCode[z] = instruction[i];
-			z++;
-		}
-		z = 0;
-		for (int i = 6; i < 8; i++)
-		{
-			reg[z] = instruction[i];
-			z++;
-		}
-		z = 0;
-		for (int i = 0; i < 6; i++)
-		{
-			addy[z] = instruction[i];
-			z++;
-		}
-		cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
-			<< " R" << reg.to_ulong() << ", " << instruction[9] << ", " 
-			<< instruction[8] << ", " << addy;
-		count++;
-		iSetIter++;
-	}
-
-	cout << "\n\t\t----------------------------------"
-		<< "\n\t" << setw(13) << setfill(' ') << "R. Run" << setw(10) << setfill(' ') 
-		<< setw(10) << setfill(' ') << "S. Step" << setw(10) << setfill(' ') << "Q. Menu" 
-		<< setw(10) << setfill(' ') << "H. Help"
-		<< "\n\n\t\t==>> ";
-
 	char input;
 	do
 	{
+		
+		cout << right;
+		cout << setw(40) << "Instructions"
+			<< "\n\t\t----------------------------------";
+		if (InstructionSet_OS.empty())
+		{
+			cout << "\n";
+			//cout << right;
+			cout << setw(45) << "Instructions not loaded" << endl;
+			bitset<1> OneBitZeroed = 0;
+			cout << "\t\t" << setw(4) << setfill(' ') << "1" << "       " << "N/A"
+				<< " R" << reg.to_ulong() << ", " << OneBitZeroed << ", "
+				<< OneBitZeroed << ", " << addy;
+		}
+		else
+		{
+			int count = 0;
+			while (iSetIter != InstructionSet_OS.end())
+			{
+				instruction = *iSetIter;
+				int z = 0;
+				for (int i = 10; i < 16; i++)
+				{
+					opCode[z] = instruction[i];
+					z++;
+				}
+				z = 0;
+				for (int i = 6; i < 8; i++)
+				{
+					reg[z] = instruction[i];
+					z++;
+				}
+				z = 0;
+				for (int i = 0; i < 6; i++)
+				{
+					addy[z] = instruction[i];
+					z++;
+				}
+				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
+					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", " 
+					<< instruction[8] << ", " << addy;
+				count++;
+				iSetIter++;
+			}
+		}
+		cout << "\n\t\t----------------------------------"
+			<< "\n\t" << setw(21) << setfill(' ') << "Q. Menu" 
+			<< setw(15) << setfill(' ') << "H. Help"
+			<< "\n\n\t\t==>> ";
+
 		cin >> input;
 		cin.ignore(255, '\n');
 		failCheck(cin);
 
-		if(input == 'R' || input == 'r'){ //run the instructions
-			list<bitset<16>>::iterator it ;
-			bitset<16> temp;
-			bitset<6> op;
-			
-			for(it = InstructionSet_OS.begin(); it != InstructionSet_OS.end(); it++){
-				int a = 0;
-				temp = *it;
-				for(int i = 10; i < 16; i++){
-					op[a] = temp[i];
-					a++;
-				}
-				string s = opCodeToString(op);
-				cout << *it << endl;
-				if(s == "LDR"){
-					LDR(temp);
-				}
-				else if(s == "STR"){
-					STR(temp);
-				}
-				else if(s == "LDX"){
-					LDX(temp);
-				}
-				else if(s =="STX"){
-					STX(temp);
-				}
-			}
-			
-			
-		}
 		//call help file needed
 		if (input == 'H' || input == 'h')
 			cout << "\t\nHelp File incomplete..." << endl;
 
 	} while (input != 'Q' && input != 'q');
-	
 }
 //instructions loaded in main memory
 void OS::stepInstructions()
 {
+	/*
+	Instructions
+	------------------------------------------------------
+	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
+	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
+	------------------------------------------------------
+	R.Run	     S.Step       Q.Menu    	H.Help
+	*/
+	/*             R
+	Opcode  I  IX AC  Address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	/*
 	bitset<6> opCode;
 	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
 	bitset<16> instruction;
@@ -1086,6 +1077,93 @@ void OS::stepInstructions()
 		z++;
 	}
 	opCodeToString(opCode);
+	*/
+	bitset<6> opCode;
+	bitset<2> reg;
+	bitset<6> addy;
+	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
+	bitset<16> instruction;
+	string opCodeString;
+	char input;
+	do
+	{
+		cout << "\n";
+		cout << right;
+		cout << setw(40) << "Instructions"
+			<< "\n\t\t----------------------------------";
+
+		int count = 0;
+		while (iSetIter != InstructionSet_OS.end())
+		{
+			instruction = *iSetIter;
+			int z = 0;
+			for (int i = 10; i < 16; i++)
+			{
+				opCode[z] = instruction[i];
+				z++;
+			}
+			z = 0;
+			for (int i = 6; i < 8; i++)
+			{
+				reg[z] = instruction[i];
+				z++;
+			}
+			z = 0;
+			for (int i = 0; i < 6; i++)
+			{
+				addy[z] = instruction[i];
+				z++;
+			}
+			cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
+				<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
+				<< instruction[8] << ", " << addy;
+			count++;
+			iSetIter++;
+		}
+
+		cout << "\n\t\t----------------------------------"
+			<< "\n\t" << setw(13) << setfill(' ') << "R. Run" << setw(10) << setfill(' ')
+			<< setw(10) << setfill(' ') << "S. Step" << setw(10) << setfill(' ') << "Q. Menu"
+			<< setw(10) << setfill(' ') << "H. Help"
+			<< "\n\n\t\t==>> ";
+
+		cin >> input;
+		cin.ignore(255, '\n');
+		failCheck(cin);
+
+		if (input == 'R' || input == 'r') { //run the instructions
+			list<bitset<16>>::iterator it;
+			bitset<16> temp;
+			bitset<6> op;
+
+			for (it = InstructionSet_OS.begin(); it != InstructionSet_OS.end(); it++) {
+				int a = 0;
+				temp = *it;
+				for (int i = 10; i < 16; i++) {
+					op[a] = temp[i];
+					a++;
+				}
+				string s = opCodeToString(op);
+				cout << *it << endl;
+				if (s == "LDR") {
+					LDR(temp);
+				}
+				else if (s == "STR") {
+					STR(temp);
+				}
+				else if (s == "LDX") {
+					LDX(temp);
+				}
+				else if (s == "STX") {
+					STX(temp);
+				}
+			}
+		}
+		//call help file needed
+		if (input == 'H' || input == 'h')
+			cout << "\t\nHelp File incomplete..." << endl;
+
+	} while (input != 'Q' && input != 'q');
 }
 
 void OS::clearAllData()
@@ -1152,7 +1230,7 @@ bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 {
 	std::bitset<16> const m("1");
 	std::bitset<16> result;
-	for (auto i = 0; i < result.size(); ++i) {
+	for (unsigned int i = 0; i < result.size(); ++i) {
 		std::bitset<16> const diff(((a >> i)&m).to_ullong() + ((b >> i)&m).to_ullong() + (result >> i).to_ullong());
 		result ^= (diff ^ (result >> i)) << i;
 	}
@@ -1252,7 +1330,7 @@ void OS::STR(bitset<16> setIn)
 	reg[1] = setIn[7];
 	reg[0] = setIn[6];
 	unsigned long gpr_num = reg.to_ulong();
-	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
+	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply buffer the unused bits with 0s
 	bitset<16> content;
 	if (setIn[9] == 0)
 	{

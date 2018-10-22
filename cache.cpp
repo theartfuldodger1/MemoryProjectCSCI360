@@ -164,18 +164,19 @@ void cache::printRegisters()
 			cout << "   ";
 		cout << IndexRegister_XO[i];
 	}
-	cout << "\n\t\tMBR==>";
+	cout << "\n\t\tMB ==>";
 	for (int i = 15; i >= 0; i--)
 	{
 		if (i % 4 == 3)
 			cout << "   ";
 		cout << MemoryBufferRegister_MBR[i];
 	}
-	cout << "\n\t\tMAR==>";
+	cout << "\n\t\tMA ==>";
 	bool firstPass = 0;
-	for (int i = 5; i < 0; i++)
+	for (int i = 0; i < 6; i++)//(int i = 5; i < 0; i++)
 	{
-		if (i % 3 == 2)
+		if (i % 3 == 0)
+		{
 			if (firstPass == 0)
 			{
 				cout << "   ";
@@ -183,6 +184,7 @@ void cache::printRegisters()
 			}
 			else
 				cout << "    ";
+		}
 		cout << MemoryAddressRegister_MAR[i];
 	}
 	cout << "\n\t\tPC ==>";
