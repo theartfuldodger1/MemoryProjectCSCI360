@@ -1136,10 +1136,10 @@ void OS::stepInstructions()
 			bitset<16> temp;
 			bitset<6> op;
 
-			for (it = InstructionSet_OS.begin(); it != InstructionSet_OS.end(); it++) {
+			for (it = InstructionSet_OS.begin(); it != InstructionSet_OS.end(); it++) {//goes through the entire list
 				int a = 0;
 				temp = *it;
-				for (int i = 10; i < 16; i++) {
+				for (int i = 10; i < 16; i++) {//stores opcode in string for comparison
 					op[a] = temp[i];
 					a++;
 				}

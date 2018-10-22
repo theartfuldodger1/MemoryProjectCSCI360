@@ -89,8 +89,8 @@ void mainMemory::printMemory()
 			cin >> to;
 			int start = stoi(from);
 			int end = stoi(to);
-			start = start - (start % 3);
-			end = end + (end % 3);
+			start = start - (start % 3);		//sets it to the first number of the first line to be displayed
+			end = end - (end % 3) + 2;			//sets it to the last number of the last line to be displayed
 			countFront = start;
 			countBack = start + 2;
 			cout << setw(50) << "Memory Display"
