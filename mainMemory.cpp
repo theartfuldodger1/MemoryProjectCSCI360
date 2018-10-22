@@ -54,13 +54,15 @@ void mainMemory::printMemory()
 		
 		if ( i % 3 != 0)
 		{
-			cout << memory[i] << "   ";
+			//cout << memory[i] << "   ";
+			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 		}
 		else
 		{
 			cout << endl;
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-			cout << "   " << memory[i] << "   ";
+			cout << "   " << memory[i] << " " <<  memory[i].to_ulong() << "   ";
 		}
 		countFront++;
 		countBack++;

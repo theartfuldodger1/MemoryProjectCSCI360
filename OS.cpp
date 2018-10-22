@@ -1078,21 +1078,19 @@ void OS::stepInstructions()
 	char input;
 	bool runFlag = 0;
 	int count = 0;
-	
+	bool firstPassFlag = 0;
 	do
 	{
-//cout << "HERE22222222" << endl;
 		iSetIter = runningSet.begin();
 		if (count < runningSet.size())
 			for (int i = 0; i < count; i++)
-				iSetIter++;
+				itExe++;
+		firstPassFlag = 0;
 
-//cout << "HEere333333333" << endl;
 		cout << "\n";
 		cout << right;
 		cout << setw(40) << "Instructions"
 			<< "\n\t\t----------------------------------";
-
 		
 		while (iSetIter != runningSet.end())
 		{
@@ -1115,6 +1113,7 @@ void OS::stepInstructions()
 				addy[z] = instruction[i];
 				z++;
 			}
+			MyCache.set_ProgramCounter(addyPC);
 			int zPC = 0;
 			instructionPC = *itExe;
 			for (int i = 0; i < 6; i++)
@@ -1122,12 +1121,14 @@ void OS::stepInstructions()
 				addyPC[zPC] = instructionPC[i];
 				zPC++;
 			}
+			//cout << "addyPC: " << addyPC << endl;
 			//bitset<6> PC = MyCache.get_ProgramCounter_PC();
-			if(MyCache.get_ProgramCounter_PC() == addyPC)
+			if(MyCache.get_ProgramCounter_PC() == addy && firstPassFlag == 0)
 			{
 				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
 					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
 					<< instruction[8] << ", " << addy; 
+				firstPassFlag = 1;
 			}
 			else
 			{
@@ -1159,6 +1160,8 @@ void OS::stepInstructions()
 			cin >> input;
 			cin.ignore(255, '\n');
 			failCheck(cin);
+			if(input == 'R' || input == 'r')
+				runFlag = 1;
 		}
 		//iSetIter = runningSet.begin();
 		//do//run the instructions
