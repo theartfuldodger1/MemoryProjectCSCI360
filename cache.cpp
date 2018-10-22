@@ -26,7 +26,7 @@ cache::cache()
 	{
 		Register GPR;
 		GeneralPurposeRegisters_GPRs[i] = GPR;
-		cout << i << " = " << GPR.word << endl;
+//cout << i << " = " << GPR.word << endl;
 	}
 }
 
