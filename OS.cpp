@@ -232,12 +232,16 @@ unsigned short int OS::menu1B()
 	{
 		peek = cin.peek();
 //cout << "PEEK2 IND INST: " << peek << endl;
+	if(peek != 81 && peek != 113)//(s[0] == 'Q' || s[0] == 'q')	
+	{ 
 		processFile(cin);
-
-		cout << "\n\t=>>";
-		string s;
-		cin >> s;
-		if(s[0] == 'Q' || s[0] == 'q'){
+		cout << "\n\t=>> ";
+	}
+		
+		//string s;
+		//cin >> s;
+		else
+		{
 			unsigned short int paramOut = menu2();	//allows user to quit after indiv input;
 			return paramOut;
 		}
@@ -1023,7 +1027,7 @@ void OS::printInstructions()
 					addy[z] = instruction[i];
 					z++;
 				}
-				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
+				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "       " << opCodeToString(opCode)
 					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", " 
 					<< instruction[8] << ", " << addy;
 				count++;
@@ -1061,39 +1065,36 @@ void OS::stepInstructions()
 	000001  0  0  11  101100
 	15  10  9  8  76  5    0
 	*/
-	/*
-	bitset<6> opCode;
-	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
-	bitset<16> instruction;
-	string opCodeString;
-
-	cin.ignore(255, '\n');
-
-	instruction = *iSetIter;
-	int z = 0;
-	for (int i = 10; i < 16; i++)
-	{
-		opCode[z] = instruction[i];
-		z++;
-	}
-	opCodeToString(opCode);
-	*/
 	bitset<6> opCode;
 	bitset<2> reg;
 	bitset<6> addy;
-	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
+	bitset<6> addyPC;
+	list <bitset<16>> runningSet = MyMemory.getInstructionSet();
+	list<bitset<16>>::iterator iSetIter;// = InstructionSet_OS.begin();
+	list<bitset<16>>::iterator itExe = runningSet.begin();;
 	bitset<16> instruction;
+	bitset<16> instructionPC;
 	string opCodeString;
 	char input;
+	bool runFlag = 0;
+	int count = 0;
+	
 	do
 	{
+//cout << "HERE22222222" << endl;
+		iSetIter = runningSet.begin();
+		if (count < runningSet.size())
+			for (int i = 0; i < count; i++)
+				iSetIter++;
+
+//cout << "HEere333333333" << endl;
 		cout << "\n";
 		cout << right;
 		cout << setw(40) << "Instructions"
 			<< "\n\t\t----------------------------------";
 
-		int count = 0;
-		while (iSetIter != InstructionSet_OS.end())
+		
+		while (iSetIter != runningSet.end())
 		{
 			instruction = *iSetIter;
 			int z = 0;
@@ -1114,9 +1115,27 @@ void OS::stepInstructions()
 				addy[z] = instruction[i];
 				z++;
 			}
-			cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
-				<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
-				<< instruction[8] << ", " << addy;
+			int zPC = 0;
+			instructionPC = *itExe;
+			for (int i = 0; i < 6; i++)
+			{
+				addyPC[zPC] = instructionPC[i];
+				zPC++;
+			}
+			//bitset<6> PC = MyCache.get_ProgramCounter_PC();
+			if(MyCache.get_ProgramCounter_PC() == addyPC)
+			{
+				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
+					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
+					<< instruction[8] << ", " << addy; 
+			}
+			else
+			{
+				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "       " << opCodeToString(opCode)
+					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
+					<< instruction[8] << ", " << addy;
+			}
+			
 			count++;
 			iSetIter++;
 		}
@@ -1126,39 +1145,56 @@ void OS::stepInstructions()
 			<< setw(10) << setfill(' ') << "S. Step" << setw(10) << setfill(' ') << "Q. Menu"
 			<< setw(10) << setfill(' ') << "H. Help"
 			<< "\n\n\t\t==>> ";
+		
+		/*
+		list <bitset<16>>::iterator damnIter = runningSet.begin();
+		while (damnIter != runningSet.end())
+		{
+			cout << "TEST: " << *damnIter << endl;
+			damnIter++;
+		}
+		*/
+		if (runFlag != 1)
+		{
+			cin >> input;
+			cin.ignore(255, '\n');
+			failCheck(cin);
+		}
+		//iSetIter = runningSet.begin();
+		//do//run the instructions
+		{
+			if (input == 'R' || input == 'r' || input == 'S' || input == 's')
+			{ 
+				bitset<16> temp;
+				bitset<6> op;
+				
+				if (itExe != runningSet.end()) {
+					int a = 0;
+					temp = *itExe;
+					//temp = *iSetIter;
+					for (int i = 10; i < 16; i++) {
+						op[a] = temp[i];
+						a++;
+					}
+					string s = opCodeToString(op);
 
-		cin >> input;
-		cin.ignore(255, '\n');
-		failCheck(cin);
-
-		if (input == 'R' || input == 'r') { //run the instructions
-			list<bitset<16>>::iterator it;
-			bitset<16> temp;
-			bitset<6> op;
-
-			for (it = InstructionSet_OS.begin(); it != InstructionSet_OS.end(); it++) {
-				int a = 0;
-				temp = *it;
-				for (int i = 10; i < 16; i++) {
-					op[a] = temp[i];
-					a++;
-				}
-				string s = opCodeToString(op);
-				cout << *it << endl;
-				if (s == "LDR") {
-					LDR(temp);
-				}
-				else if (s == "STR") {
-					STR(temp);
-				}
-				else if (s == "LDX") {
-					LDX(temp);
-				}
-				else if (s == "STX") {
-					STX(temp);
+					if (s == "LDR") {
+						LDR(temp);
+					}
+					else if (s == "STR") {
+						STR(temp);
+					}
+					else if (s == "LDX") {
+						LDX(temp);
+					}
+					else if (s == "STX") {
+						STX(temp);
+					}
+					count++;
+					itExe++;
 				}
 			}
-		}
+		} //while (input != 'Q' && input != 'q');
 		//call help file needed
 		if (input == 'H' || input == 'h')
 			cout << "\t\nHelp File incomplete..." << endl;
