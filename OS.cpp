@@ -1044,7 +1044,6 @@ void OS::printInstructions()
 					a++;
 				}
 				string s = opCodeToString(op);
-				cout << *it << endl;
 				if(s == "LDR"){
 					LDR(temp);
 				}
