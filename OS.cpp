@@ -236,7 +236,12 @@ unsigned short int OS::menu1B()
 		processFile(cin);
 
 		cout << "\n\t=>>";
-
+		string s;
+		cin >> s;
+		if(s[0] == 'Q' || s[0] == 'q'){
+			unsigned short int paramOut = menu2();	//allows user to quit after indiv input;
+			return paramOut;
+		}
 //		peek = cin.peek();
 //		cout << "PEEK3 IND INST: " << peek << endl;
 	}//while (instructionIn != "81" && instructionIn != "113");
@@ -1009,7 +1014,7 @@ void OS::printInstructions()
 		cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
 			<< " R" << reg.to_ulong() << ", " << instruction[9] << ", " 
 			<< instruction[8] << ", " << addy;
-
+		count++;
 		iSetIter++;
 	}
 

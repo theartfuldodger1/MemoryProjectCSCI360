@@ -151,16 +151,16 @@ void cache::printRegisters()
 		}
 	}
 	cout << "\n\t\tIR ==>";
-	for (int i = 0; i < 16; i++)
+	for (int i = 15; i >= 0; i--)
 	{
-		if (i % 4 == 0)
+		if (i % 4 == 3)
 			cout << "   ";
 		cout << InstructionRegister_IR[i];
 	}
 	cout << "\n\t\tXO ==>";
-	for (int i = 0; i < 16; i++)
+	for (int i = 15; i >= 0; i--)
 	{
-		if (i % 4 == 0)
+		if (i % 4 == 3)
 			cout << "   ";
 		cout << IndexRegister_XO[i];
 	}
@@ -173,9 +173,9 @@ void cache::printRegisters()
 	}
 	cout << "\n\t\tMAR==>";
 	bool firstPass = 0;
-	for (int i = 0; i < 6; i++)
+	for (int i = 5; i < 0; i++)
 	{
-		if (i % 3 == 0)
+		if (i % 3 == 2)
 			if (firstPass == 0)
 			{
 				cout << "   ";
