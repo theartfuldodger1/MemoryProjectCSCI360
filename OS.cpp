@@ -1080,7 +1080,7 @@ void OS::stepInstructions()
 	int count = 0;
 	bool firstPassFlag = 0;
 	do
-	{
+	{	
 		iSetIter = runningSet.begin();
 		if (count < runningSet.size())
 			for (int i = 0; i < count; i++)
