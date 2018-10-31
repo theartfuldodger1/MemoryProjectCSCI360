@@ -42,21 +42,22 @@ public:
 	~cache();
 	//Getters
 	Register* get_GeneralPurposeRegisters_GPRs(); //Returns list of registers
-	bitset<6> get_ProgramCounter_PC();
+	bitset<16> get_ProgramCounter_PC();
 	bitset<16> get_GeneralPurposeRegisters_GPRs(int); //Returns selected General Purpose Register, 0-3
 	bitset<16> get_IndexRegister_XO();
 	bitset<16> get_InstructionRegister_IR();
-	bitset<6> get_MemoryAddressRegister_MAR();
+	/**/bitset<16> get_MemoryAddressRegister_MAR();
 	bitset<16> get_MemoryBufferRegister_MBR();
 	//Setters
-	void clear_AllRegisters();
+	void reset_AllRegisters();
 	void set_GeneralPurposeRegisters_GPRs(int, bitset<16>); //Sets selected General Purpose Register, 0-3, each is 16 bits (1 byte)
 	void set_IndexRegister_XO(bitset<16>);
 	void set_InstructionRegister_IR(bitset<16>);
-	void set_MemoryAddressRegister_MAR(bitset<6>);// 6 bit
+	/**/void set_MemoryAddressRegister_MAR(bitset<16>);//set MemoryAddressRegister (0-2047) as bitset<16> - next instruction
 	void set_MemoryBufferRegister_MBR(bitset<16>);
-	void set_ProgramCounter(bitset<6>);
-	
+	/**/void set_ProgramCounter(bitset<16>);//(0-2047) as bitset<16>
+	void set_ProgramCounter(int);
+
 	//Utility
 	void printRegisters();
 	void failCheck(istream &);//catches failed input cast and resets istream
@@ -65,9 +66,9 @@ private:
 	Register GeneralPurposeRegisters_GPRs[4]; //Array of structs containing a bitset, 16 bits each, 0-3, referred to as R0 – R3. May be used as accumulators
 	bitset<16> IndexRegister_XO; //the index register contains 16-bit base address for base register addressing of memory.
 	bitset<16> InstructionRegister_IR; //instruction to be executed
-	bitset<6> MemoryAddressRegister_MAR; // 6 bit - address of the word to be fetched from memory
+	/*****/bitset<16> MemoryAddressRegister_MAR; // 16 bit - address of the word to be fetched from memory (0-2047) as bitset<16>
 	bitset<16> MemoryBufferRegister_MBR; //data just fetched from or stored into memory
-	bitset<6> programCounter_PC; //address of next instruction to be executed
+	/*****/bitset<16> programCounter_PC; //address of next instruction to be executed (0-2047) as bitset<16>
 };
 #endif /* __cache_H__ */
 

@@ -1147,14 +1147,6 @@ void OS::stepInstructions()
 			<< setw(10) << setfill(' ') << "H. Help"
 			<< "\n\n\t\t==>> ";
 		
-		/*
-		list <bitset<16>>::iterator damnIter = runningSet.begin();
-		while (damnIter != runningSet.end())
-		{
-			cout << "TEST: " << *damnIter << endl;
-			damnIter++;
-		}
-		*/
 		if (runFlag != 1)
 		{
 			cin >> input;
@@ -1207,7 +1199,7 @@ void OS::stepInstructions()
 
 void OS::clearAllData()
 {
-	MyCache.clear_AllRegisters();//resets all bitsets to 0's
+	MyCache.reset_AllRegisters();//resets all bitsets to 0's
 	InstructionSet_OS.clear();//removes all elements leaving the container with a size of 0
 	MyMemory.clearMemory();//removes all elements leaving the container with a size of 0
 }

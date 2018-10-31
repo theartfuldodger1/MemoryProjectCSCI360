@@ -33,8 +33,8 @@ cache::cache()
 cache::~cache()
 {
 }
-//holds 6 bit address of next instruction to be executed
-bitset<6> cache::get_ProgramCounter_PC()
+//holds 16 bit address of next instruction to be executed
+bitset<16> cache::get_ProgramCounter_PC()
 {
 	return programCounter_PC;
 }
@@ -59,7 +59,7 @@ bitset<16> cache::get_InstructionRegister_IR()
 	return InstructionRegister_IR;
 }
 
-bitset<6> cache::get_MemoryAddressRegister_MAR()
+bitset<16> cache::get_MemoryAddressRegister_MAR()
 {
 	return MemoryAddressRegister_MAR;
 }
@@ -85,8 +85,8 @@ void cache::set_InstructionRegister_IR(bitset<16> setIn)
 {
 	InstructionRegister_IR = setIn;
 }
-
-void cache::set_MemoryAddressRegister_MAR(bitset<6> setIn)
+//set MemoryAddressRegister (0-2047) as bitset<16>
+void cache::set_MemoryAddressRegister_MAR(bitset<16> setIn)
 {
 	MemoryAddressRegister_MAR = setIn;
 }
@@ -95,13 +95,18 @@ void cache::set_MemoryBufferRegister_MBR(bitset<16> setIn)
 {
 	MemoryBufferRegister_MBR = setIn;
 }
-
-void cache::set_ProgramCounter(bitset<6> instIn)
+//sets programCounter_PC from bitset<16>
+void cache::set_ProgramCounter(bitset<16> instIn)
 {
 	programCounter_PC = instIn;
 }
+//Also sets programCounter_PC from a bitset<16>
+void cache::set_ProgramCounter(int instPos)
+{
+	programCounter_PC = instPos;
+}
 //Resets all registers to all 0's
-void cache::clear_AllRegisters()
+void cache::reset_AllRegisters()
 {
 	for (int i = 0; i < 4; i++)
 		GeneralPurposeRegisters_GPRs[i].word.reset();
