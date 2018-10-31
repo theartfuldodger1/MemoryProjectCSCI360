@@ -33,8 +33,8 @@ cache::cache()
 cache::~cache()
 {
 }
-//holds 6 bit address of next instruction to be executed
-bitset<6> cache::get_ProgramCounter_PC()
+//holds 16 bit address of next instruction to be executed
+bitset<16> cache::get_ProgramCounter_PC()
 {
 	return programCounter_PC;
 }
@@ -59,7 +59,7 @@ bitset<16> cache::get_InstructionRegister_IR()
 	return InstructionRegister_IR;
 }
 
-bitset<6> cache::get_MemoryAddressRegister_MAR()
+bitset<16> cache::get_MemoryAddressRegister_MAR()
 {
 	return MemoryAddressRegister_MAR;
 }
@@ -67,6 +67,21 @@ bitset<6> cache::get_MemoryAddressRegister_MAR()
 bitset<16> cache::get_MemoryBufferRegister_MBR()
 {
 	return MemoryBufferRegister_MBR;
+}
+
+bitset<1> cache::get_ZF()
+{
+	return ZF;
+}
+
+bitset<1> cache::get_CF()
+{
+	return CF;
+}
+
+bitset<1> cache::get_SF()
+{
+	return SF;
 }
 
 //Sets selected General Purpose Register, 0-3
@@ -85,8 +100,8 @@ void cache::set_InstructionRegister_IR(bitset<16> setIn)
 {
 	InstructionRegister_IR = setIn;
 }
-
-void cache::set_MemoryAddressRegister_MAR(bitset<6> setIn)
+//set MemoryAddressRegister (0-2047) as bitset<16>
+void cache::set_MemoryAddressRegister_MAR(bitset<16> setIn)
 {
 	MemoryAddressRegister_MAR = setIn;
 }
@@ -95,13 +110,43 @@ void cache::set_MemoryBufferRegister_MBR(bitset<16> setIn)
 {
 	MemoryBufferRegister_MBR = setIn;
 }
-
-void cache::set_ProgramCounter(bitset<6> instIn)
+//sets programCounter_PC from bitset<16>
+void cache::set_ProgramCounter(bitset<16> instIn)
 {
 	programCounter_PC = instIn;
 }
+
+void cache::set_ZF(int bit)
+{
+	if (bit == 1)
+		ZF.set();
+	else if (bit == 0)
+		ZF.reset();
+}
+
+void cache::set_CF(int bit)
+{
+	if (bit == 1)
+		CF.set();
+	else if (bit == 0)
+		CF.reset();
+}
+
+void cache::set_SF(int bit)
+{
+	if (bit == 1)
+		SF.set();
+	else if (bit == 0)
+		SF.reset();
+}
+
+//Also sets programCounter_PC from a bitset<16>
+void cache::set_ProgramCounter(int instPos)
+{
+	programCounter_PC = instPos;
+}
 //Resets all registers to all 0's
-void cache::clear_AllRegisters()
+void cache::reset_AllRegisters()
 {
 	for (int i = 0; i < 4; i++)
 		GeneralPurposeRegisters_GPRs[i].word.reset();
