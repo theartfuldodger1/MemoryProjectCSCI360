@@ -1077,7 +1077,7 @@ void OS::stepInstructions()
 	string opCodeString;
 	char input;
 	bool runFlag = 0;
-	int count = 0;
+	unsigned int count = 0;
 	bool firstPassFlag = 0;
 	do
 	{	
