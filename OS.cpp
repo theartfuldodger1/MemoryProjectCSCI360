@@ -99,10 +99,13 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 				LDR(tt);
 				bitset<16> aa = MyCache.get_GeneralPurposeRegisters_GPRs(3);
 				STR(aa);
-				bitset<16> dd("1010010000001001");
-				LDX(dd);
-				bitset<16> xx("1010100000110010");
-				STX(xx);
+				//bitset<16> dd("1010010000001001");
+				//LDX(dd);
+				//bitset<16> xx("1010100000110010");
+				//STX(xx);
+				bitset<16> comp("0100010000000000");
+				CMP(comp);
+				cout << "ZF: " << MyCache.get_ZF() << " CF: " << MyCache.get_CF() << " SF: " << MyCache.get_SF() << endl;
 			}
 			break;
 			case 7: //Quit
@@ -1586,6 +1589,190 @@ void OS::STX(bitset<16> setIn)
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_IndexRegister_XO();
 			MyMemory.setSpecMemoryLoc(effective_address, content);
+		}
+	}
+}
+
+//Compares the values that are held in the indicated memory address and register and sets ZF, CF and SF
+//flags to their appropriate values
+void OS::CMP(bitset<16> setIn)
+{
+	bitset<2> reg; //holds bits that identify the register
+	bitset<6> mar;
+	reg[1] = setIn[7];
+	reg[0] = setIn[6];
+	unsigned long gpr_num = reg.to_ulong();
+	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
+	bitset<16> content_mem; //holds mem value
+	bitset<16> content_reg; //holds reg value
+	unsigned long mem_cont; //converted bitset memory value for comparison
+	unsigned long reg_cont; //converted bitset register value for comparison
+	if (setIn[9] == 0)
+	{
+		if (setIn[8] == 0)
+		{
+			for (int i = 5; i >= 0; i--)
+			{
+				EA[i] = setIn[i];
+			}
+			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
+			SystemBus.loadAddress(effective_address);
+			content_mem = SystemBus.loadData(effective_address);
+			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			mem_cont = content_mem.to_ulong();
+			reg_cont = content_reg.to_ulong();
+			if (mem_cont == reg_cont)
+			{
+				MyCache.set_ZF(1);
+				MyCache.set_CF(0);
+				MyCache.set_SF(0);
+				cout << "Equal" << endl;
+			}
+			else if (reg_cont < mem_cont)
+			{
+				MyCache.set_ZF(0);
+				MyCache.set_CF(1);
+				MyCache.set_SF(1);
+				cout << "Reg is smaller" << endl;
+			}
+			else if (reg_cont > mem_cont)
+			{
+				MyCache.set_ZF(0);
+				MyCache.set_CF(0);
+				MyCache.set_SF(0);
+				cout << "Reg is greater" << endl;
+			}
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content_mem); 
+		}
+		else if (setIn[8] == 1)
+		{
+			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> address;
+			for (int i = 5; i >= 0; i--)
+			{
+				address[i] = setIn[i];
+			}
+			address = addBitSets(address, index);
+			for (int i = 15; i >= 0; i--)
+			{
+				EA[i] = address[i];
+			}
+			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
+			SystemBus.loadAddress(effective_address);
+			content_mem = SystemBus.loadData(effective_address);
+			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			mem_cont = content_mem.to_ulong();
+			reg_cont = content_reg.to_ulong();
+			if (mem_cont == reg_cont)
+			{
+				MyCache.set_ZF(1);
+				MyCache.set_CF(0);
+				MyCache.set_SF(0);
+				cout << "Equal" << endl;
+			}
+			else if (reg_cont < mem_cont)
+			{
+				MyCache.set_ZF(0);
+				MyCache.set_CF(1);
+				MyCache.set_SF(1);
+				cout << "Reg is smaller" << endl;
+			}
+			else if (reg_cont > mem_cont)
+			{
+				MyCache.set_ZF(0);
+				MyCache.set_CF(0);
+				MyCache.set_SF(0);
+				cout << "Reg is greater" << endl;
+			}
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content_mem);
+		}
+	}
+	else if (setIn[9] == 1)
+	{
+		if (setIn[8] == 0)
+		{
+			for (int i = 5; i >= 0; i--)
+			{
+				EA[i] = setIn[i];
+			}
+			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
+			SystemBus.loadAddress(effective_address);
+			content_mem = SystemBus.loadData(effective_address);
+			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			mem_cont = content_mem.to_ulong();
+			reg_cont = content_reg.to_ulong();
+			if (mem_cont == reg_cont)
+			{
+				MyCache.set_ZF(1);
+				MyCache.set_CF(0);
+				MyCache.set_SF(0);
+				cout << "Equal" << endl;
+			}
+			else if (reg_cont < mem_cont)
+			{
+				MyCache.set_ZF(0);
+				MyCache.set_CF(1);
+				MyCache.set_SF(1);
+				cout << "Reg is smaller" << endl;
+			}
+			else if (reg_cont > mem_cont)
+			{
+				MyCache.set_ZF(0);
+				MyCache.set_CF(0);
+				MyCache.set_SF(0);
+				cout << "Reg is greater" << endl;
+			}
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content_mem);
+		}
+		else if (setIn[8] == 1)
+		{
+			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> address;
+			for (int i = 5; i >= 0; i--)
+			{
+				address[i] = setIn[i];
+			}
+			address = addBitSets(address, index);
+			for (int i = 15; i >= 0; i--)
+			{
+				EA[i] = address[i];
+			}
+			unsigned long effective_address = EA.to_ulong();
+			mar = EA.to_ulong();
+			SystemBus.loadAddress(effective_address);
+			content_mem = SystemBus.loadData(effective_address);
+			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			mem_cont = content_mem.to_ulong();
+			reg_cont = content_reg.to_ulong();
+			if (mem_cont == reg_cont)
+			{
+				MyCache.set_ZF(1);
+				MyCache.set_CF(0);
+				MyCache.set_SF(0);
+				cout << "Equal" << endl;
+			}
+			else if (reg_cont < mem_cont)
+			{
+				MyCache.set_ZF(0);
+				MyCache.set_CF(1);
+				MyCache.set_SF(1);
+				cout << "Reg is smaller" << endl;
+			}
+			else if (reg_cont > mem_cont)
+			{
+				MyCache.set_ZF(0);
+				MyCache.set_CF(0);
+				MyCache.set_SF(0);
+				cout << "Reg is greater" << endl;
+			}
+			MyCache.set_MemoryAddressRegister_MAR(mar);
+			MyCache.set_MemoryBufferRegister_MBR(content_mem);
 		}
 	}
 }

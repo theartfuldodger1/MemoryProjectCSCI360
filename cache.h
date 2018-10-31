@@ -48,6 +48,9 @@ public:
 	bitset<16> get_InstructionRegister_IR();
 	/**/bitset<16> get_MemoryAddressRegister_MAR();
 	bitset<16> get_MemoryBufferRegister_MBR();
+	bitset<1> get_ZF();
+	bitset<1> get_CF();
+	bitset<1> get_SF();
 	//Setters
 	void reset_AllRegisters();
 	void set_GeneralPurposeRegisters_GPRs(int, bitset<16>); //Sets selected General Purpose Register, 0-3, each is 16 bits (1 byte)
@@ -58,6 +61,11 @@ public:
 	/**/void set_ProgramCounter(bitset<16>);//(0-2047) as bitset<16>
 	void set_ProgramCounter(int);
 
+	void set_ProgramCounter(bitset<6>);
+	void set_ZF(int);
+	void set_CF(int);
+	void set_SF(int);
+	
 	//Utility
 	void printRegisters();
 	void failCheck(istream &);//catches failed input cast and resets istream
@@ -69,6 +77,10 @@ private:
 	/*****/bitset<16> MemoryAddressRegister_MAR; // 16 bit - address of the word to be fetched from memory (0-2047) as bitset<16>
 	bitset<16> MemoryBufferRegister_MBR; //data just fetched from or stored into memory
 	/*****/bitset<16> programCounter_PC; //address of next instruction to be executed (0-2047) as bitset<16>
+	bitset<6> programCounter_PC; //address of next instruction to be executed
+	bitset<1> ZF;
+	bitset<1> CF;
+	bitset<1> SF;
 };
 #endif /* __cache_H__ */
 

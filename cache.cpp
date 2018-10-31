@@ -69,6 +69,21 @@ bitset<16> cache::get_MemoryBufferRegister_MBR()
 	return MemoryBufferRegister_MBR;
 }
 
+bitset<1> cache::get_ZF()
+{
+	return ZF;
+}
+
+bitset<1> cache::get_CF()
+{
+	return CF;
+}
+
+bitset<1> cache::get_SF()
+{
+	return SF;
+}
+
 //Sets selected General Purpose Register, 0-3
 //accepts an int, representing one of the four register elements, and a 16 bit bitset as the data/instruction
 void cache::set_GeneralPurposeRegisters_GPRs(int gprIn, bitset<16> setIn)
@@ -100,6 +115,31 @@ void cache::set_ProgramCounter(bitset<16> instIn)
 {
 	programCounter_PC = instIn;
 }
+
+void cache::set_ZF(int bit)
+{
+	if (bit == 1)
+		ZF.set();
+	else if (bit == 0)
+		ZF.reset();
+}
+
+void cache::set_CF(int bit)
+{
+	if (bit == 1)
+		CF.set();
+	else if (bit == 0)
+		CF.reset();
+}
+
+void cache::set_SF(int bit)
+{
+	if (bit == 1)
+		SF.set();
+	else if (bit == 0)
+		SF.reset();
+}
+
 //Also sets programCounter_PC from a bitset<16>
 void cache::set_ProgramCounter(int instPos)
 {

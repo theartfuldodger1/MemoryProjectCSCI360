@@ -77,6 +77,7 @@ public:
 	void STR(bitset<16> setIn); //Store register to memory
 	void LDX(bitset<16> setIn); //Load index register from memory
 	void STX(bitset<16> setIn); //Store index register to memory
+	void CMP(bitset<16> setIn); //Compares register value with memory location value
 
 private:
 	Bus SystemBus;
