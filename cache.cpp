@@ -29,9 +29,17 @@ cache::cache()
 //cout << i << " = " << GPR.word << endl;
 	}
 }
-
 cache::~cache()
 {
+}
+//Postfix
+bitset<16> operator++ (bitset<16> &setIn, int)
+{
+	int tempInt = 0;
+	tempInt++;
+	bitset<16> tempSet = tempInt;
+	setIn = tempSet;
+	return setIn;
 }
 //holds 16 bit address of next instruction to be executed
 bitset<16> cache::get_ProgramCounter_PC()
@@ -110,11 +118,24 @@ void cache::set_MemoryBufferRegister_MBR(bitset<16> setIn)
 {
 	MemoryBufferRegister_MBR = setIn;
 }
-//sets programCounter_PC from bitset<16>
+
+
+
+//sets programCounter_PC from a bitset<16>
 void cache::set_ProgramCounter(bitset<16> instIn)
 {
 	programCounter_PC = instIn;
 }
+//Sets programCounter_PC from an int
+void cache::set_ProgramCounter(int instPos)
+{
+	programCounter_PC = instPos;
+}
+void cache::increment_ProgramCounter()
+{
+	programCounter_PC++;
+}
+
 
 void cache::set_ZF(int bit)
 {
@@ -138,12 +159,6 @@ void cache::set_SF(int bit)
 		SF.set();
 	else if (bit == 0)
 		SF.reset();
-}
-
-//Also sets programCounter_PC from a bitset<16>
-void cache::set_ProgramCounter(int instPos)
-{
-	programCounter_PC = instPos;
 }
 //Resets all registers to all 0's
 void cache::reset_AllRegisters()

@@ -1070,8 +1070,8 @@ void OS::stepInstructions()
 	*/
 	bitset<6> opCode;
 	bitset<2> reg;
-	bitset<6> addy;
-	bitset<6> addyPC;
+	bitset<16> addy;
+	bitset<16> addyPC;
 	list <bitset<16>> runningSet = MyMemory.getInstructionSet();
 	list<bitset<16>>::iterator iSetIter;// = InstructionSet_OS.begin();
 	list<bitset<16>>::iterator itExe = runningSet.begin();;
@@ -1111,11 +1111,13 @@ void OS::stepInstructions()
 				z++;
 			}
 			z = 0;
+			/*
 			for (int i = 0; i < 6; i++)
 			{
 				addy[z] = instruction[i];
 				z++;
 			}
+			*/
 			MyCache.set_ProgramCounter(addyPC);
 			int zPC = 0;
 			instructionPC = *itExe;
@@ -1270,13 +1272,13 @@ bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 	}
 	return result;
 }
-
+//////////////////////////////////////////////////////////////////IS EA SUPPOSED TO ONLY BE 6 BITS?
 /*Load Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
 effective address. Bus class is used to temporarily hold address and data.*/
 void OS::LDR(bitset<16> temp)
 {
 	bitset<2> reg; //holds bits that identify the register
-	bitset<6> mar;
+	bitset<16> mar;
 	reg[1] = temp[7];
 	reg[0] = temp[6];
 	unsigned long gpr_num = reg.to_ulong();
@@ -1440,7 +1442,7 @@ void OS::STR(bitset<16> setIn)
 effective address. Bus class is used to temporarily hold address and data.*/
 void OS::LDX(bitset<16> temp)
 {
-	bitset<6> mar;
+	bitset<16> mar;
 	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
 	bitset<16> content; //holds values that are being transferred
 	if (temp[9] == 0)
@@ -1598,7 +1600,7 @@ void OS::STX(bitset<16> setIn)
 void OS::CMP(bitset<16> setIn)
 {
 	bitset<2> reg; //holds bits that identify the register
-	bitset<6> mar;
+	bitset<16> mar;
 	reg[1] = setIn[7];
 	reg[0] = setIn[6];
 	unsigned long gpr_num = reg.to_ulong();
