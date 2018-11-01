@@ -29,6 +29,7 @@ Opcode  I  IX AC  Address
 #include <bitset>
 #include <list>
 #include <string>
+//#include <vector>
 
 using namespace std;
 
@@ -50,7 +51,7 @@ public:
 	bitset<6> streamToOpCode(istream &cin);
 	string opCodeToString(bitset<6>&);
 	void processFile(istream & cin);//modified version of file version of processFile, esp for istream cin
-	void processFile(ifstream &inFile, list <bitset<16>>&);//For file processing only
+	void processFile(ifstream &inFile, vector <bitset<16>>&);//For file processing only
 	
 	void loadInstructionsIntoMain();
 
@@ -83,7 +84,7 @@ private:
 	Bus SystemBus;
 	cache MyCache;
 	mainMemory MyMemory;
-	list <bitset<16>> InstructionSet_OS;//all instructions loaded here from file
+	vector <bitset<16>> InstructionSet_OS;//all instructions loaded here from file
 };
 #endif /* __OS_H__ */
 

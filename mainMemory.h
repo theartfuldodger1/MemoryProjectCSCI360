@@ -22,9 +22,9 @@ class mainMemory
 public:
 	mainMemory();
 	~mainMemory();
-	list <bitset<16>> getInstructionSet();//returns instruction set list
+	vector <bitset<16>> getInstructionSet();//returns instruction set list
 	bitset<16> getNextInstruction();//returns next instruction in instruction set list
-	void set_InstructionSet(list <bitset<16>> &);
+	void set_InstructionSet(vector <bitset<16>> &);
 	void clearMemory();
 	void printMemory();
 	void failCheck(istream &cin);
@@ -32,7 +32,7 @@ public:
 	void setSpecMemoryLoc(unsigned long address, bitset<16> setIn); //sets indicated memory location to specified value
 
 private:
-	list <bitset<16>> instructionSet;//all instructions loaded here from file
+	vector <bitset<16>> instructionSet;//all instructions loaded here from file
 	vector <bitset<16>> memory;
 };
 #endif /*__MAINMEMORY_H__*/

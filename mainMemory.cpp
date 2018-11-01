@@ -27,14 +27,14 @@ mainMemory::~mainMemory()
 {
 }
 //returns instruction set list
-list <bitset<16>> mainMemory::getInstructionSet()
+vector <bitset<16>> mainMemory::getInstructionSet()
 {
 	return instructionSet;
 }
 //returns next instruction in instruction set list
 bitset<16> mainMemory::getNextInstruction()
 {
-	list <bitset<16>>::iterator iter = instructionSet.begin();
+	vector <bitset<16>>::iterator iter = instructionSet.begin();
 	bitset<16> temp = *iter;
 	return temp;
 }
@@ -129,7 +129,7 @@ void mainMemory::clearMemory()
 	}
 }
 //"loads" instructions into main memory
-void mainMemory::set_InstructionSet(list <bitset<16>> &instructionsIn)
+void mainMemory::set_InstructionSet(vector <bitset<16>> &instructionsIn)
 {
 	if (!instructionsIn.empty())
 		instructionSet = instructionsIn;

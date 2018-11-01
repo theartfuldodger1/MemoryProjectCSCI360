@@ -626,7 +626,7 @@ unsigned short int  OS::menu2A()
 	return paramOut;
 }
 
-void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
+void OS::processFile(ifstream &inFile, vector <bitset<16>> &instructions)
 {
 	/*             R
 	Opcode  I  IX AC  Address
@@ -959,7 +959,7 @@ string OS::opCodeToString(bitset<6>&opCode)
 
 void OS::loadInstructionsIntoMain()
 {
-	if (InstructionSet_OS.size() == 0)
+	if (InstructionSet_OS.empty())
 		cout << "Instruction Set is empty."
 		<< "\nPlease add instructions before attempting to load to main memory" << endl;
 	else
@@ -986,7 +986,7 @@ void OS::printInstructions()
 	bitset<6> opCode;
 	bitset<2> reg;
 	bitset<6> addy;
-	list<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
+	vector<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
 	bitset<16> instruction;
 	string opCodeString;
 	char input;
@@ -1070,11 +1070,11 @@ void OS::stepInstructions()
 	*/
 	bitset<6> opCode;
 	bitset<2> reg;
-	bitset<16> addy;
+	bitset<6> addy;
 	bitset<16> addyPC;
-	list <bitset<16>> runningSet = MyMemory.getInstructionSet();
-	list<bitset<16>>::iterator iSetIter;// = InstructionSet_OS.begin();
-	list<bitset<16>>::iterator itExe = runningSet.begin();;
+	vector <bitset<16>> mem_set = MyMemory.getInstructionSet();
+	vector<bitset<16>>::iterator iSetIter;
+	vector<bitset<16>>::iterator itExe = mem_set.begin();;
 	bitset<16> instruction;
 	bitset<16> instructionPC;
 	string opCodeString;
@@ -1084,8 +1084,8 @@ void OS::stepInstructions()
 	bool firstPassFlag = 0;
 	do
 	{	
-		iSetIter = runningSet.begin();
-		if (count < runningSet.size())
+		iSetIter = mem_set.begin();
+		if (count < mem_set.size())
 			for (unsigned int i = 0; i < count; i++)
 				itExe++;
 		firstPassFlag = 0;
@@ -1095,7 +1095,7 @@ void OS::stepInstructions()
 		cout << setw(40) << "Instructions"
 			<< "\n\t\t----------------------------------";
 		
-		while (iSetIter != runningSet.end())
+		while (iSetIter != mem_set.end())
 		{
 			instruction = *iSetIter;
 			int z = 0;
@@ -1111,13 +1111,13 @@ void OS::stepInstructions()
 				z++;
 			}
 			z = 0;
-			/*
+			
 			for (int i = 0; i < 6; i++)
 			{
 				addy[z] = instruction[i];
 				z++;
 			}
-			*/
+			/*
 			MyCache.set_ProgramCounter(addyPC);
 			int zPC = 0;
 			instructionPC = *itExe;
@@ -1126,6 +1126,8 @@ void OS::stepInstructions()
 				addyPC[zPC] = instructionPC[i];
 				zPC++;
 			}
+			*/
+			/*
 			//cout << "addyPC: " << addyPC << endl;
 			//bitset<6> PC = MyCache.get_ProgramCounter_PC();
 			if(MyCache.get_ProgramCounter_PC() == addy && firstPassFlag == 0)
@@ -1135,7 +1137,8 @@ void OS::stepInstructions()
 					<< instruction[8] << ", " << addy; 
 				firstPassFlag = 1;
 			}
-			else
+
+			else*/
 			{
 				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "       " << opCodeToString(opCode)
 					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
@@ -1160,7 +1163,7 @@ void OS::stepInstructions()
 			if(input == 'R' || input == 'r')
 				runFlag = 1;
 		}
-		//iSetIter = runningSet.begin();
+		//iSetIter = mem_set.begin();
 		//do//run the instructions
 		{
 			if (input == 'R' || input == 'r' || input == 'S' || input == 's')
@@ -1168,7 +1171,7 @@ void OS::stepInstructions()
 				bitset<16> temp;
 				bitset<6> op;
 				
-				if (itExe != runningSet.end()) {
+				if (itExe != mem_set.end()) {
 					int a = 0;
 					temp = *itExe;
 					//temp = *iSetIter;
