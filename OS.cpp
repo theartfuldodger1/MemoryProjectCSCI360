@@ -1086,7 +1086,7 @@ void OS::stepInstructions()
 	{	
 		iSetIter = runningSet.begin();
 		if (count < runningSet.size())
-			for (int i = 0; i < count; i++)
+			for (unsigned int i = 0; i < count; i++)
 				itExe++;
 		firstPassFlag = 0;
 

@@ -35,10 +35,17 @@ cache::~cache()
 //Postfix
 bitset<16> operator++ (bitset<16> &setIn, int)
 {
-	int tempInt = 0;
+	int tempInt = setIn.to_ulong();
 	tempInt++;
-	bitset<16> tempSet = tempInt;
-	setIn = tempSet;
+	setIn = tempInt;
+	return setIn;
+}
+//Prefix
+bitset<16> operator++ (bitset<16> &setIn)
+{
+	int tempInt = setIn.to_ulong();
+	tempInt++;
+	setIn = tempInt;
 	return setIn;
 }
 //holds 16 bit address of next instruction to be executed
