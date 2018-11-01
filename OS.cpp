@@ -805,6 +805,45 @@ void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	for (int i = 0; i < 6; i++)
 		buildSet[i] = sixBits[i];
 }
+//accepts a bitset<16> instruction. The instruction's effective address is calculated based on values of I and IX
+//A new bitset<16> is returned with the effective address
+bitset<16>& OS::effectiveAddress_EA(bitset<16> & instructionIn)
+{
+	/*             R
+	Opcode  I  IX AC  Address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<16> address;
+	bool IX = instructionIn[8];
+	bool I = instructionIn[9];
+	bitset<16> effectiveAddress_EA;
+
+	//Acquire and encode address - BEGIN
+	//address  = streamToOpCode(inFile);
+	int j = 10;
+	for (int i = 0; i < 6; i++)
+	{
+		address[j] = instructionIn[i];
+		j++;
+	}
+	// Acquire and encode address - END
+	if (I = 0)
+	{
+		if (IX = 0) 
+			effectiveAddress_EA = address;
+		if (IX = 1)
+			effectiveAddress_EA = MyCache.get_IndexRegister_XO().to_ulong() + address.to_ulong();
+	}
+	if (I = 1)
+	{
+		if (IX = 0)
+			effectiveAddress_EA = address;
+		if (IX = 1)
+			effectiveAddress_EA = MyCache.get_IndexRegister_XO().to_ulong() + address.to_ulong();
+	}
+	return effectiveAddress_EA;
+}
 /*
 01
 LDR r, i, x, address
@@ -1052,7 +1091,7 @@ void OS::printInstructions()
 
 	} while (input != 'Q' && input != 'q');
 }
-//instructions loaded in main memory
+//instructions already loaded in main memory. this function can step or run through the instructions
 void OS::stepInstructions()
 {
 	/*
@@ -1080,8 +1119,9 @@ void OS::stepInstructions()
 	string opCodeString;
 	char input;
 	bool runFlag = 0;
-	unsigned int count = 0;
 	bool firstPassFlag = 0;
+	unsigned int count = 0;
+
 	do
 	{	
 		iSetIter = mem_set.begin();
@@ -1127,10 +1167,9 @@ void OS::stepInstructions()
 				zPC++;
 			}
 			
-			/*
 			//cout << "addyPC: " << addyPC << endl;
 			//bitset<6> PC = MyCache.get_ProgramCounter_PC();
-			if(MyCache.get_ProgramCounter_PC() == addy && firstPassFlag == 0)
+			if(MyCache.get_ProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
 			{
 				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
 					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
@@ -1138,7 +1177,7 @@ void OS::stepInstructions()
 				firstPassFlag = 1;
 			}
 
-			else*/
+			else
 			{
 				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "       " << opCodeToString(opCode)
 					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
@@ -1373,7 +1412,7 @@ void OS::STR(bitset<16> setIn)
 	reg[1] = setIn[7];
 	reg[0] = setIn[6];
 	unsigned long gpr_num = reg.to_ulong();
-	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply buffer the unused bits with 0s
+	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply buffer the unused bits with 0s
 	bitset<16> content; //holds values that are being transferred
 	if (setIn[9] == 0)
 	{
@@ -1381,9 +1420,9 @@ void OS::STR(bitset<16> setIn)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = setIn[i];
+				effectiveAddress_EA[i] = setIn[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setSpecMemoryLoc(effective_address, content);
@@ -1399,9 +1438,9 @@ void OS::STR(bitset<16> setIn)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setSpecMemoryLoc(effective_address, content);
@@ -1413,9 +1452,9 @@ void OS::STR(bitset<16> setIn)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = setIn[i];
+				effectiveAddress_EA[i] = setIn[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setSpecMemoryLoc(effective_address, content);
@@ -1431,9 +1470,9 @@ void OS::STR(bitset<16> setIn)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setSpecMemoryLoc(effective_address, content);

@@ -23,7 +23,7 @@ public:
 	mainMemory();
 	~mainMemory();
 	vector <bitset<16>> getInstructionSet();//returns instruction set list
-	bitset<16> getNextInstruction();//returns next instruction in instruction set list
+	bitset<16> getNextInstruction(bitset<16> &);//returns next instruction in instruction set list
 	void set_InstructionSet(vector <bitset<16>> &);
 	void clearMemory();
 	void printMemory();

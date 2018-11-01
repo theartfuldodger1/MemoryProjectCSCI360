@@ -32,11 +32,11 @@ vector <bitset<16>> mainMemory::getInstructionSet()
 	return instructionSet;
 }
 //returns next instruction in instruction set list
-bitset<16> mainMemory::getNextInstruction()
+bitset<16> mainMemory::getNextInstruction(bitset<16> &programCounter_In)
 {
-	vector <bitset<16>>::iterator iter = instructionSet.begin();
-	bitset<16> temp = *iter;
-	return temp;
+	unsigned long tempLong = programCounter_In.to_ulong();
+	bitset<16> tempInstruction = instructionSet[tempLong];
+	return tempInstruction;
 }
 
 void mainMemory::printMemory()
