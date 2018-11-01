@@ -1117,7 +1117,7 @@ void OS::stepInstructions()
 				addy[z] = instruction[i];
 				z++;
 			}
-			/*
+			
 			MyCache.set_ProgramCounter(addyPC);
 			int zPC = 0;
 			instructionPC = *itExe;
@@ -1126,7 +1126,7 @@ void OS::stepInstructions()
 				addyPC[zPC] = instructionPC[i];
 				zPC++;
 			}
-			*/
+			
 			/*
 			//cout << "addyPC: " << addyPC << endl;
 			//bitset<6> PC = MyCache.get_ProgramCounter_PC();
@@ -1285,7 +1285,7 @@ void OS::LDR(bitset<16> temp)
 	reg[1] = temp[7];
 	reg[0] = temp[6];
 	unsigned long gpr_num = reg.to_ulong();
-	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
+	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
 	bitset<16> content; //holds values that are being transferred
 	if (temp[9] == 0)
 	{
@@ -1293,10 +1293,10 @@ void OS::LDR(bitset<16> temp)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = temp[i];
+				effectiveAddress_EA[i] = temp[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1314,10 +1314,10 @@ void OS::LDR(bitset<16> temp)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1331,10 +1331,10 @@ void OS::LDR(bitset<16> temp)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = temp[i];
+				effectiveAddress_EA[i] = temp[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1352,10 +1352,10 @@ void OS::LDR(bitset<16> temp)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1446,7 +1446,7 @@ effective address. Bus class is used to temporarily hold address and data.*/
 void OS::LDX(bitset<16> temp)
 {
 	bitset<16> mar;
-	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
+	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
 	bitset<16> content; //holds values that are being transferred
 	if (temp[9] == 0)
 	{
@@ -1454,10 +1454,10 @@ void OS::LDX(bitset<16> temp)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = temp[i];
+				effectiveAddress_EA[i] = temp[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_IndexRegister_XO(content);
@@ -1476,10 +1476,10 @@ void OS::LDX(bitset<16> temp)
 		address = addBitSets(address, index);
 		for (int i = 15; i >= 0; i--)
 		{
-			EA[i] = address[i];
+			effectiveAddress_EA[i] = address[i];
 		}
-		unsigned long effective_address = EA.to_ulong();
-		mar = EA.to_ulong();
+		unsigned long effective_address = effectiveAddress_EA.to_ulong();
+		mar = effectiveAddress_EA.to_ulong();
 		SystemBus.loadAddress(effective_address);
 		content = SystemBus.loadData(effective_address);
 		MyCache.set_IndexRegister_XO(content);
@@ -1492,10 +1492,10 @@ void OS::LDX(bitset<16> temp)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = temp[i];
+				effectiveAddress_EA[i] = temp[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_IndexRegister_XO(content);
@@ -1513,10 +1513,10 @@ void OS::LDX(bitset<16> temp)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
 			MyCache.set_IndexRegister_XO(content);
@@ -1530,7 +1530,7 @@ void OS::LDX(bitset<16> temp)
 effective address. Bus class is used to temporarily hold address and data.*/
 void OS::STX(bitset<16> setIn)
 {
-	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
+	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
 	bitset<16> content; //holds values that are being transferred
 	if (setIn[9] == 0)
 	{
@@ -1538,9 +1538,9 @@ void OS::STX(bitset<16> setIn)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = setIn[i];
+				effectiveAddress_EA[i] = setIn[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_IndexRegister_XO();
 			MyMemory.setSpecMemoryLoc(effective_address, content);
@@ -1556,9 +1556,9 @@ void OS::STX(bitset<16> setIn)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_IndexRegister_XO();
 			MyMemory.setSpecMemoryLoc(effective_address, content);
@@ -1570,9 +1570,9 @@ void OS::STX(bitset<16> setIn)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = setIn[i];
+				effectiveAddress_EA[i] = setIn[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_IndexRegister_XO();
 			MyMemory.setSpecMemoryLoc(effective_address, content);
@@ -1588,9 +1588,9 @@ void OS::STX(bitset<16> setIn)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_IndexRegister_XO();
 			MyMemory.setSpecMemoryLoc(effective_address, content);
@@ -1607,7 +1607,7 @@ void OS::CMP(bitset<16> setIn)
 	reg[1] = setIn[7];
 	reg[0] = setIn[6];
 	unsigned long gpr_num = reg.to_ulong();
-	bitset<16> EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
+	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
 	bitset<16> content_mem; //holds mem value
 	bitset<16> content_reg; //holds reg value
 	unsigned long mem_cont; //converted bitset memory value for comparison
@@ -1618,10 +1618,10 @@ void OS::CMP(bitset<16> setIn)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = setIn[i];
+				effectiveAddress_EA[i] = setIn[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content_mem = SystemBus.loadData(effective_address);
 			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
@@ -1646,7 +1646,7 @@ void OS::CMP(bitset<16> setIn)
 				MyCache.set_ZF(0);
 				MyCache.set_CF(0);
 				MyCache.set_SF(0);
-				cout << "Reg is greater" << endl;
+				cout << "Reg is greaAter" << endl;
 			}
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content_mem); 
@@ -1662,10 +1662,10 @@ void OS::CMP(bitset<16> setIn)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content_mem = SystemBus.loadData(effective_address);
 			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
@@ -1702,10 +1702,10 @@ void OS::CMP(bitset<16> setIn)
 		{
 			for (int i = 5; i >= 0; i--)
 			{
-				EA[i] = setIn[i];
+				effectiveAddress_EA[i] = setIn[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content_mem = SystemBus.loadData(effective_address);
 			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
@@ -1746,10 +1746,10 @@ void OS::CMP(bitset<16> setIn)
 			address = addBitSets(address, index);
 			for (int i = 15; i >= 0; i--)
 			{
-				EA[i] = address[i];
+				effectiveAddress_EA[i] = address[i];
 			}
-			unsigned long effective_address = EA.to_ulong();
-			mar = EA.to_ulong();
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content_mem = SystemBus.loadData(effective_address);
 			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
