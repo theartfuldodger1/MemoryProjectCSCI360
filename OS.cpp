@@ -119,10 +119,10 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 	/*
 	//for testing BEGIN
 	int temp = 0;
-	list <bitset<16>>::iterator iter = InstructionSet_OS.begin();
+	vector <bitset<16>>::iterator iter = InstructionSet_OS.begin();
 	while (iter != InstructionSet_OS.end())
 	{
-		cout << "List position:: " << temp << ", Item:: " << *iter << endl;
+		cout << "vector position:: " << temp << ", Item:: " << *iter << endl;
 		cout << "\tposition:: " << temp << ", size:: " << iter->size() << endl;
 		iter++;
 		temp++;
@@ -318,10 +318,10 @@ void OS::processFile(istream &cin)
 /*
 	//for testing BEGIN
 	int tempTest = 0;
-	list <bitset<16>>::iterator iter = InstructionSet_OS.begin();
+	vector <bitset<16>>::iterator iter = InstructionSet_OS.begin();
 	while (iter != InstructionSet_OS.end())
 	{
-		cout << "List position:: " << tempTest << ", Item:: " << *iter << endl;
+		cout << "vector position:: " << tempTest << ", Item:: " << *iter << endl;
 		cout << "\tposition:: " << tempTest << ", size:: " << iter->size() << endl;
 		iter++;
 		tempTest++;
@@ -678,10 +678,10 @@ void OS::processFile(ifstream &inFile, vector <bitset<16>> &instructions)
 /*
 	//for testing BEGIN
 	int tempTest = 0;
-	list <bitset<16>>::iterator iter = instructions.begin();
+	vector <bitset<16>>::iterator iter = instructions.begin();
 	while (iter != instructions.end())
 	{
-		cout << "List position:: " << tempTest << ", Item:: " << *iter << endl;
+		cout << "vector position:: " << tempTest << ", Item:: " << *iter << endl;
 		cout << "\tposition:: " << tempTest << ", size:: " << iter->size() << endl;
 		iter++;
 		tempTest++;
