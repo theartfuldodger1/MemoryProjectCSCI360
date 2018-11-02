@@ -1164,7 +1164,9 @@ void OS::stepInstructions()
 				addy[z] = instruction[i];
 				z++;
 			}
-			
+			if (opCode == 1 || opCode == 2 || opCode == 41 || opCode == 42 || opCode.to_ulong() > 9 && opCode.to_ulong() < 18)
+
+			/*
 			MyCache.set_ProgramCounter(addyPC);
 			int zPC = 0;
 			instructionPC = *itExe;
@@ -1173,7 +1175,7 @@ void OS::stepInstructions()
 				addyPC[zPC] = instructionPC[i];
 				zPC++;
 			}
-			
+			*/
 			//cout << "addyPC: " << addyPC << endl;
 			//bitset<6> PC = MyCache.get_ProgramCounter_PC();
 			if(MyCache.get_ProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
@@ -1190,7 +1192,6 @@ void OS::stepInstructions()
 					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
 					<< instruction[8] << ", " << addy;
 			}
-			
 			count++;
 			iSetIter++;
 		}

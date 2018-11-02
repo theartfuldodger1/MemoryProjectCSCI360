@@ -58,7 +58,9 @@ public:
 	void clearAllData();
 	void printInstructions();//when isntructions are not yet loaded
 	void stepInstructions();//instructions loaded in main memory
-	void executeInstruction(bitset<16> &);
+	void executeInstruction(bitset<16> &);//calls appropriate function to process an instruction based on instrcuction opCode
+	void instructionDisplaySwitch(bitset<16> &);
+	void printOpCodeRIXA(bitset<16> &);//for instruction display
 
 	//void voidLowerCase(string &wordIn);
 	string fileIterator(istream &input, char delim);//uses either space, ' ' or ',' or '\n' as char delimeter per calling function requirements

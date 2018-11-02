@@ -76,6 +76,8 @@ public:
 	void increment_ProgramCounter();
 	friend bitset<16> operator++ (bitset<16>&, int);//Postfix, ie bit_Set++; bitset<16> ONLY
 	friend bitset<16> operator++ (bitset<16>&);//prefix, ie ++bit_Set; bitset<16> ONLY
+	//friend bitset<16> operator> (bitset<16>&, bitset<16>&);
+	//friend bitset<16> operator< (bitset<16>&, bitset<16>&);
 
 private:
 	Register GeneralPurposeRegisters_GPRs[4]; //Array of structs containing a bitset, 16 bits each, 0-3, referred to as R0 – R3. May be used as accumulators
