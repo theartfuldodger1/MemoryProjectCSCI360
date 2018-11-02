@@ -64,9 +64,9 @@ bitset<16> cache::get_GeneralPurposeRegisters_GPRs(int intIn)
 	return GeneralPurposeRegisters_GPRs[intIn].word;
 }
 //contains a 16-bit base address that supports base register addressing of memory
-bitset<16> cache::get_IndexRegister_XO()
+bitset<16> cache::get_IndexRegister_X0()
 {
-	return IndexRegister_XO;
+	return IndexRegister_X0;
 }
 //holds the 16 bit instruction to be executed
 bitset<16> cache::get_InstructionRegister_IR()
@@ -106,9 +106,9 @@ void cache::set_GeneralPurposeRegisters_GPRs(int gprIn, bitset<16> setIn)
 	GeneralPurposeRegisters_GPRs[gprIn].word = setIn;
 }
 
-void cache::set_IndexRegister_XO(bitset<16> setIn)
+void cache::set_IndexRegister_X0(bitset<16> setIn)
 {
-	IndexRegister_XO = setIn;
+	IndexRegister_X0 = setIn;
 }
 
 void cache::set_InstructionRegister_IR(bitset<16> setIn)
@@ -173,7 +173,7 @@ void cache::reset_AllRegisters()
 	for (int i = 0; i < 4; i++)
 		GeneralPurposeRegisters_GPRs[i].word.reset();
 
-	IndexRegister_XO.reset();
+	IndexRegister_X0.reset();
 	InstructionRegister_IR.reset();
 	MemoryAddressRegister_MAR.reset();
 	MemoryBufferRegister_MBR.reset();
@@ -229,7 +229,7 @@ void cache::printRegisters()
 	{
 		if (i % 4 == 3)
 			cout << "   ";
-		cout << IndexRegister_XO[i];
+		cout << IndexRegister_X0[i];
 	}
 	cout << "\n\t\tMB ==>";
 	for (int i = 15; i >= 0; i--)

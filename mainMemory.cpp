@@ -26,16 +26,18 @@ mainMemory::mainMemory()
 mainMemory::~mainMemory()
 {
 }
+/*
 //returns instruction set list
 vector <bitset<16>> mainMemory::getInstructionSet()
 {
 	return instructionSet;
 }
+*/
 //returns next instruction in instruction set list
 bitset<16> mainMemory::getNextInstruction(bitset<16> &programCounter_In)
 {
 	unsigned long tempLong = programCounter_In.to_ulong();
-	bitset<16> tempInstruction = instructionSet[tempLong];
+	bitset<16> tempInstruction = memory[tempLong];
 	return tempInstruction;
 }
 
@@ -120,7 +122,7 @@ void mainMemory::printMemory()
 //Removes all elements, leaving all containers with a size of 0.
 void mainMemory::clearMemory()
 {
-	instructionSet.clear();//Removes all elements, leaving the container with a size of 0.
+	//instructionSet.clear();//Removes all elements, leaving the container with a size of 0.
 	//memory.clear();//Removes all elements, leaving the container with a size of 0.
 
 	for (int i = 0; i < 2048; i++)
@@ -129,12 +131,10 @@ void mainMemory::clearMemory()
 	}
 }
 //"loads" instructions into main memory
-void mainMemory::set_InstructionSet(vector <bitset<16>> &instructionsIn)
+void mainMemory::insertInstruction(bitset<16> &instructionsIn, bitset<16> &effectiveAddress_EA)
 {
-	if (!instructionsIn.empty())
-		instructionSet = instructionsIn;
-	else
-		cout << "No instructions to load!" << endl;
+	//cout << "EA: " << effectiveAddress_EA << endl;
+	memory[effectiveAddress_EA.to_ulong()] = instructionsIn;
 }
 
 //catches failed input cast and resets istream
@@ -155,7 +155,7 @@ bitset<16> mainMemory::search(unsigned long address)
 }
 
 //sets the bitset at specified location to the provided value
-void mainMemory::setSpecMemoryLoc(unsigned long address, bitset<16> setIn)
+void mainMemory::setMemoryElement(unsigned long address, bitset<16> setIn)
 {
 	memory[address] = setIn;
 }

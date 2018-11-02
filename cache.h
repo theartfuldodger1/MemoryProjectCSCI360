@@ -45,7 +45,7 @@ public:
 
 	bitset<16> get_ProgramCounter_PC();
 	bitset<16> get_GeneralPurposeRegisters_GPRs(int); //Returns selected General Purpose Register, 0-3
-	bitset<16> get_IndexRegister_XO();
+	bitset<16> get_IndexRegister_X0();
 	bitset<16> get_InstructionRegister_IR();
 	bitset<16> get_MemoryAddressRegister_MAR();
 	bitset<16> get_MemoryBufferRegister_MBR();
@@ -57,7 +57,7 @@ public:
 	//Setters
 	void reset_AllRegisters();
 	void set_GeneralPurposeRegisters_GPRs(int, bitset<16>); //Sets selected General Purpose Register, 0-3, each is 16 bits (1 byte)
-	void set_IndexRegister_XO(bitset<16>);
+	void set_IndexRegister_X0(bitset<16>);
 	void set_InstructionRegister_IR(bitset<16>);
 	void set_MemoryAddressRegister_MAR(bitset<16>);//set MemoryAddressRegister (0-2047) as bitset<16> - next instruction
 	void set_MemoryBufferRegister_MBR(bitset<16>);
@@ -79,7 +79,7 @@ public:
 
 private:
 	Register GeneralPurposeRegisters_GPRs[4]; //Array of structs containing a bitset, 16 bits each, 0-3, referred to as R0 – R3. May be used as accumulators
-	bitset<16> IndexRegister_XO; //the index register contains 16-bit base address for base register addressing of memory.
+	bitset<16> IndexRegister_X0; //the index register contains 16-bit base address for base register addressing of memory.
 	bitset<16> InstructionRegister_IR; //instruction to be executed
 	bitset<16> MemoryAddressRegister_MAR; // 16 bit - address of the word to be fetched from memory (0-2047) as bitset<16>
 	bitset<16> MemoryBufferRegister_MBR; //data just fetched from or stored into memory

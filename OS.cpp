@@ -807,7 +807,7 @@ void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 }
 //accepts a bitset<16> instruction. The instruction's effective address is calculated based on values of I and IX
 //A new bitset<16> is returned with the effective address
-bitset<16>& OS::effectiveAddress_EA(bitset<16> & instructionIn)
+bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
 {
 	/*             R
 	Opcode  I  IX AC  Address
@@ -821,11 +821,11 @@ bitset<16>& OS::effectiveAddress_EA(bitset<16> & instructionIn)
 
 	//Acquire and encode address - BEGIN
 	//address  = streamToOpCode(inFile);
-	int j = 10;
+	//int j = 10;
 	for (int i = 0; i < 6; i++)
 	{
-		address[j] = instructionIn[i];
-		j++;
+		address[i] = instructionIn[i];
+		//j++;
 	}
 	// Acquire and encode address - END
 	if (I = 0)
@@ -833,14 +833,14 @@ bitset<16>& OS::effectiveAddress_EA(bitset<16> & instructionIn)
 		if (IX = 0) 
 			effectiveAddress_EA = address;
 		if (IX = 1)
-			effectiveAddress_EA = MyCache.get_IndexRegister_XO().to_ulong() + address.to_ulong();
+			effectiveAddress_EA = MyCache.get_IndexRegister_X0().to_ulong() + address.to_ulong();
 	}
 	if (I = 1)
 	{
 		if (IX = 0)
 			effectiveAddress_EA = address;
 		if (IX = 1)
-			effectiveAddress_EA = MyCache.get_IndexRegister_XO().to_ulong() + address.to_ulong();
+			effectiveAddress_EA = MyCache.get_IndexRegister_X0().to_ulong() + address.to_ulong();
 	}
 	return effectiveAddress_EA;
 }
@@ -1002,7 +1002,14 @@ void OS::loadInstructionsIntoMain()
 		cout << "Instruction Set is empty."
 		<< "\nPlease add instructions before attempting to load to main memory" << endl;
 	else
-		MyMemory.set_InstructionSet(InstructionSet_OS);
+	{
+		vector<bitset<16>>::iterator iterInstSet = InstructionSet_OS.begin();
+		while (iterInstSet != InstructionSet_OS.end())
+		{
+			MyMemory.insertInstruction(*iterInstSet, effectiveAddress_EA(*iterInstSet));
+			iterInstSet++;
+		}
+	}
 //cout << "In OS::loadInstructionIntoMain()" << endl;
 }
 //when isntructions are not yet loaded
@@ -1111,7 +1118,7 @@ void OS::stepInstructions()
 	bitset<2> reg;
 	bitset<6> addy;
 	bitset<16> addyPC;
-	vector <bitset<16>> mem_set = MyMemory.getInstructionSet();
+	vector <bitset<16>> mem_set = InstructionSet_OS;//MyMemory.getInstructionSet();
 	vector<bitset<16>>::iterator iSetIter;
 	vector<bitset<16>>::iterator itExe = mem_set.begin();;
 	bitset<16> instruction;
@@ -1344,7 +1351,7 @@ void OS::LDR(bitset<16> temp)
 		}
 		else if (temp[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1382,7 +1389,7 @@ void OS::LDR(bitset<16> temp)
 		}
 		else if (temp[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1425,11 +1432,11 @@ void OS::STR(bitset<16> setIn)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
-			MyMemory.setSpecMemoryLoc(effective_address, content);
+			MyMemory.setMemoryElement(effective_address, content);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1443,7 +1450,7 @@ void OS::STR(bitset<16> setIn)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
-			MyMemory.setSpecMemoryLoc(effective_address, content);
+			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
 	else if (setIn[9] == 1)
@@ -1457,11 +1464,11 @@ void OS::STR(bitset<16> setIn)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
-			MyMemory.setSpecMemoryLoc(effective_address, content);
+			MyMemory.setMemoryElement(effective_address, content);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1475,7 +1482,7 @@ void OS::STR(bitset<16> setIn)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
-			MyMemory.setSpecMemoryLoc(effective_address, content);
+			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
 }
@@ -1499,14 +1506,14 @@ void OS::LDX(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
-			MyCache.set_IndexRegister_XO(content);
+			MyCache.set_IndexRegister_X0(content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 	}
 	else if (temp[8] == 1)
 	{
-		bitset<16> index = MyCache.get_IndexRegister_XO();
+		bitset<16> index = MyCache.get_IndexRegister_X0();
 		bitset<16> address;
 		for (int i = 5; i >= 0; i--)
 		{
@@ -1521,7 +1528,7 @@ void OS::LDX(bitset<16> temp)
 		mar = effectiveAddress_EA.to_ulong();
 		SystemBus.loadAddress(effective_address);
 		content = SystemBus.loadData(effective_address);
-		MyCache.set_IndexRegister_XO(content);
+		MyCache.set_IndexRegister_X0(content);
 		MyCache.set_MemoryAddressRegister_MAR(mar);
 		MyCache.set_MemoryBufferRegister_MBR(content);
 	}
@@ -1537,13 +1544,13 @@ void OS::LDX(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
-			MyCache.set_IndexRegister_XO(content);
+			MyCache.set_IndexRegister_X0(content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
 		else if (temp[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1558,7 +1565,7 @@ void OS::LDX(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
 			content = SystemBus.loadData(effective_address);
-			MyCache.set_IndexRegister_XO(content);
+			MyCache.set_IndexRegister_X0(content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
 		}
@@ -1581,12 +1588,12 @@ void OS::STX(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
-			content = MyCache.get_IndexRegister_XO();
-			MyMemory.setSpecMemoryLoc(effective_address, content);
+			content = MyCache.get_IndexRegister_X0();
+			MyMemory.setMemoryElement(effective_address, content);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1599,8 +1606,8 @@ void OS::STX(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
-			content = MyCache.get_IndexRegister_XO();
-			MyMemory.setSpecMemoryLoc(effective_address, content);
+			content = MyCache.get_IndexRegister_X0();
+			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
 	else if (setIn[9] == 1)
@@ -1613,12 +1620,12 @@ void OS::STX(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
-			content = MyCache.get_IndexRegister_XO();
-			MyMemory.setSpecMemoryLoc(effective_address, content);
+			content = MyCache.get_IndexRegister_X0();
+			MyMemory.setMemoryElement(effective_address, content);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1631,8 +1638,8 @@ void OS::STX(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.loadAddress(effective_address);
-			content = MyCache.get_IndexRegister_XO();
-			MyMemory.setSpecMemoryLoc(effective_address, content);
+			content = MyCache.get_IndexRegister_X0();
+			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
 }
@@ -1692,7 +1699,7 @@ void OS::CMP(bitset<16> setIn)
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1776,7 +1783,7 @@ void OS::CMP(bitset<16> setIn)
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_XO();
+			bitset<16> index = MyCache.get_IndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{

@@ -50,7 +50,7 @@ public:
 	
 	bitset<6> streamToOpCode(istream &cin);
 	string opCodeToString(bitset<6>&);
-	void processFile(istream & cin);//modified version of file version of processFile, esp for istream cin
+	void processFile(istream & cin);//modified version of processFile, esp for istream cin
 	void processFile(ifstream &inFile, vector <bitset<16>>&);//For file processing only
 	
 	void loadInstructionsIntoMain();
@@ -74,7 +74,7 @@ public:
     void codeRRII(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode, r, r, i, i;
 
 	void encodeAddress(istream &inFile, bitset<16> &buildSet, bool);//encodes 6 bit address from user input or file
-	bitset<16>& effectiveAddress_EA(bitset<16> &);
+	bitset<16> effectiveAddress_EA(bitset<16> &);
 
 	void LDR(bitset<16> setIn); //Load register from memory
 	void STR(bitset<16> setIn); //Store register to memory
