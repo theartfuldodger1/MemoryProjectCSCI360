@@ -119,8 +119,8 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 	/*
 	//for testing BEGIN
 	int temp = 0;
-	vector <bitset<16>>::iterator iter = InstructionSet_OS.begin();
-	while (iter != InstructionSet_OS.end())
+	vector <bitset<16>>::iterator iter = instructionSet_OS.begin();
+	while (iter != instructionSet_OS.end())
 	{
 		cout << "vector position:: " << temp << ", Item:: " << *iter << endl;
 		cout << "\tposition:: " << temp << ", size:: " << iter->size() << endl;
@@ -200,7 +200,7 @@ unsigned short int OS::menu1A()
 
 	} while (!instructionFile.is_open());
 
-	processFile(instructionFile, InstructionSet_OS);
+	processFile(instructionFile, instructionSet_OS);
 	unsigned short int paramOut = menu2();
 	return paramOut;
 }
@@ -307,7 +307,7 @@ void OS::processFile(istream &cin)
 		else if (opCode == 26 || opCode == 26)
 			codeRRII(cin, buildSet, stringFlag);
 
-		InstructionSet_OS.push_back(buildSet);
+		instructionSet_OS.push_back(buildSet);
 //cout << "pushed processFile!" << endl;
 		cin.clear();
 		cin.ignore(255, '\n');
@@ -318,8 +318,8 @@ void OS::processFile(istream &cin)
 /*
 	//for testing BEGIN
 	int tempTest = 0;
-	vector <bitset<16>>::iterator iter = InstructionSet_OS.begin();
-	while (iter != InstructionSet_OS.end())
+	vector <bitset<16>>::iterator iter = instructionSet_OS.begin();
+	while (iter != instructionSet_OS.end())
 	{
 		cout << "vector position:: " << tempTest << ", Item:: " << *iter << endl;
 		cout << "\tposition:: " << tempTest << ", size:: " << iter->size() << endl;
@@ -670,7 +670,7 @@ void OS::processFile(ifstream &inFile, vector <bitset<16>> &instructions)
 		else if (opCode == 25)
 		    codeRx(inFile, buildSet, stringFlag);
 		//-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
-        else if (opCode == 26 || opCode == 26 )
+        else if (opCode == 26 || opCode == 27 )
             codeRRII(inFile, buildSet, stringFlag);
 
 		instructions.push_back(buildSet);
@@ -998,13 +998,13 @@ string OS::opCodeToString(bitset<6>&opCode)
 
 void OS::loadInstructionsIntoMain()
 {
-	if (InstructionSet_OS.empty())
+	if (instructionSet_OS.empty())
 		cout << "Instruction Set is empty."
 		<< "\nPlease add instructions before attempting to load to main memory" << endl;
 	else
 	{
-		vector<bitset<16>>::iterator iterInstSet = InstructionSet_OS.begin();
-		while (iterInstSet != InstructionSet_OS.end())
+		vector<bitset<16>>::iterator iterInstSet = instructionSet_OS.begin();
+		while (iterInstSet != instructionSet_OS.end())
 		{
 			MyMemory.insertInstruction(*iterInstSet, effectiveAddress_EA(*iterInstSet));
 			iterInstSet++;
@@ -1032,7 +1032,7 @@ void OS::printInstructions()
 	bitset<6> opCode;
 	bitset<2> reg;
 	bitset<6> addy;
-	vector<bitset<16>>::iterator iSetIter = InstructionSet_OS.begin();
+	vector<bitset<16>>::iterator iSetIter = instructionSet_OS.begin();
 	bitset<16> instruction;
 	string opCodeString;
 	char input;
@@ -1042,7 +1042,7 @@ void OS::printInstructions()
 		cout << right;
 		cout << setw(40) << "Instructions"
 			<< "\n\t\t----------------------------------";
-		if (InstructionSet_OS.empty())
+		if (instructionSet_OS.empty())
 		{
 			cout << "\n";
 			//cout << right;
@@ -1055,7 +1055,7 @@ void OS::printInstructions()
 		else
 		{
 			int count = 0;
-			while (iSetIter != InstructionSet_OS.end())
+			while (iSetIter != instructionSet_OS.end())
 			{
 				instruction = *iSetIter;
 				int z = 0;
@@ -1102,12 +1102,12 @@ void OS::printInstructions()
 void OS::stepInstructions()
 {
 	/*
-	Instructions
+						 Instructions
 	------------------------------------------------------
 	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
 	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
 	------------------------------------------------------
-	R.Run	     S.Step       Q.Menu    	H.Help
+		R.Run	     S.Step       Q.Menu    	H.Help
 	*/
 	/*             R
 	Opcode  I  IX AC  Address
@@ -1118,9 +1118,9 @@ void OS::stepInstructions()
 	bitset<2> reg;
 	bitset<6> addy;
 	bitset<16> addyPC;
-	vector <bitset<16>> mem_set = InstructionSet_OS;//MyMemory.getInstructionSet();
+	//vector <bitset<16>> instructionSet_OS = instructionSet_OS;//MyMemory.getInstructionSet();
 	vector<bitset<16>>::iterator iSetIter;
-	vector<bitset<16>>::iterator itExe = mem_set.begin();;
+	vector<bitset<16>>::iterator itExe = instructionSet_OS.begin();;
 	bitset<16> instruction;
 	bitset<16> instructionPC;
 	string opCodeString;
@@ -1131,8 +1131,8 @@ void OS::stepInstructions()
 
 	do
 	{	
-		iSetIter = mem_set.begin();
-		if (count < mem_set.size())
+		iSetIter = instructionSet_OS.begin();
+		if (iSetIter != instructionSet_OS.end())//(count < instructionSet_OS.size())
 			for (unsigned int i = 0; i < count; i++)
 				itExe++;
 		firstPassFlag = 0;
@@ -1142,7 +1142,7 @@ void OS::stepInstructions()
 		cout << setw(40) << "Instructions"
 			<< "\n\t\t----------------------------------";
 		
-		while (iSetIter != mem_set.end())
+		while (iSetIter != instructionSet_OS.end())
 		{
 			instruction = *iSetIter;
 			int z = 0;
@@ -1209,41 +1209,14 @@ void OS::stepInstructions()
 			if(input == 'R' || input == 'r')
 				runFlag = 1;
 		}
-		//iSetIter = mem_set.begin();
-		//do//run the instructions
-		{
-			if (input == 'R' || input == 'r' || input == 'S' || input == 's')
-			{ 
-				bitset<16> temp;
-				bitset<6> op;
-				
-				if (itExe != mem_set.end()) {
-					int a = 0;
-					temp = *itExe;
-					//temp = *iSetIter;
-					for (int i = 10; i < 16; i++) {
-						op[a] = temp[i];
-						a++;
-					}
-					string s = opCodeToString(op);
+		if (input == 'R' || input == 'r' || input == 'S' || input == 's')
+			if (itExe != instructionSet_OS.end()) 
+			{
+				executeInstruction(*itExe);
 
-					if (s == "LDR") {
-						LDR(temp);
-					}
-					else if (s == "STR") {
-						STR(temp);
-					}
-					else if (s == "LDX") {
-						LDX(temp);
-					}
-					else if (s == "STX") {
-						STX(temp);
-					}
-					count++;
-					itExe++;
-				}
+				count++;
+				itExe++;
 			}
-		} //while (input != 'Q' && input != 'q');
 		//call help file needed
 		if (input == 'H' || input == 'h')
 			cout << "\t\nHelp File incomplete..." << endl;
@@ -1251,10 +1224,82 @@ void OS::stepInstructions()
 	} while (input != 'Q' && input != 'q');
 }
 
+void OS::executeInstruction(bitset<16> &instructionIn)
+{
+	bitset<6> opCode;
+	int a = 0;
+
+	for (int i = 10; i < 16; i++)
+	{
+		opCode[a] = instructionIn[i];
+		a++;	
+	}
+
+	if (opCode == 1)		//LDR
+		LDR(instructionIn);
+	else if (opCode == 2)	//STR
+		STR(instructionIn);
+	else if (opCode == 41)	//LDX
+		LDX(instructionIn);
+	else if (opCode == 42)	//STX
+		STX(instructionIn);
+	/*
+	else if (opCode == 10)	//JE
+		JE(instructionIn);
+	else if (opCode == 11)	//JNE
+		JNE(instructionIn);
+	else if (opCode == 12)	//JG
+		JG(instructionIn);
+	else if (opCode == 13)	//JUMP
+		JUMP(instructionIn);
+	else if (opCode == 14)	//JGE
+		JGE(instructionIn);
+	else if (opCode == 15)	//JL
+		JL(instructionIn);
+	else if (opCode == 16)	//JLE
+		JLE(instructionIn);
+	*/
+	else if (opCode == 17)	//CMP
+		CMP(instructionIn);
+	//else if (opCode == 18)	
+
+	//else if (opCode == 19)
+	/*
+	else if (opCode == 4)	//AMR
+		AMR(instructionIn);
+	else if (opCode == 5)	// SMR
+		SMR(instructionIn);
+	else if (opCode == 6)	//AIR
+		AIR(instructionIn);
+	else if (opCode == 7)	//SIR
+		SIR(instructionIn);
+	else if (opCode == 8)	//DEC
+		DEC(instructionIn);
+	else if (opCode == 9)	//INC
+		INC(instructionIn);
+	else if (opCode == 20)	//MUL
+		MUL(instructionIn);
+	else if (opCode == 21)	//DIV 
+		DIV(instructionIn);
+	else if (opCode == 22)	//TER 
+		TER(instructionIn);
+	else if (opCode == 23)	//AND 
+		AND(instructionIn);
+	else if (opCode == 24)	//ORR
+		ORR(instructionIn);
+	else if (opCode == 25)	//NOT
+		NOT(instructionIn);
+	else if (opCode == 26)	//ADD 
+		ADD(instructionIn);
+	else if (opCode == 27)	//SUB
+		SUB(instructionIn);
+	*/
+}
+
 void OS::clearAllData()
 {
 	MyCache.reset_AllRegisters();//resets all bitsets to 0's
-	InstructionSet_OS.clear();//removes all elements leaving the container with a size of 0
+	instructionSet_OS.clear();//removes all elements leaving the container with a size of 0
 	MyMemory.clearMemory();//removes all elements leaving the container with a size of 0
 }
 //Scrolls through file data for processing specific fields as required

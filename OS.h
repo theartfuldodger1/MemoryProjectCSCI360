@@ -58,6 +58,7 @@ public:
 	void clearAllData();
 	void printInstructions();//when isntructions are not yet loaded
 	void stepInstructions();//instructions loaded in main memory
+	void executeInstruction(bitset<16> &);
 
 	//void voidLowerCase(string &wordIn);
 	string fileIterator(istream &input, char delim);//uses either space, ' ' or ',' or '\n' as char delimeter per calling function requirements
@@ -82,11 +83,34 @@ public:
 	void STX(bitset<16> setIn); //Store index register to memory
 	void CMP(bitset<16> setIn); //Compares register value with memory location value
 
+	void JE(bitset<16> setIn);
+	void JNE(bitset<16> setIn);
+	void JG(bitset<16> setIn);
+	void JGE(bitset<16> setIn);
+	void JL(bitset<16> setIn);
+	void JLE(bitset<16> setIn);
+	void JUMP(bitset<16> setIn);
+
+	void AMR(bitset<16> setIn);
+	void SMR(bitset<16> setIn);
+	void AIR(bitset<16> setIn);
+	void SIR(bitset<16> setIn);
+	void DEC(bitset<16> setIn);
+	void INC(bitset<16> setIn);
+	void MUL(bitset<16> setIn);
+	void DIV(bitset<16> setIn);
+	void TER(bitset<16> setIn);
+	void AND(bitset<16> setIn);
+	void ORR(bitset<16> setIn);
+	void NOT(bitset<16> setIn);
+	void ADD(bitset<16> setIn);
+	void SUB(bitset<16> setIn);
+
 private:
 	Bus SystemBus;
 	cache MyCache;
 	mainMemory MyMemory;
-	vector <bitset<16>> InstructionSet_OS;//all instructions loaded here from file
+	vector <bitset<16>> instructionSet_OS;//all instructions loaded here from file
 };
 #endif /* __OS_H__ */
 

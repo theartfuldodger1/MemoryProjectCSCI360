@@ -44,14 +44,14 @@ bitset<16> mainMemory::getNextInstruction(bitset<16> &programCounter_In)
 void mainMemory::printMemory()
 {
 	int countFront= 0;
-	int countBack = 2;
+	int countBack = 1;
 	cout << "\n";
 	cout << right;
-	cout << setw(50) << "Memory Display"
-		<< "\n\t\t---------------------------------------------------";
+	cout << setw(70) << "Memory Display"
+		<< "\n\t------------------------------------------------------------------------------------------------------------------";
 	if (memory.empty())
 		cout << "Memory is empty" << endl;
-	for (int i = 0; i < 65; i++)
+	for (int i = 0; i < 1024; i++)
 	{
 		
 		if ( i % 3 != 0)
@@ -64,14 +64,14 @@ void mainMemory::printMemory()
 		{
 			cout << endl;
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-			cout << "   " << memory[i] << " " <<  memory[i].to_ulong() << "   ";
+			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 		}
-		countFront++;
-		countBack++;
+		countFront += 2;
+		countBack += 2;
 	}
 
-	cout << "\n\t\t---------------------------------------------------\n"
-		<< setw(29) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
+	cout << "\n\t------------------------------------------------------------------------------------------------------------------\n"
+		<< setw(52) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
 		<< "\n\n\t==>> ";
 
 	char input;
@@ -130,7 +130,7 @@ void mainMemory::clearMemory()
 		memory[i].reset();//does not destroy the elements. only sets all bits to 0;
 	}
 }
-//"loads" instructions into main memory
+//"loads" instructions into main memory accorign to address/EA
 void mainMemory::insertInstruction(bitset<16> &instructionsIn, bitset<16> &effectiveAddress_EA)
 {
 	//cout << "EA: " << effectiveAddress_EA << endl;
