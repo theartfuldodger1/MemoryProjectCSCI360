@@ -56,11 +56,19 @@ public:
 	void loadInstructionsIntoMain();
 
 	void clearAllData();
+
+	//instruction display
 	void printInstructions();//when isntructions are not yet loaded
 	void stepInstructions();//instructions loaded in main memory
 	void executeInstruction(bitset<16> &);//calls appropriate function to process an instruction based on instrcuction opCode
 	void instructionDisplaySwitch(bitset<16> &);
-	void printOpCodeRIXA(bitset<16> &);//for instruction display
+	void printCodeRIXA(bitset<16> &);//for instruction display
+	void printCodeIXA(bitset<16> &);//for instruction display
+	void printCodeRimmed(bitset<16> &);//for instruction display
+	void printCodeR(bitset<16> &);//for instruction display
+	void printCodeRxRy(bitset<16> &);//for instruction display
+	void printCodeRx(bitset<16> &);//for instruction display
+	void printCodeRRII(bitset<16> &);//for instruction display
 
 	//void voidLowerCase(string &wordIn);
 	string fileIterator(istream &input, char delim);//uses either space, ' ' or ',' or '\n' as char delimeter per calling function requirements
@@ -77,7 +85,7 @@ public:
     void codeRRII(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode, r, r, i, i;
 
 	void encodeAddress(istream &inFile, bitset<16> &buildSet, bool);//encodes 6 bit address from user input or file
-	bitset<16> effectiveAddress_EA(bitset<16> &);
+	bitset<16> effectiveAddress_EA(bitset<16> &); //accepts a bitset<16> instruction and returns its effective address as a bitset<16>
 
 	void LDR(bitset<16> setIn); //Load register from memory
 	void STR(bitset<16> setIn); //Store register to memory

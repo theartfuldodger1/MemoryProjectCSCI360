@@ -828,18 +828,18 @@ bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
 		//j++;
 	}
 	// Acquire and encode address - END
-	if (I = 0)
+	if (I == 0)
 	{
-		if (IX = 0) 
+		if (IX == 0) 
 			effectiveAddress_EA = address;
-		if (IX = 1)
+		if (IX == 1)
 			effectiveAddress_EA = MyCache.get_IndexRegister_X0().to_ulong() + address.to_ulong();
 	}
-	if (I = 1)
+	if (I == 1)
 	{
-		if (IX = 0)
+		if (IX == 0)
 			effectiveAddress_EA = address;
-		if (IX = 1)
+		if (IX == 1)
 			effectiveAddress_EA = MyCache.get_IndexRegister_X0().to_ulong() + address.to_ulong();
 	}
 	return effectiveAddress_EA;
@@ -1120,7 +1120,7 @@ void OS::stepInstructions()
 	bitset<16> addyPC;
 	//vector <bitset<16>> instructionSet_OS = instructionSet_OS;//MyMemory.getInstructionSet();
 	vector<bitset<16>>::iterator iSetIter;
-	vector<bitset<16>>::iterator itExe = instructionSet_OS.begin();;
+	vector<bitset<16>>::iterator itExe = instructionSet_OS.begin();
 	bitset<16> instruction;
 	bitset<16> instructionPC;
 	string opCodeString;
@@ -1164,7 +1164,7 @@ void OS::stepInstructions()
 				addy[z] = instruction[i];
 				z++;
 			}
-			if (opCode == 1 || opCode == 2 || opCode == 41 || opCode == 42 || opCode.to_ulong() > 9 && opCode.to_ulong() < 18)
+			
 
 			/*
 			MyCache.set_ProgramCounter(addyPC);
@@ -1223,6 +1223,88 @@ void OS::stepInstructions()
 			cout << "\t\nHelp File incomplete..." << endl;
 
 	} while (input != 'Q' && input != 'q');
+}
+
+void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
+{
+	int j = 0;
+	bitset<6> opCode;
+	for (int i = 10; i < 16; i++)
+	{
+		opCode[j] = instructionIn[i];
+		j++;
+	}
+	//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
+	if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17)
+		printCodeRIXA(instructionIn);
+	//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JUMP(13) //Form --> opCode i, x, address
+	else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode == 11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
+		printCodeIXA(instructionIn);
+	//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
+	else if (opCode == 6 || opCode == 7)
+		printCodeRimmed(instructionIn);
+	//-> DEC(8), INC(9) //Form --> opCode, r, immed
+	else if (opCode == 8 || opCode == 9)
+		printCodeR(instructionIn);
+	//Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
+	else if (opCode == 20 || opCode == 21 || opCode == 22 || opCode == 23 || opCode == 24)
+		printCodeRxRy(instructionIn);
+	//-> NOT(25) //form --> opCode, rx
+	else if (opCode == 25)
+		printCodeRx(instructionIn);
+	//-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
+	else if (opCode == 26 || opCode == 27)
+		printCodeRRII(instructionIn);
+}
+//for instruction display
+void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instruction display
+{
+/*
+	if (MyCache.get_ProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
+			<< " R" << reg.to_ulong() << ", " << instructionIn[9] << ", "
+			<< instruction[8] << ", " << addy;
+		firstPassFlag = 1;
+	}
+
+	else
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << count << "       " << opCodeToString(opCode)
+			<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
+			<< instruction[8] << ", " << addy;
+	}
+*/
+}
+//for instruction display
+void OS::printCodeIXA(bitset<16> &instructionIn)
+{
+
+}
+//for instruction display
+void OS::printCodeRimmed(bitset<16> &instructionIn)
+{
+
+}
+//for instruction display
+void OS::printCodeR(bitset<16> &instructionIn)
+{
+
+}
+//for instruction display
+void OS::printCodeRxRy(bitset<16> &instructionIn)
+{
+
+}
+//for instruction display
+void OS::printCodeRx(bitset<16> &instructionIn)
+{
+
+}
+//for instruction display
+void OS::printCodeRRII(bitset<16> &instructionIn)
+{
+
 }
 
 void OS::executeInstruction(bitset<16> &instructionIn)
