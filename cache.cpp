@@ -49,37 +49,37 @@ bitset<16> operator++ (bitset<16> &setIn)
 	return setIn;
 }
 //holds 16 bit address of next instruction to be executed
-bitset<16> cache::get_ProgramCounter_PC()
+bitset<16> cache::getProgramCounter_PC()
 {
 	return programCounter_PC;
 }
 //Returns list of registers
-Register* cache::get_GeneralPurposeRegisters_GPRs()
+Register* cache::getGeneralPurposeRegisters_GPRs()
 {
 	return GeneralPurposeRegisters_GPRs;
 }
 //Returns selected General Purpose Register Word, 0-3
-bitset<16> cache::get_GeneralPurposeRegisters_GPRs(int intIn)
+bitset<16> cache::getGeneralPurposeRegisters_GPRs(int intIn)
 {
 	return GeneralPurposeRegisters_GPRs[intIn].word;
 }
 //contains a 16-bit base address that supports base register addressing of memory
-bitset<16> cache::get_IndexRegister_X0()
+bitset<16> cache::getIndexRegister_X0()
 {
 	return IndexRegister_X0;
 }
 //holds the 16 bit instruction to be executed
-bitset<16> cache::get_InstructionRegister_IR()
+bitset<16> cache::getInstructionRegister_IR()
 {
 	return InstructionRegister_IR;
 }
 
-bitset<16> cache::get_MemoryAddressRegister_MAR()
+bitset<16> cache::getMemoryAddressRegister_MAR()
 {
 	return MemoryAddressRegister_MAR;
 }
 
-bitset<16> cache::get_MemoryBufferRegister_MBR()
+bitset<16> cache::getMemoryBufferRegister_MBR()
 {
 	return MemoryBufferRegister_MBR;
 }
@@ -101,27 +101,27 @@ bitset<1> cache::get_SF()
 
 //Sets selected General Purpose Register, 0-3
 //accepts an int, representing one of the four register elements, and a 16 bit bitset as the data/instruction
-void cache::set_GeneralPurposeRegisters_GPRs(int gprIn, bitset<16> setIn)
+void cache::setGeneralPurposeRegisters_GPRs(int gprIn, bitset<16> setIn)
 {
 	GeneralPurposeRegisters_GPRs[gprIn].word = setIn;
 }
 
-void cache::set_IndexRegister_X0(bitset<16> setIn)
+void cache::setIndexRegister_X0(bitset<16> setIn)
 {
 	IndexRegister_X0 = setIn;
 }
 
-void cache::set_InstructionRegister_IR(bitset<16> setIn)
+void cache::setInstructionRegister_IR(bitset<16> setIn)
 {
 	InstructionRegister_IR = setIn;
 }
 //set MemoryAddressRegister (0-2047) as bitset<16>
-void cache::set_MemoryAddressRegister_MAR(bitset<16> setIn)
+void cache::setMemoryAddressRegister_MAR(bitset<16> setIn)
 {
 	MemoryAddressRegister_MAR = setIn;
 }
 
-void cache::set_MemoryBufferRegister_MBR(bitset<16> setIn)
+void cache::setMemoryBufferRegister_MBR(bitset<16> setIn)
 {
 	MemoryBufferRegister_MBR = setIn;
 }
@@ -168,7 +168,7 @@ void cache::set_SF(int bit)
 		SF.reset();
 }
 //Resets all registers to all 0's
-void cache::reset_AllRegisters()
+void cache::resetAllRegisters()
 {
 	for (int i = 0; i < 4; i++)
 		GeneralPurposeRegisters_GPRs[i].word.reset();

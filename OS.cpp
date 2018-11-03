@@ -97,7 +97,7 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 				cout << "\t\nHelp File incomplete..." << endl;
 				bitset<16> tt("0000010011010111");
 				LDR(tt);
-				bitset<16> aa = MyCache.get_GeneralPurposeRegisters_GPRs(3);
+				bitset<16> aa = MyCache.getGeneralPurposeRegisters_GPRs(3);
 				STR(aa);
 				//bitset<16> dd("1010010000001001");
 				//LDX(dd);
@@ -833,23 +833,23 @@ bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
 		if (IX == 0) 
 			effectiveAddress_EA = address;
 		if (IX == 1)
-			effectiveAddress_EA = MyCache.get_IndexRegister_X0().to_ulong() + address.to_ulong();
+			effectiveAddress_EA = MyCache.getIndexRegister_X0().to_ulong() + address.to_ulong();
 	}
 	if (I == 1)
 	{
 		if (IX == 0)
 		{
-			MyCache.set_MemoryAddressRegister_MAR(address);
-			SystemBus.setAddressBus(MyCache.get_MemoryAddressRegister_MAR().to_ulong());
-			MyCache.set_MemoryBufferRegister_MBR(SystemBus.getDataBus());
-			effectiveAddress_EA = MyCache.get_MemoryBufferRegister_MBR();
+			MyCache.setMemoryAddressRegister_MAR(address);
+			SystemBus.setAddressBus(MyCache.getMemoryAddressRegister_MAR().to_ulong());
+			MyCache.setMemoryBufferRegister_MBR(SystemBus.getDataBus());
+			effectiveAddress_EA = MyCache.getMemoryBufferRegister_MBR();
 		}
 		if (IX == 1)
 		{
-			MyCache.set_MemoryAddressRegister_MAR(MyCache.get_IndexRegister_X0().to_ulong() + address.to_ulong());
-			SystemBus.setAddressBus(MyCache.get_MemoryAddressRegister_MAR().to_ulong());
-			MyCache.set_MemoryBufferRegister_MBR(SystemBus.getDataBus());
-			effectiveAddress_EA = MyCache.get_MemoryBufferRegister_MBR();
+			MyCache.setMemoryAddressRegister_MAR(MyCache.getIndexRegister_X0().to_ulong() + address.to_ulong());
+			SystemBus.setAddressBus(MyCache.getMemoryAddressRegister_MAR().to_ulong());
+			MyCache.setMemoryBufferRegister_MBR(SystemBus.getDataBus());
+			effectiveAddress_EA = MyCache.getMemoryBufferRegister_MBR();
 		}
 	}
 	return effectiveAddress_EA;
@@ -1187,8 +1187,8 @@ void OS::stepInstructions()
 			}
 			*/
 			//cout << "addyPC: " << addyPC << endl;
-			//bitset<6> PC = MyCache.get_ProgramCounter_PC();
-			if(MyCache.get_ProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
+			//bitset<6> PC = MyCache.getProgramCounter_PC();
+			if(MyCache.getProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
 			{
 				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
 					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
@@ -1270,7 +1270,7 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instruction display
 {
 /*
-	if (MyCache.get_ProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
+	if (MyCache.getProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
 	{
 		cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
 			<< " R" << reg.to_ulong() << ", " << instructionIn[9] << ", "
@@ -1391,7 +1391,7 @@ void OS::executeInstruction(bitset<16> &instructionIn)
 
 void OS::clearAllData()
 {
-	MyCache.reset_AllRegisters();//resets all bitsets to 0's
+	MyCache.resetAllRegisters();//resets all bitsets to 0's
 	instructionSet_OS.clear();//removes all elements leaving the container with a size of 0
 	MyMemory.clearMemory();//removes all elements leaving the container with a size of 0
 }
@@ -1483,13 +1483,13 @@ void OS::LDR(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.loadDataBus(effective_address);
-			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content);
+			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content);
 		}
 		else if (temp[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1504,9 +1504,9 @@ void OS::LDR(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.loadDataBus(effective_address);
-			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content);
+			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content);
 		}
 	}
 	else if (temp[9] == 1)
@@ -1521,13 +1521,13 @@ void OS::LDR(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.loadDataBus(effective_address);
-			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content);
+			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content);
 		}
 		else if (temp[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1542,9 +1542,9 @@ void OS::LDR(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.loadDataBus(effective_address);
-			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content);
+			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content);
 		}
 	}
 }
@@ -1569,12 +1569,12 @@ void OS::STR(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			content = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1587,7 +1587,7 @@ void OS::STR(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			content = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
@@ -1601,12 +1601,12 @@ void OS::STR(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			content = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1619,7 +1619,7 @@ void OS::STR(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			content = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
@@ -1644,14 +1644,14 @@ void OS::LDX(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.loadDataBus(effective_address);
-			MyCache.set_IndexRegister_X0(content);
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content);
+			MyCache.setIndexRegister_X0(content);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content);
 		}
 	}
 	else if (temp[8] == 1)
 	{
-		bitset<16> index = MyCache.get_IndexRegister_X0();
+		bitset<16> index = MyCache.getIndexRegister_X0();
 		bitset<16> address;
 		for (int i = 5; i >= 0; i--)
 		{
@@ -1666,9 +1666,9 @@ void OS::LDX(bitset<16> temp)
 		mar = effectiveAddress_EA.to_ulong();
 		SystemBus.setAddressBus(effective_address);
 		content = SystemBus.loadDataBus(effective_address);
-		MyCache.set_IndexRegister_X0(content);
-		MyCache.set_MemoryAddressRegister_MAR(mar);
-		MyCache.set_MemoryBufferRegister_MBR(content);
+		MyCache.setIndexRegister_X0(content);
+		MyCache.setMemoryAddressRegister_MAR(mar);
+		MyCache.setMemoryBufferRegister_MBR(content);
 	}
 	else if (temp[9] == 1)
 	{
@@ -1682,13 +1682,13 @@ void OS::LDX(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.loadDataBus(effective_address);
-			MyCache.set_IndexRegister_X0(content);
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content);
+			MyCache.setIndexRegister_X0(content);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content);
 		}
 		else if (temp[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1703,9 +1703,9 @@ void OS::LDX(bitset<16> temp)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.loadDataBus(effective_address);
-			MyCache.set_IndexRegister_X0(content);
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content);
+			MyCache.setIndexRegister_X0(content);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content);
 		}
 	}
 }
@@ -1726,12 +1726,12 @@ void OS::STX(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = MyCache.get_IndexRegister_X0();
+			content = MyCache.getIndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1744,7 +1744,7 @@ void OS::STX(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = MyCache.get_IndexRegister_X0();
+			content = MyCache.getIndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
@@ -1758,12 +1758,12 @@ void OS::STX(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = MyCache.get_IndexRegister_X0();
+			content = MyCache.getIndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1776,7 +1776,7 @@ void OS::STX(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = MyCache.get_IndexRegister_X0();
+			content = MyCache.getIndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
@@ -1808,7 +1808,7 @@ void OS::CMP(bitset<16> setIn)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content_mem = SystemBus.loadDataBus(effective_address);
-			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
 			if (mem_cont == reg_cont)
@@ -1832,12 +1832,12 @@ void OS::CMP(bitset<16> setIn)
 				MyCache.set_SF(0);
 				cout << "Reg is greaAter" << endl;
 			}
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content_mem); 
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content_mem); 
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1852,7 +1852,7 @@ void OS::CMP(bitset<16> setIn)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content_mem = SystemBus.loadDataBus(effective_address);
-			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
 			if (mem_cont == reg_cont)
@@ -1876,8 +1876,8 @@ void OS::CMP(bitset<16> setIn)
 				MyCache.set_SF(0);
 				cout << "Reg is greater" << endl;
 			}
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content_mem);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content_mem);
 		}
 	}
 	else if (setIn[9] == 1)
@@ -1892,7 +1892,7 @@ void OS::CMP(bitset<16> setIn)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content_mem = SystemBus.loadDataBus(effective_address);
-			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
 			if (mem_cont == reg_cont)
@@ -1916,12 +1916,12 @@ void OS::CMP(bitset<16> setIn)
 				MyCache.set_SF(0);
 				cout << "Reg is greater" << endl;
 			}
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content_mem);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content_mem);
 		}
 		else if (setIn[8] == 1)
 		{
-			bitset<16> index = MyCache.get_IndexRegister_X0();
+			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
 			{
@@ -1936,7 +1936,7 @@ void OS::CMP(bitset<16> setIn)
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content_mem = SystemBus.loadDataBus(effective_address);
-			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
+			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
 			if (mem_cont == reg_cont)
@@ -1960,8 +1960,8 @@ void OS::CMP(bitset<16> setIn)
 				MyCache.set_SF(0);
 				cout << "Reg is greater" << endl;
 			}
-			MyCache.set_MemoryAddressRegister_MAR(mar);
-			MyCache.set_MemoryBufferRegister_MBR(content_mem);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content_mem);
 		}
 	}
 }

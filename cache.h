@@ -41,25 +41,25 @@ public:
 	cache();
 	~cache();
 	//Getters
-	Register* get_GeneralPurposeRegisters_GPRs(); //Returns list of registers
-	bitset<16> get_ProgramCounter_PC();
-	bitset<16> get_GeneralPurposeRegisters_GPRs(int); //Returns selected General Purpose Register, 0-3
-	bitset<16> get_IndexRegister_X0();
-	bitset<16> get_InstructionRegister_IR();
-	bitset<16> get_MemoryAddressRegister_MAR();
-	bitset<16> get_MemoryBufferRegister_MBR();
+	Register* getGeneralPurposeRegisters_GPRs(); //Returns list of registers
+	bitset<16> getProgramCounter_PC();
+	bitset<16> getGeneralPurposeRegisters_GPRs(int); //Returns selected General Purpose Register, 0-3
+	bitset<16> getIndexRegister_X0();
+	bitset<16> getInstructionRegister_IR();
+	bitset<16> getMemoryAddressRegister_MAR();
+	bitset<16> getMemoryBufferRegister_MBR();
 
 	bitset<1> get_ZF();
 	bitset<1> get_CF();
 	bitset<1> get_SF();
 
 	//Setters
-	void reset_AllRegisters();
-	void set_GeneralPurposeRegisters_GPRs(int, bitset<16>); //Sets selected General Purpose Register, 0-3, each is 16 bits (1 byte)
-	void set_IndexRegister_X0(bitset<16>);
-	void set_InstructionRegister_IR(bitset<16>);
-	void set_MemoryAddressRegister_MAR(bitset<16>);//set MemoryAddressRegister (0-2047) as bitset<16> - next instruction
-	void set_MemoryBufferRegister_MBR(bitset<16>);
+	void resetAllRegisters();
+	void setGeneralPurposeRegisters_GPRs(int, bitset<16>); //Sets selected General Purpose Register, 0-3, each is 16 bits (1 byte)
+	void setIndexRegister_X0(bitset<16>);
+	void setInstructionRegister_IR(bitset<16>);
+	void setMemoryAddressRegister_MAR(bitset<16>);//set MemoryAddressRegister (0-2047) as bitset<16> - next instruction
+	void setMemoryBufferRegister_MBR(bitset<16>);
 
 	//two ways to set PC
     void set_ProgramCounter(bitset<16>);//(0-2047) as bitset<16>
