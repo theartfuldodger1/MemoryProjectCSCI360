@@ -16,6 +16,7 @@ using namespace std;
 
 OS::OS()
 {
+	MyCache.setIndexRegister_X0(1);
 }
 //Destructor
 OS::~OS()
@@ -330,7 +331,73 @@ void OS::processFile(istream &cin)
 	cout << "passed testing processFile" << endl;
 */
 }
+//accepts a bitset<16> instruction. The instruction's effective address is calculated based on values of I and IX
+//A new bitset<16> is returned with the effective address
+bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
+{
+	/*             R
+	Opcode  I  IX AC  Address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<16> address;
+	bool IX = instructionIn[8];
+	bool I = instructionIn[9];
+	bitset<16> effectiveAddress_EA;
 
+	//Acquire and encode address - BEGIN
+	//address  = streamToOpCode(inFile);
+	//int j = 10;
+	for (int i = 0; i < 6; i++)
+	{
+		address[i] = instructionIn[i];
+		//j++;
+	}
+//cout << "Address: " << address << endl;
+	// Acquire and encode address - END
+	if (I == 0)
+	{
+		if (IX == 0)
+			effectiveAddress_EA = address;
+		if (IX == 1)
+			effectiveAddress_EA = (constant * MyCache.getIndexRegister_X0().to_ulong()) + address.to_ulong();
+	}
+	if (I == 1)
+	{
+		if (IX == 0)
+			effectiveAddress_EA = constant * address.to_ulong();
+		if (IX == 1)
+			effectiveAddress_EA = constant * (constant * MyCache.getIndexRegister_X0().to_ulong() + address.to_ulong());
+	}
+	/*
+	if (I == 0)
+	{
+		if (IX == 0)
+			effectiveAddress_EA = address;
+		if (IX == 1)
+			effectiveAddress_EA = MyCache.getIndexRegister_X0().to_ulong() + address.to_ulong();
+	}
+	if (I == 1)
+	{
+		if (IX == 0)
+		{
+			MyCache.setMemoryAddressRegister_MAR(address);
+			SystemBus.setAddressBus(MyCache.getMemoryAddressRegister_MAR().to_ulong());
+			MyCache.setMemoryBufferRegister_MBR(SystemBus.getDataBus());
+			effectiveAddress_EA = MyCache.getMemoryBufferRegister_MBR();
+		}
+		if (IX == 1)
+		{
+			MyCache.setMemoryAddressRegister_MAR(MyCache.getIndexRegister_X0().to_ulong() + address.to_ulong());
+			SystemBus.setAddressBus(MyCache.getMemoryAddressRegister_MAR().to_ulong());
+			MyCache.setMemoryBufferRegister_MBR(SystemBus.getDataBus());
+			effectiveAddress_EA = MyCache.getMemoryBufferRegister_MBR();
+		}
+	}
+	*/
+//cout << "EA: " << effectiveAddress_EA << endl;
+	return effectiveAddress_EA;
+}
 //simulation menu, follows addition of instructions (menu1A or 1B). Choice 1 returns the user to Menu 1 (Initialization Menu)
 unsigned short int OS::menu2()
 {
@@ -350,8 +417,6 @@ unsigned short int OS::menu2()
 	*/
 	unsigned short int paramOut = 0;
 	unsigned short int param = 0;
-//cout << "MENU2: " << param << endl;
-//cout << "Stuck 1?" << endl;
 
 		int temp2 = scrollWhiteSpace(cin);
 //		int peek;
@@ -360,61 +425,10 @@ unsigned short int OS::menu2()
 	int first = 0;
 	do
 	{
-	/*
-		//cin.clear();
-		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		failCheck(cin);
-
-		peek = cin.peek();
-		cout << "PEEK:: " << peek << " temp2::  " << temp2 << endl;
-		//failCheck(cin);
-		//char cleaner[256];
-		//cin.getline(cleaner, 256);
-		param = 0;
-		//cin.clear();
-		cout << "\n";
-		cout << right;
-		cout << setw(40) << setfill(' ') << "Simulation Menu"
-			<< "\n\t---------------------------------------------------"
-			<< "\n\t1. Clear All Data and Start Over"
-			<< "\n\t2. Add Instruction Line to End of Queue"
-			<< "\n\t3. Load Program into Main Memory"
-			<< "\n\t4. Display Empty Registers"
-			<< "\n\t5. Display Instructions"
-			<< "\n\t6. Display Empty Memory"
-			<< "\n\t7. Help"
-			<< "\n\t8. Quit" 
-			<< "\n\n\t=>> ";
-//		initializationMenu();
-//cout << "MENU2.1: " << param << endl;
-		cin >> param;
-		cout << "POST: " << param << endl;
-	//	int temp2 = scrollWhiteSpace(cin);
-		peek = cin.peek();
-		cout << "PEEK 2:: " << peek << " temp2.2::  " << temp2 << endl;
-		
-		//cin.ignore(255, '\n');cin.clear();
-		//cin.clear();
-		//cin.ignore(255, '\n');
-		//char cleaner[256];
-		//cin.fail();
-		//cin.getline(cleaner, 256);
-		
-		//failCheck(cin);
-		//cout << "You entered: " << input << endl;
-
-		if (param <= 0 || param > 8)
-		{
-			cout << "\n\tIncorrect input:" << endl;
-			param = 0;
-		}
-		*/
-		
 		//if (first == 0)
 		{
 			if (cin.fail())
 			{
-//cout << "check!:" << endl;
 				check = 1;
 				cin.clear();
 				cin.ignore(255, '\n');
@@ -426,7 +440,6 @@ unsigned short int OS::menu2()
 		//cin >> param;
 
 		param = 0;
-//cout << "param TOP: " << param << endl;
 		
 		if (param < 0 || param > 8)
 		{
@@ -509,7 +522,6 @@ unsigned short int OS::menu2()
 				}
 				break;
 			}
-//cout << "POST - POST@@@@: " << param << endl;
 	} while (param != 8);
 	return paramOut;
 }
@@ -787,7 +799,7 @@ void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form 
 }
 
 
-//encodes 6 bit address from user input or file
+//encodes 6 bit address from user input from string or file from input file into buildSet
 void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
 	//if (stringFlag)
@@ -804,55 +816,6 @@ void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 //cout << "addyCode:: ! " << addyCode /*<< " addyInt:: " <<  addyInt */<< " sixBits:: " << sixBits << endl;
 	for (int i = 0; i < 6; i++)
 		buildSet[i] = sixBits[i];
-}
-//accepts a bitset<16> instruction. The instruction's effective address is calculated based on values of I and IX
-//A new bitset<16> is returned with the effective address
-bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
-{
-	/*             R
-	Opcode  I  IX AC  Address
-	000001  0  0  11  101100
-	15  10  9  8  76  5    0
-	*/
-	bitset<16> address;
-	bool IX = instructionIn[8];
-	bool I = instructionIn[9];
-	bitset<16> effectiveAddress_EA;
-
-	//Acquire and encode address - BEGIN
-	//address  = streamToOpCode(inFile);
-	//int j = 10;
-	for (int i = 0; i < 6; i++)
-	{
-		address[i] = instructionIn[i];
-		//j++;
-	}
-	// Acquire and encode address - END
-	if (I == 0)
-	{
-		if (IX == 0) 
-			effectiveAddress_EA = address;
-		if (IX == 1)
-			effectiveAddress_EA = MyCache.getIndexRegister_X0().to_ulong() + address.to_ulong();
-	}
-	if (I == 1)
-	{
-		if (IX == 0)
-		{
-			MyCache.setMemoryAddressRegister_MAR(address);
-			SystemBus.setAddressBus(MyCache.getMemoryAddressRegister_MAR().to_ulong());
-			MyCache.setMemoryBufferRegister_MBR(SystemBus.getDataBus());
-			effectiveAddress_EA = MyCache.getMemoryBufferRegister_MBR();
-		}
-		if (IX == 1)
-		{
-			MyCache.setMemoryAddressRegister_MAR(MyCache.getIndexRegister_X0().to_ulong() + address.to_ulong());
-			SystemBus.setAddressBus(MyCache.getMemoryAddressRegister_MAR().to_ulong());
-			MyCache.setMemoryBufferRegister_MBR(SystemBus.getDataBus());
-			effectiveAddress_EA = MyCache.getMemoryBufferRegister_MBR();
-		}
-	}
-	return effectiveAddress_EA;
 }
 /*
 01
@@ -1016,6 +979,7 @@ void OS::loadInstructionsIntoMain()
 		vector<bitset<16>>::iterator iterInstSet = instructionSet_OS.begin();
 		while (iterInstSet != instructionSet_OS.end())
 		{
+//cout << "iterInstSet: " << *iterInstSet << endl;
 			MyMemory.insertInstruction(*iterInstSet, effectiveAddress_EA(*iterInstSet));
 			iterInstSet++;
 		}
@@ -1176,7 +1140,7 @@ void OS::stepInstructions()
 			}
 			
 
-			/*
+			/////////////////////////need to fixS
 			MyCache.set_ProgramCounter(addyPC);
 			int zPC = 0;
 			instructionPC = *itExe;
@@ -1185,7 +1149,7 @@ void OS::stepInstructions()
 				addyPC[zPC] = instructionPC[i];
 				zPC++;
 			}
-			*/
+			
 			//cout << "addyPC: " << addyPC << endl;
 			//bitset<6> PC = MyCache.getProgramCounter_PC();
 			if(MyCache.getProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
@@ -1195,7 +1159,6 @@ void OS::stepInstructions()
 					<< instruction[8] << ", " << addy; 
 				firstPassFlag = 1;
 			}
-
 			else
 			{
 				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "       " << opCodeToString(opCode)
@@ -1205,7 +1168,6 @@ void OS::stepInstructions()
 			count++;
 			iSetIter++;
 		}
-
 		cout << "\n\t\t----------------------------------"
 			<< "\n\t" << setw(13) << setfill(' ') << "R. Run" << setw(10) << setfill(' ')
 			<< setw(10) << setfill(' ') << "S. Step" << setw(10) << setfill(' ') << "Q. Menu"
@@ -1234,7 +1196,8 @@ void OS::stepInstructions()
 
 	} while (input != 'Q' && input != 'q');
 }
-
+//called in stepInstructions(). this func calls a print function specific to the opCode 
+//of the instruction and prints it to console in the correct format
 void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 {
 	int j = 0;
@@ -1482,7 +1445,7 @@ void OS::LDR(bitset<16> temp)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = SystemBus.loadDataBus(effective_address);
+			content = SystemBus.getDataBus();
 			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
@@ -1503,7 +1466,7 @@ void OS::LDR(bitset<16> temp)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = SystemBus.loadDataBus(effective_address);
+			content = SystemBus.getDataBus();
 			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
@@ -1520,7 +1483,7 @@ void OS::LDR(bitset<16> temp)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = SystemBus.loadDataBus(effective_address);
+			content = SystemBus.getDataBus();
 			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
@@ -1541,7 +1504,7 @@ void OS::LDR(bitset<16> temp)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = SystemBus.loadDataBus(effective_address);
+			content = SystemBus.getDataBus();
 			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
@@ -1643,7 +1606,7 @@ void OS::LDX(bitset<16> temp)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = SystemBus.loadDataBus(effective_address);
+			content = SystemBus.getDataBus();
 			MyCache.setIndexRegister_X0(content);
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
@@ -1665,7 +1628,7 @@ void OS::LDX(bitset<16> temp)
 		unsigned long effective_address = effectiveAddress_EA.to_ulong();
 		mar = effectiveAddress_EA.to_ulong();
 		SystemBus.setAddressBus(effective_address);
-		content = SystemBus.loadDataBus(effective_address);
+		content = SystemBus.getDataBus();
 		MyCache.setIndexRegister_X0(content);
 		MyCache.setMemoryAddressRegister_MAR(mar);
 		MyCache.setMemoryBufferRegister_MBR(content);
@@ -1681,7 +1644,7 @@ void OS::LDX(bitset<16> temp)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = SystemBus.loadDataBus(effective_address);
+			content = SystemBus.getDataBus();
 			MyCache.setIndexRegister_X0(content);
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
@@ -1702,7 +1665,7 @@ void OS::LDX(bitset<16> temp)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content = SystemBus.loadDataBus(effective_address);
+			content = SystemBus.getDataBus();
 			MyCache.setIndexRegister_X0(content);
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
@@ -1807,7 +1770,7 @@ void OS::CMP(bitset<16> setIn)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content_mem = SystemBus.loadDataBus(effective_address);
+			content_mem = SystemBus.getDataBus();
 			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
@@ -1830,7 +1793,7 @@ void OS::CMP(bitset<16> setIn)
 				MyCache.set_ZF(0);
 				MyCache.set_CF(0);
 				MyCache.set_SF(0);
-				cout << "Reg is greaAter" << endl;
+				cout << "Reg is greater" << endl;
 			}
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content_mem); 
@@ -1851,7 +1814,7 @@ void OS::CMP(bitset<16> setIn)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content_mem = SystemBus.loadDataBus(effective_address);
+			content_mem = SystemBus.getDataBus();
 			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
@@ -1891,7 +1854,7 @@ void OS::CMP(bitset<16> setIn)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content_mem = SystemBus.loadDataBus(effective_address);
+			content_mem = SystemBus.getDataBus();
 			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
@@ -1935,7 +1898,7 @@ void OS::CMP(bitset<16> setIn)
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
 			SystemBus.setAddressBus(effective_address);
-			content_mem = SystemBus.loadDataBus(effective_address);
+			content_mem = SystemBus.getDataBus();
 			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();

@@ -17,6 +17,8 @@ class Bus
 {
 	public:
 		Bus() {};
+
+
 		~Bus() {};
 		//  stores the address that is being used in load/store instuctions into addressBus and uses mainMemory function to search the memory for the data and loads data into dataBus
 		void setAddressBus (unsigned long address)
@@ -36,6 +38,7 @@ class Bus
 		mainMemory MyMemory;
 		unsigned long addressBus;
 		bitset<16> dataBus;
+		bool controlBus = 0; //0 == read, 1 == write
 };
 
 #endif /*__BUS_H__*/

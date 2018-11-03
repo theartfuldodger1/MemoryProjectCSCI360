@@ -63,7 +63,7 @@ public:
 
 	//two ways to set PC
     void set_ProgramCounter(bitset<16>);//(0-2047) as bitset<16>
-	void set_ProgramCounter(int);//(0-2047) as bitset<16>
+	void set_ProgramCounter(int);//(0-4096) as bitset<16>
 	
 	void set_ZF(int);
 	void set_CF(int);
@@ -84,7 +84,7 @@ private:
 	bitset<16> InstructionRegister_IR; //instruction to be executed
 	bitset<16> MemoryAddressRegister_MAR; // 16 bit - address of the word to be fetched from memory (0-2047) as bitset<16>
 	bitset<16> MemoryBufferRegister_MBR; //data just fetched from or stored into memory
-	bitset<16> programCounter_PC; //address of next instruction to be executed (0-2047) as bitset<16>
+	bitset<16> programCounter_PC; //address of next instruction to be executed (0-4096) as bitset<16>
 	//bitset<6> programCounter_PC; //address of next instruction to be executed
 	bitset<1> ZF;
 	bitset<1> CF;

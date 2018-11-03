@@ -54,7 +54,6 @@ public:
 	void processFile(ifstream &inFile, vector <bitset<16>>&);//For file processing only
 	
 	void loadInstructionsIntoMain();
-
 	void clearAllData();
 
 	//instruction display
@@ -122,6 +121,7 @@ private:
 	mainMemory MyMemory;
 	vector <bitset<16>> instructionSet_OS;//all instructions loaded here from file
 	bool firstPassFlag = 0; //for stepInstructions()
+	int constant = 107;
 };
 #endif /* __OS_H__ */
 

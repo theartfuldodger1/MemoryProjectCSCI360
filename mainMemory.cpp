@@ -12,15 +12,17 @@ This program...
 mainMemory::mainMemory()
 {
 	bitset<16>temp;
-	for (int i = 0; i < 2048; i++)
+	for (int i = 0; i < 4096; i++)
 		memory.push_back(temp);
-	//memory[23].flip(); //testing demo purpose below
+	/*
+	//testing demo purpose below
 	memory[9].flip();
 	memory[23].set(1, 1);
 	memory[23].set(3, 1);
 	memory[23].set(6, 1);
 	memory[23].set(7, 1);
 	memory[23].set(11, 1);
+	*/
 }
 
 mainMemory::~mainMemory()
@@ -51,7 +53,7 @@ void mainMemory::printMemory()
 		<< "\n\t------------------------------------------------------------------------------------------------------------------";
 	if (memory.empty())
 		cout << "Memory is empty" << endl;
-	for (int i = 0; i < 1024; i++)
+	for (int i = 0; i < 2048; i++)
 	{
 		
 		if ( i % 3 != 0)

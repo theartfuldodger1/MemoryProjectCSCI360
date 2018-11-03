@@ -32,7 +32,7 @@ public:
 	void setMemoryElement(unsigned long address, bitset<16> setIn); //sets indicated memory location to specified value
 
 private:
-	//vector <bitset<16>> instructionSet;//all instructions loaded here from file
+	//vector <bitset<16>> instructionSet;//all instructions loaded here from file, 2048 words/4096 bytes
 	vector <bitset<16>> memory;
 };
 #endif /*__MAINMEMORY_H__*/
