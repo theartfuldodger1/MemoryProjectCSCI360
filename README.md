@@ -5,4 +5,4 @@
 	Alex Bortoc
 	Johnny Zhu
 
-Software simulator that runs assembly language-like programs written for processors that implement architectures and algorithms learned during lectures
+Software simulator that runs assembly language-like programs written for processors that implement architectures and algorithms learned during lectures. Utilizes simulated main memory, cache, system bus (address bus and data bus), and an 'os'.
