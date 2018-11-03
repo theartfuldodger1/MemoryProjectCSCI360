@@ -838,9 +838,19 @@ bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
 	if (I == 1)
 	{
 		if (IX == 0)
-			effectiveAddress_EA = address;
+		{
+			MyCache.set_MemoryAddressRegister_MAR(address);
+			SystemBus.setAddressBus(MyCache.get_MemoryAddressRegister_MAR().to_ulong());
+			MyCache.set_MemoryBufferRegister_MBR(SystemBus.getDataBus());
+			effectiveAddress_EA = MyCache.get_MemoryBufferRegister_MBR();
+		}
 		if (IX == 1)
-			effectiveAddress_EA = MyCache.get_IndexRegister_X0().to_ulong() + address.to_ulong();
+		{
+			MyCache.set_MemoryAddressRegister_MAR(MyCache.get_IndexRegister_X0().to_ulong() + address.to_ulong());
+			SystemBus.setAddressBus(MyCache.get_MemoryAddressRegister_MAR().to_ulong());
+			MyCache.set_MemoryBufferRegister_MBR(SystemBus.getDataBus());
+			effectiveAddress_EA = MyCache.get_MemoryBufferRegister_MBR();
+		}
 	}
 	return effectiveAddress_EA;
 }
@@ -1034,7 +1044,7 @@ void OS::printInstructions()
 	bitset<6> addy;
 	vector<bitset<16>>::iterator iSetIter = instructionSet_OS.begin();
 	bitset<16> instruction;
-	string opCodeString;
+ 	string opCodeString;
 	char input;
 	do
 	{
@@ -1126,7 +1136,7 @@ void OS::stepInstructions()
 	string opCodeString;
 	char input;
 	bool runFlag = 0;
-	bool firstPassFlag = 0;
+	//bool firstPassFlag = 0;
 	unsigned int count = 0;
 
 	do
@@ -1471,8 +1481,8 @@ void OS::LDR(bitset<16> temp)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.loadDataBus(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
@@ -1492,8 +1502,8 @@ void OS::LDR(bitset<16> temp)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.loadDataBus(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
@@ -1509,8 +1519,8 @@ void OS::LDR(bitset<16> temp)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.loadDataBus(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
@@ -1530,8 +1540,8 @@ void OS::LDR(bitset<16> temp)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.loadDataBus(effective_address);
 			MyCache.set_GeneralPurposeRegisters_GPRs(gpr_num, content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
@@ -1558,7 +1568,7 @@ void OS::STR(bitset<16> setIn)
 				effectiveAddress_EA[i] = setIn[i];
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
+			SystemBus.setAddressBus(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
 		}
@@ -1576,7 +1586,7 @@ void OS::STR(bitset<16> setIn)
 				effectiveAddress_EA[i] = address[i];
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
+			SystemBus.setAddressBus(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
 		}
@@ -1590,7 +1600,7 @@ void OS::STR(bitset<16> setIn)
 				effectiveAddress_EA[i] = setIn[i];
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
+			SystemBus.setAddressBus(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
 		}
@@ -1608,7 +1618,7 @@ void OS::STR(bitset<16> setIn)
 				effectiveAddress_EA[i] = address[i];
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
+			SystemBus.setAddressBus(effective_address);
 			content = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
 		}
@@ -1632,8 +1642,8 @@ void OS::LDX(bitset<16> temp)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.loadDataBus(effective_address);
 			MyCache.set_IndexRegister_X0(content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
@@ -1654,8 +1664,8 @@ void OS::LDX(bitset<16> temp)
 		}
 		unsigned long effective_address = effectiveAddress_EA.to_ulong();
 		mar = effectiveAddress_EA.to_ulong();
-		SystemBus.loadAddress(effective_address);
-		content = SystemBus.loadData(effective_address);
+		SystemBus.setAddressBus(effective_address);
+		content = SystemBus.loadDataBus(effective_address);
 		MyCache.set_IndexRegister_X0(content);
 		MyCache.set_MemoryAddressRegister_MAR(mar);
 		MyCache.set_MemoryBufferRegister_MBR(content);
@@ -1670,8 +1680,8 @@ void OS::LDX(bitset<16> temp)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.loadDataBus(effective_address);
 			MyCache.set_IndexRegister_X0(content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
@@ -1691,8 +1701,8 @@ void OS::LDX(bitset<16> temp)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.loadDataBus(effective_address);
 			MyCache.set_IndexRegister_X0(content);
 			MyCache.set_MemoryAddressRegister_MAR(mar);
 			MyCache.set_MemoryBufferRegister_MBR(content);
@@ -1715,7 +1725,7 @@ void OS::STX(bitset<16> setIn)
 				effectiveAddress_EA[i] = setIn[i];
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
+			SystemBus.setAddressBus(effective_address);
 			content = MyCache.get_IndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
 		}
@@ -1733,7 +1743,7 @@ void OS::STX(bitset<16> setIn)
 				effectiveAddress_EA[i] = address[i];
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
+			SystemBus.setAddressBus(effective_address);
 			content = MyCache.get_IndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
 		}
@@ -1747,7 +1757,7 @@ void OS::STX(bitset<16> setIn)
 				effectiveAddress_EA[i] = setIn[i];
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
+			SystemBus.setAddressBus(effective_address);
 			content = MyCache.get_IndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
 		}
@@ -1765,7 +1775,7 @@ void OS::STX(bitset<16> setIn)
 				effectiveAddress_EA[i] = address[i];
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
+			SystemBus.setAddressBus(effective_address);
 			content = MyCache.get_IndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
 		}
@@ -1796,8 +1806,8 @@ void OS::CMP(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content_mem = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content_mem = SystemBus.loadDataBus(effective_address);
 			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
@@ -1840,8 +1850,8 @@ void OS::CMP(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content_mem = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content_mem = SystemBus.loadDataBus(effective_address);
 			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
@@ -1880,8 +1890,8 @@ void OS::CMP(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content_mem = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content_mem = SystemBus.loadDataBus(effective_address);
 			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();
@@ -1924,8 +1934,8 @@ void OS::CMP(bitset<16> setIn)
 			}
 			unsigned long effective_address = effectiveAddress_EA.to_ulong();
 			mar = effectiveAddress_EA.to_ulong();
-			SystemBus.loadAddress(effective_address);
-			content_mem = SystemBus.loadData(effective_address);
+			SystemBus.setAddressBus(effective_address);
+			content_mem = SystemBus.loadDataBus(effective_address);
 			content_reg = MyCache.get_GeneralPurposeRegisters_GPRs(gpr_num);
 			mem_cont = content_mem.to_ulong();
 			reg_cont = content_reg.to_ulong();

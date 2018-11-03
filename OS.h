@@ -121,6 +121,7 @@ private:
 	cache MyCache;
 	mainMemory MyMemory;
 	vector <bitset<16>> instructionSet_OS;//all instructions loaded here from file
+	bool firstPassFlag = 0; //for stepInstructions()
 };
 #endif /* __OS_H__ */
 
