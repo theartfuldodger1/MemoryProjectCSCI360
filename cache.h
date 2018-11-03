@@ -42,7 +42,6 @@ public:
 	~cache();
 	//Getters
 	Register* get_GeneralPurposeRegisters_GPRs(); //Returns list of registers
-
 	bitset<16> get_ProgramCounter_PC();
 	bitset<16> get_GeneralPurposeRegisters_GPRs(int); //Returns selected General Purpose Register, 0-3
 	bitset<16> get_IndexRegister_X0();
