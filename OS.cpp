@@ -1559,12 +1559,12 @@ void OS::LDR(bitset<16> temp)
 	{
 		if (temp[8] == 0)
 		{
-			for (int i = 5; i >= 0; i--)
-			{
-				effectiveAddress_EA[i] = temp[i];
-			}
-			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			mar = effectiveAddress_EA.to_ulong();
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//effectiveAddress_EA[i] = temp[i];
+			//}
+			unsigned long effective_address = temp.to_ulong();
+			mar = temp.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.getDataBus();
 			MyCache.setGeneralPurposeRegisters_GPRs(gpr_num, content);
@@ -1575,11 +1575,11 @@ void OS::LDR(bitset<16> temp)
 		{
 			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
-			for (int i = 5; i >= 0; i--)
-			{
-				address[i] = temp[i];
-			}
-			address = addBitSets(address, index);
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//address[i] = temp[i];
+			//}
+			address = addBitSets(temp, index);
 			for (int i = 15; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = address[i];
@@ -1641,11 +1641,11 @@ void OS::STR(bitset<16> setIn)
 	{
 		if (setIn[8] == 0)
 		{
-			for (int i = 5; i >= 0; i--)
-			{
-				effectiveAddress_EA[i] = setIn[i];
-			}
-			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//effectiveAddress_EA[i] = setIn[i];
+			//}
+			unsigned long effective_address = temp.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
@@ -1654,11 +1654,11 @@ void OS::STR(bitset<16> setIn)
 		{
 			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
-			for (int i = 5; i >= 0; i--)
-			{
-				address[i] = setIn[i];
-			}
-			address = addBitSets(address, index);
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//address[i] = setIn[i];
+			//}
+			address = addBitSets(temp, index);
 			for (int i = 15; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = address[i];
@@ -1694,38 +1694,38 @@ void OS::LDX(bitset<16> temp)
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
 		}
-	}
-	else if (temp[8] == 1)
-	{
-		bitset<16> index = MyCache.getIndexRegister_X0();
-		bitset<16> address;
-		for (int i = 5; i >= 0; i--)
+		else if (temp[8] == 1)
 		{
-			address[i] = temp[i];
+			bitset<16> index = MyCache.getIndexRegister_X0();
+			bitset<16> address;
+			for (int i = 5; i >= 0; i--)
+			{
+				address[i] = temp[i];
+			}
+			address = addBitSets(address, index);
+			for (int i = 15; i >= 0; i--)
+			{
+				effectiveAddress_EA[i] = address[i];
+			}
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.getDataBus();
+			MyCache.setIndexRegister_X0(content);
+			MyCache.setMemoryAddressRegister_MAR(mar);
+			MyCache.setMemoryBufferRegister_MBR(content);
 		}
-		address = addBitSets(address, index);
-		for (int i = 15; i >= 0; i--)
-		{
-			effectiveAddress_EA[i] = address[i];
-		}
-		unsigned long effective_address = effectiveAddress_EA.to_ulong();
-		mar = effectiveAddress_EA.to_ulong();
-		SystemBus.setAddressBus(effective_address);
-		content = SystemBus.getDataBus();
-		MyCache.setIndexRegister_X0(content);
-		MyCache.setMemoryAddressRegister_MAR(mar);
-		MyCache.setMemoryBufferRegister_MBR(content);
 	}
 	else if (temp[9] == 1)
 	{
 		if (temp[8] == 0)
 		{
-			for (int i = 5; i >= 0; i--)
-			{
-				effectiveAddress_EA[i] = temp[i];
-			}
-			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			mar = effectiveAddress_EA.to_ulong();
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//effectiveAddress_EA[i] = temp[i];
+			//}
+			unsigned long effective_address = temp.to_ulong();
+			mar = temp.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.getDataBus();
 			MyCache.setIndexRegister_X0(content);
@@ -1736,11 +1736,11 @@ void OS::LDX(bitset<16> temp)
 		{
 			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
-			for (int i = 5; i >= 0; i--)
-			{
-				address[i] = temp[i];
-			}
-			address = addBitSets(address, index);
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//address[i] = temp[i];
+			//}
+			address = addBitSets(temp, index);
 			for (int i = 15; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = address[i];
@@ -1798,11 +1798,11 @@ void OS::STX(bitset<16> setIn)
 	{
 		if (setIn[8] == 0)
 		{
-			for (int i = 5; i >= 0; i--)
-			{
-				effectiveAddress_EA[i] = setIn[i];
-			}
-			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//effectiveAddress_EA[i] = setIn[i];
+			//}
+			unsigned long effective_address = temp.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = MyCache.getIndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
@@ -1811,11 +1811,11 @@ void OS::STX(bitset<16> setIn)
 		{
 			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
-			for (int i = 5; i >= 0; i--)
-			{
-				address[i] = setIn[i];
-			}
-			address = addBitSets(address, index);
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//address[i] = setIn[i];
+			//}
+			address = addBitSets(temp, index);
 			for (int i = 15; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = address[i];
@@ -1930,12 +1930,12 @@ void OS::CMP(bitset<16> setIn)
 	{
 		if (setIn[8] == 0)
 		{
-			for (int i = 5; i >= 0; i--)
-			{
-				effectiveAddress_EA[i] = setIn[i];
-			}
-			unsigned long effective_address = effectiveAddress_EA.to_ulong();
-			mar = effectiveAddress_EA.to_ulong();
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//effectiveAddress_EA[i] = setIn[i];
+			//}
+			unsigned long effective_address = temp.to_ulong();
+			mar = temp.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content_mem = SystemBus.getDataBus();
 			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
@@ -1968,12 +1968,12 @@ void OS::CMP(bitset<16> setIn)
 		else if (setIn[8] == 1)
 		{
 			bitset<16> index = MyCache.getIndexRegister_X0();
-			bitset<16> address;
-			for (int i = 5; i >= 0; i--)
-			{
-				address[i] = setIn[i];
-			}
-			address = addBitSets(address, index);
+			//bitset<16> address;
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//address[i] = setIn[i];
+			//}
+			address = addBitSets(temp, index);
 			for (int i = 15; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = address[i];
