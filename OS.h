@@ -83,7 +83,8 @@ public:
     void codeRx(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode rx;
     void codeRRII(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode, r, r, i, i;
 
-	void encodeAddress(istream &inFile, bitset<16> &buildSet, bool);//encodes 6 bit address from user input or file
+	void encodeAddress(istream &inFile, bitset<16> &buildSet, bool);//encodes 6 bit address from user input or file onto a 16bit bitset
+	bitset<16> getAddress(bitset<16> &instructionIn);
 	bitset<16> effectiveAddress_EA(bitset<16> &); //accepts a bitset<16> instruction and returns its effective address as a bitset<16>
 
 	void LDR(bitset<16> setIn); //Load register from memory
