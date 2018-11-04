@@ -51,7 +51,7 @@ public:
 	bitset<6> streamToOpCode(istream &cin);
 	string opCodeToString(bitset<6>&);
 	void processFile(istream & cin);//modified version of processFile, esp for istream cin
-	void processFile(ifstream &inFile, vector <bitset<16>>&);//For file processing only
+	void processFile(ifstream &inFile, list <bitset<16>>&);//For file processing only
 	
 	void loadInstructionsIntoMain();
 	void clearAllData();
@@ -119,9 +119,10 @@ private:
 	Bus SystemBus;
 	cache MyCache;
 	mainMemory MyMemory;
-	vector <bitset<16>> instructionSet_OS;//all instructions loaded here from file
+	list <bitset<16>> instructionSet_OS;//all instructions loaded here from file
 	bool firstPassFlag = 0; //for stepInstructions()
 	int constant = 107;
+	unsigned int Pcount = 0;
 };
 #endif /* __OS_H__ */
 

@@ -638,7 +638,7 @@ unsigned short int  OS::menu2A()
 	return paramOut;
 }
 
-void OS::processFile(ifstream &inFile, vector <bitset<16>> &instructions)
+void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 {
 	/*             R
 	Opcode  I  IX AC  Address
@@ -976,15 +976,22 @@ void OS::loadInstructionsIntoMain()
 		<< "\nPlease add instructions before attempting to load to main memory" << endl;
 	else
 	{
-		vector<bitset<16>>::iterator iterInstSet = instructionSet_OS.begin();
+		list<bitset<16>>::iterator iterInstSet = instructionSet_OS.begin();
+		int count = 0;
+
 		while (iterInstSet != instructionSet_OS.end())
 		{
-//cout << "iterInstSet: " << *iterInstSet << endl;
-			MyMemory.insertInstruction(*iterInstSet, effectiveAddress_EA(*iterInstSet));
+			if(count == 0)
+				MyCache.setInstructionRegister_IR(*iterInstSet);//Loads first instruction into IR
+			if(count == 1)
+				MyCache.set_ProgramCounter(*iterInstSet);//loads next sequential instruction into PC
+
+			//MyMemory.insertInstruction(*iterInstSet, effectiveAddress_EA(*iterInstSet));//loads instructions into MM using EA
+			MyMemory.insertInstruction(*iterInstSet, count);//Loads instructions into MM sequentially
 			iterInstSet++;
+			count++;
 		}
 	}
-//cout << "In OS::loadInstructionIntoMain()" << endl;
 }
 //when isntructions are not yet loaded
 void OS::printInstructions()
@@ -1006,7 +1013,7 @@ void OS::printInstructions()
 	bitset<6> opCode;
 	bitset<2> reg;
 	bitset<6> addy;
-	vector<bitset<16>>::iterator iSetIter = instructionSet_OS.begin();
+	list<bitset<16>>::iterator iSetIter = instructionSet_OS.begin();
 	bitset<16> instruction;
  	string opCodeString;
 	char input;
@@ -1088,27 +1095,21 @@ void OS::stepInstructions()
 	000001  0  0  11  101100
 	15  10  9  8  76  5    0
 	*/
-	bitset<6> opCode;
-	bitset<2> reg;
-	bitset<6> addy;
-	bitset<16> addyPC;
-	//vector <bitset<16>> instructionSet_OS = instructionSet_OS;//MyMemory.getInstructionSet();
-	vector<bitset<16>>::iterator iSetIter;
-	vector<bitset<16>>::iterator itExe = instructionSet_OS.begin();
-	bitset<16> instruction;
-	bitset<16> instructionPC;
-	string opCodeString;
+	list<bitset<16>>::iterator iSetIter;//for displaying entire instruction set from OS
+	list<bitset<16>>::iterator itExe = instructionSet_OS.begin();
 	char input;
 	bool runFlag = 0;
 	//bool firstPassFlag = 0;
-	unsigned int count = 0;
+	Pcount = 0;
 
 	do
 	{	
+		/*
 		iSetIter = instructionSet_OS.begin();
 		if (iSetIter != instructionSet_OS.end())//(count < instructionSet_OS.size())
-			for (unsigned int i = 0; i < count; i++)
+			for (unsigned int i = 0; i < Pcount; i++)
 				itExe++;
+		*/
 		firstPassFlag = 0;
 
 		cout << "\n";
@@ -1118,54 +1119,8 @@ void OS::stepInstructions()
 		
 		while (iSetIter != instructionSet_OS.end())
 		{
-			instruction = *iSetIter;
-			int z = 0;
-			for (int i = 10; i < 16; i++)
-			{
-				opCode[z] = instruction[i];
-				z++;
-			}
-			z = 0;
-			for (int i = 6; i < 8; i++)
-			{
-				reg[z] = instruction[i];
-				z++;
-			}
-			z = 0;
-			
-			for (int i = 0; i < 6; i++)
-			{
-				addy[z] = instruction[i];
-				z++;
-			}
-			
-
-			/////////////////////////need to fixS
-			MyCache.set_ProgramCounter(addyPC);
-			int zPC = 0;
-			instructionPC = *itExe;
-			for (int i = 0; i < 6; i++)
-			{
-				addyPC[zPC] = instructionPC[i];
-				zPC++;
-			}
-			
-			//cout << "addyPC: " << addyPC << endl;
-			//bitset<6> PC = MyCache.getProgramCounter_PC();
-			if(MyCache.getProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
-			{
-				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
-					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
-					<< instruction[8] << ", " << addy; 
-				firstPassFlag = 1;
-			}
-			else
-			{
-				cout << "\n\t\t" << setw(4) << setfill(' ') << count << "       " << opCodeToString(opCode)
-					<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
-					<< instruction[8] << ", " << addy;
-			}
-			count++;
+			instructionDisplaySwitch(*iSetIter);
+			Pcount++;
 			iSetIter++;
 		}
 		cout << "\n\t\t----------------------------------"
@@ -1174,6 +1129,8 @@ void OS::stepInstructions()
 			<< setw(10) << setfill(' ') << "H. Help"
 			<< "\n\n\t\t==>> ";
 		
+		//cout << "instructionSet_OS size: " << instructionSet_OS.size() << "  ";
+
 		if (runFlag != 1)
 		{
 			cin >> input;
@@ -1187,7 +1144,7 @@ void OS::stepInstructions()
 			{
 				executeInstruction(*itExe);
 
-				count++;
+				Pcount++;
 				itExe++;
 			}
 		//call help file needed
@@ -1207,6 +1164,7 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 		opCode[j] = instructionIn[i];
 		j++;
 	}
+
 	//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
 	if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17)
 		printCodeRIXA(instructionIn);
@@ -1232,27 +1190,153 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 //for instruction display
 void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instruction display
 {
-/*
-	if (MyCache.getProgramCounter_PC().to_ulong() == addy.to_ulong() && firstPassFlag == 0)
+	/*
+	Instructions
+	------------------------------------------------------
+	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
+	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
+	------------------------------------------------------
+	R.Run	     S.Step       Q.Menu    	H.Help
+	*/
+	/*             R
+	Opcode  I  IX AC  address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<6> opCode;
+	bitset<2> R;
+	bitset<6> address;
+	bitset<16> addressPC;
+	//vector <bitset<16>> instructionSet_OS = instructionSet_OS;//MyMemory.getInstructionSet();
+//	vector<bitset<16>>::iterator iSetIter;
+//	vector<bitset<16>>::iterator itExe = instructionSet_OS.begin();
+//	bitset<16> instruction;
+//	bitset<16> instructionPC;
+	string opCodeString;
+//	unsigned int count = 0;
+
+	//instructionIn = *iSetIter;
+	int j = 0;
+	for (int i = 10; i < 16; i++)//6 bits
 	{
-		cout << "\n\t\t" << setw(4) << setfill(' ') << count << "  PC==>" << opCodeToString(opCode)
-			<< " R" << reg.to_ulong() << ", " << instructionIn[9] << ", "
-			<< instruction[8] << ", " << addy;
-		firstPassFlag = 1;
+		opCode[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 6; i < 8; i++)//2 bits
+	{
+		R[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 0; i < 6; i++)//6 bits
+	{
+		address[j] = instructionIn[i];
+		j++;
 	}
 
+	/////////////////////////need to fixS
+	//MyCache.set_ProgramCounter(addressPC);
+	//int zPC = 0;
+	//instructionPC = *itExe;
+	for (int i = 0; i < 6; i++)
+	{
+		//addressPC[zPC] = instructionPC[i];
+		//zPC++;
+	}
+	cout << right;
+	//cout << "addressPC: " << addressPC << endl;
+	//bitset<6> PC = MyCache.getProgramCounter_PC();
+	if (MyCache.getProgramCounter_PC().to_ulong() == address.to_ulong() && firstPassFlag == 0)
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
+			<< " R" << R.to_ulong() << ", " << instructionIn[9] << ", "
+			<< instructionIn[8] << "  " << address;
+		firstPassFlag = 1;
+	}
 	else
 	{
-		cout << "\n\t\t" << setw(4) << setfill(' ') << count << "       " << opCodeToString(opCode)
-			<< " R" << reg.to_ulong() << ", " << instruction[9] << ", "
-			<< instruction[8] << ", " << addy;
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
+			<< " R" << R.to_ulong() << ", " << instructionIn[9] << ", "
+			<< instructionIn[8] << "  " << address;
 	}
-*/
 }
 //for instruction display
 void OS::printCodeIXA(bitset<16> &instructionIn)
 {
+	/*
+	Instructions
+	------------------------------------------------------
+	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
+	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
+	2         LDX  R2, 0, 9		  000000  0  0  00  000000
+	------------------------------------------------------
+	R.Run	     S.Step       Q.Menu    	H.Help
+	*/
+	/*             R
+	Opcode  I  IX AC  address
+	000001  0  0  00  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<6> opCode;
+	//bitset<2> R;
+	bitset<6> address;
+	bitset<16> addressPC;
+	//vector <bitset<16>> instructionSet_OS = instructionSet_OS;//MyMemory.getInstructionSet();
+	//	vector<bitset<16>>::iterator iSetIter;
+	//	vector<bitset<16>>::iterator itExe = instructionSet_OS.begin();
+	//	bitset<16> instruction;
+	//	bitset<16> instructionPC;
+	string opCodeString;
+	//unsigned int count = 0;
 
+	//instructionIn = *iSetIter;
+	int j = 0;
+	for (int i = 10; i < 16; i++)//6 bits
+	{
+		opCode[j] = instructionIn[i];
+		j++;
+	}
+	/*
+	j = 0;
+	for (int i = 6; i < 8; i++)//2 bits
+	{
+		R[j] = instructionIn[i];
+		j++;
+	}
+	*/
+	j = 0;
+	for (int i = 0; i < 6; i++)//6 bits
+	{
+		address[j] = instructionIn[i];
+		j++;
+	}
+
+	/////////////////56745////////need to fixS
+	//MyCache.set_ProgramCounter(addressPC);
+	//int zPC = 0;
+	//instructionPC = *itExe;
+	for (int i = 0; i < 6; i++)
+	{
+		//addressPC[zPC] = instructionPC[i];
+		//zPC++;
+	}
+	cout << right;
+	//cout << "addressPC: " << addressPC << endl;
+	//bitset<6> PC = MyCache.getProgramCounter_PC();
+	if (MyCache.getProgramCounter_PC().to_ulong() == address.to_ulong() && firstPassFlag == 0)
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
+			<< "     " << instructionIn[9] << ", "
+			<< instructionIn[8] << "  " << address;
+		firstPassFlag = 1;
+	}
+	else
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
+			<< "     " << instructionIn[9] << ", "
+			<< instructionIn[8] << "  " << address;
+	}
 }
 //for instruction display
 void OS::printCodeRimmed(bitset<16> &instructionIn)
@@ -1395,7 +1479,7 @@ int OS::scrollChars(istream &instructionFile)
 }
 //iterates through whitespace after a word that may be or is expected to be the last entry
 //in order to find eof. Used by UserPrompt() for user input processing (cin). Returns next char as int
-//Precondition: 2nd or 3rd word of search term input
+//Precondition: 2nd or 3rd word of getInstruction term input
 //Postcondition: cin loaded with next non-whitespace data
 int OS::scrollWhiteSpace(istream &cin)
 {
@@ -1422,7 +1506,6 @@ bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 	}
 	return result;
 }
-//////////////////////////////////////////////////////////////////IS EA SUPPOSED TO ONLY BE 6 BITS?
 /*Load Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
 effective address. Bus class is used to temporarily hold address and data.*/
 void OS::LDR(bitset<16> temp)

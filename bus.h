@@ -20,16 +20,16 @@ class Bus
 
 
 		~Bus() {};
-		//  stores the address that is being used in load/store instuctions into addressBus and uses mainMemory function to search the memory for the data and loads data into dataBus
+		//  stores the address that is being used in load/store instuctions into addressBus and uses mainMemory function to getInstruction the memory for the data and loads data into dataBus
 		void setAddressBus (unsigned long address)
 		{ 
 			addressBus = address;
-			dataBus = MyMemory.search(address);
+			dataBus = MyMemory.getInstruction(address);
 		} 
-		// uses mainMemory function to search the memory for the data, returns in bitset form
+		// uses mainMemory function to getInstruction the memory for the data, returns in bitset form
 		bitset<16> loadDataBus(unsigned long address)
 		{ 
-			dataBus = MyMemory.search(address); 
+			dataBus = MyMemory.getInstruction(address); 
 			return dataBus;
 		}
 		bitset<16>getDataBus(){ return dataBus; }

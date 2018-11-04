@@ -12,7 +12,7 @@ This program...
 mainMemory::mainMemory()
 {
 	bitset<16>temp;
-	for (int i = 0; i < 4096; i++)
+	for (int i = 0; i < 2048; i++)
 		memory.push_back(temp);
 	/*
 	//testing demo purpose below
@@ -36,7 +36,7 @@ vector <bitset<16>> mainMemory::getInstructionSet()
 }
 */
 //returns next instruction in instruction set list
-bitset<16> mainMemory::getNextInstruction(bitset<16> &programCounter_In)
+bitset<16> mainMemory::getInstruction(bitset<16> &programCounter_In)
 {
 	unsigned long tempLong = programCounter_In.to_ulong();
 	bitset<16> tempInstruction = memory[tempLong];
@@ -132,11 +132,17 @@ void mainMemory::clearMemory()
 		memory[i].reset();//does not destroy the elements. only sets all bits to 0;
 	}
 }
-//"loads" instructions into main memory accorign to address/EA
+//"loads" instructions into main memory accoring to address/EA
 void mainMemory::insertInstruction(bitset<16> &instructionsIn, bitset<16> &effectiveAddress_EA)
 {
 	//cout << "EA: " << effectiveAddress_EA << endl;
 	memory[effectiveAddress_EA.to_ulong()] = instructionsIn;
+}
+//"loads" instructions into main memory accoring to sequence
+void mainMemory::insertInstruction(bitset<16> &instructionsIn, int count)
+{
+	//cout << "EA: " << effectiveAddress_EA << endl;
+	memory[count] = instructionsIn;
 }
 
 //catches failed input cast and resets istream
@@ -151,7 +157,7 @@ void mainMemory::failCheck(istream &cin)
 }
 
 //returns the bitset stored at the specified location
-bitset<16> mainMemory::search(unsigned long address)
+bitset<16> mainMemory::getInstruction(unsigned long address)
 {
 	return memory[address];
 }

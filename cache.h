@@ -58,12 +58,12 @@ public:
 	void setGeneralPurposeRegisters_GPRs(int, bitset<16>); //Sets selected General Purpose Register, 0-3, each is 16 bits (1 byte)
 	void setIndexRegister_X0(bitset<16>);
 	void setInstructionRegister_IR(bitset<16>);
-	void setMemoryAddressRegister_MAR(bitset<16>);//set MemoryAddressRegister (0-2047) as bitset<16> - next instruction
+	void setMemoryAddressRegister_MAR(bitset<16>);//set MemoryAddressRegister (0-4094) as bitset<16> - next instruction
 	void setMemoryBufferRegister_MBR(bitset<16>);
 
 	//two ways to set PC
     void set_ProgramCounter(bitset<16>);//(0-2047) as bitset<16>
-	void set_ProgramCounter(int);//(0-4096) as bitset<16>
+	void set_ProgramCounter(int);//(0-2047)
 	
 	void set_ZF(int);
 	void set_CF(int);
@@ -84,7 +84,7 @@ private:
 	bitset<16> InstructionRegister_IR; //instruction to be executed
 	bitset<16> MemoryAddressRegister_MAR; // 16 bit - address of the word to be fetched from memory (0-2047) as bitset<16>
 	bitset<16> MemoryBufferRegister_MBR; //data just fetched from or stored into memory
-	bitset<16> programCounter_PC; //address of next instruction to be executed (0-4096) as bitset<16>
+	bitset<16> programCounter_PC; //address of next instruction to be executed (0-2047) as bitset<16>
 	//bitset<6> programCounter_PC; //address of next instruction to be executed
 	bitset<1> ZF;
 	bitset<1> CF;
