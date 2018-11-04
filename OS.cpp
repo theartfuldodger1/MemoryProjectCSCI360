@@ -1645,7 +1645,7 @@ void OS::STR(bitset<16> setIn)
 			//{
 				//effectiveAddress_EA[i] = setIn[i];
 			//}
-			unsigned long effective_address = temp.to_ulong();
+			unsigned long effective_address = setIn.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
 			MyMemory.setMemoryElement(effective_address, content);
@@ -1658,7 +1658,7 @@ void OS::STR(bitset<16> setIn)
 			//{
 				//address[i] = setIn[i];
 			//}
-			address = addBitSets(temp, index);
+			address = addBitSets(setIn, index);
 			for (int i = 15; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = address[i];
@@ -1802,7 +1802,7 @@ void OS::STX(bitset<16> setIn)
 			//{
 				//effectiveAddress_EA[i] = setIn[i];
 			//}
-			unsigned long effective_address = temp.to_ulong();
+			unsigned long effective_address = setIn.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = MyCache.getIndexRegister_X0();
 			MyMemory.setMemoryElement(effective_address, content);
@@ -1815,7 +1815,7 @@ void OS::STX(bitset<16> setIn)
 			//{
 				//address[i] = setIn[i];
 			//}
-			address = addBitSets(temp, index);
+			address = addBitSets(setIn, index);
 			for (int i = 15; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = address[i];
@@ -1934,8 +1934,8 @@ void OS::CMP(bitset<16> setIn)
 			//{
 				//effectiveAddress_EA[i] = setIn[i];
 			//}
-			unsigned long effective_address = temp.to_ulong();
-			mar = temp.to_ulong();
+			unsigned long effective_address = setIn.to_ulong();
+			mar = setIn.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content_mem = SystemBus.getDataBus();
 			content_reg = MyCache.getGeneralPurposeRegisters_GPRs(gpr_num);
@@ -1968,12 +1968,12 @@ void OS::CMP(bitset<16> setIn)
 		else if (setIn[8] == 1)
 		{
 			bitset<16> index = MyCache.getIndexRegister_X0();
-			//bitset<16> address;
+			bitset<16> address;
 			//for (int i = 5; i >= 0; i--)
 			//{
 				//address[i] = setIn[i];
 			//}
-			address = addBitSets(temp, index);
+			address = addBitSets(setIn, index);
 			for (int i = 15; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = address[i];
