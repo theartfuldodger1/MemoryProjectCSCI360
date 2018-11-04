@@ -28,19 +28,40 @@ mainMemory::mainMemory()
 mainMemory::~mainMemory()
 {
 }
-/*
-//returns instruction set list
+
+//returns instruction set vector
 vector <bitset<16>> mainMemory::getInstructionSet()
 {
-	return instructionSet;
+	return memory;
 }
-*/
 //returns next instruction in instruction set list
 bitset<16> mainMemory::getInstruction(bitset<16> &programCounter_In)
 {
 	unsigned long tempLong = programCounter_In.to_ulong();
 	bitset<16> tempInstruction = memory[tempLong];
 	return tempInstruction;
+}
+//returns the bitset stored at the specified location
+bitset<16> mainMemory::getInstruction(unsigned long address)
+{
+	return memory[address];
+}
+//"loads" instructions into main memory accoring to address/EA
+void mainMemory::insertInstruction(bitset<16> &instructionsIn, bitset<16> &effectiveAddress_EA)
+{
+	//cout << "EA: " << effectiveAddress_EA << endl;
+	memory[effectiveAddress_EA.to_ulong()] = instructionsIn;
+}
+//"loads" instructions into main memory accoring to sequence
+void mainMemory::insertInstruction(bitset<16> &instructionsIn, int count)
+{
+	//cout << "EA: " << effectiveAddress_EA << endl;
+	memory[count] = instructionsIn;
+}
+//sets the bitset at specified location to the provided value
+void mainMemory::setMemoryElement(unsigned long address, bitset<16> setIn)
+{
+	memory[address] = setIn;
 }
 
 void mainMemory::printMemory()
@@ -132,19 +153,6 @@ void mainMemory::clearMemory()
 		memory[i].reset();//does not destroy the elements. only sets all bits to 0;
 	}
 }
-//"loads" instructions into main memory accoring to address/EA
-void mainMemory::insertInstruction(bitset<16> &instructionsIn, bitset<16> &effectiveAddress_EA)
-{
-	//cout << "EA: " << effectiveAddress_EA << endl;
-	memory[effectiveAddress_EA.to_ulong()] = instructionsIn;
-}
-//"loads" instructions into main memory accoring to sequence
-void mainMemory::insertInstruction(bitset<16> &instructionsIn, int count)
-{
-	//cout << "EA: " << effectiveAddress_EA << endl;
-	memory[count] = instructionsIn;
-}
-
 //catches failed input cast and resets istream
 void mainMemory::failCheck(istream &cin)
 {
@@ -154,16 +162,4 @@ void mainMemory::failCheck(istream &cin)
 		cin.clear();
 		cin.ignore(255, '\n');
 	}
-}
-
-//returns the bitset stored at the specified location
-bitset<16> mainMemory::getInstruction(unsigned long address)
-{
-	return memory[address];
-}
-
-//sets the bitset at specified location to the provided value
-void mainMemory::setMemoryElement(unsigned long address, bitset<16> setIn)
-{
-	memory[address] = setIn;
 }
