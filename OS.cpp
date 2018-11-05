@@ -2023,7 +2023,7 @@ void OS::JE(bitset<16> setIn)
 }
 void OS::JNE(bitset<16> setIn)
 {
-	if(MyCache.get_ZF() == 1){
+	if(MyCache.get_ZF() == 0){
 		JUMP(setIn);
 	}
 	else{
