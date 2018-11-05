@@ -984,10 +984,10 @@ void OS::stepInstructions()
 		cout << right;
 		cout << setw(40) << "Instructions"
 			<< "\n\t\t----------------------------------";
-		cout << "TOP!!!!!!!!!!!!" << endl;
-		cout << "FPF1: " << firstPassFlag << endl;
+		//cout << "TOP!!!!!!!!!!!!" << endl;
+		//cout << "FPF1: " << firstPassFlag << endl;
 		firstPassFlag = 0;
-		cout << "FPF2: " << firstPassFlag << endl;
+		//cout << "FPF2: " << firstPassFlag << endl;
 		Pcount = 0;
 		iSetIter = instructionSet_OS.begin();
 		while (iSetIter != instructionSet_OS.end())
@@ -1025,8 +1025,10 @@ void OS::stepInstructions()
 			runFlag = 0;
 			endOfInstructions = 1;
 		}
+		//cout << "Before getInstructionRegister_IR()" << endl;
 		if (/*endOfInstructions == 0 && */(input == 'R' || input == 'r' || input == 'S' || input == 's'))
 		{
+			cout << "IR: " << MyCache.getInstructionRegister_IR() << endl;
 			executeInstruction(MyCache.getInstructionRegister_IR());
 		}
 	//cout << "IR Before: " << MyCache.getInstructionRegister_IR() << endl;
@@ -1119,15 +1121,16 @@ void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instructio
 		j++;
 	}
 
-	/////////////////////////need to fixS
 	//MyCache.set_ProgramCounter(addressPC);
 	//int zPC = 0;
 	//instructionPC = *itExe;
+	/*
 	for (int i = 0; i < 6; i++)
 	{
 		//addressPC[zPC] = instructionPC[i];
 		//zPC++;
 	}
+	*/
 	cout << right;
 	//cout << "addressPC: " << addressPC << endl;
 	//bitset<6> PC = MyCache.getProgramCounter_PC();
@@ -1223,26 +1226,31 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 			<< instructionIn[8] << "  " << address;
 	}
 }
+
 //for instruction display
 void OS::printCodeRimmed(bitset<16> &instructionIn)
 {
 
 }
+
 //for instruction display
 void OS::printCodeR(bitset<16> &instructionIn)
 {
 
 }
+
 //for instruction display
 void OS::printCodeRxRy(bitset<16> &instructionIn)
 {
 
 }
+
 //for instruction display
 void OS::printCodeRx(bitset<16> &instructionIn)
 {
 
 }
+
 //for instruction display
 void OS::printCodeRRII(bitset<16> &instructionIn)
 {
@@ -1259,7 +1267,7 @@ void OS::executeInstruction(bitset<16> &instructionIn)
 		opCode[a] = instructionIn[i];
 		a++;	
 	}
-
+	cout << "In executeInstruction() topish" << endl;
 	if (opCode == 1)		//LDR
 		LDR(instructionIn);
 	else if (opCode == 2)	//STR
@@ -1268,7 +1276,7 @@ void OS::executeInstruction(bitset<16> &instructionIn)
 		LDX(instructionIn);
 	else if (opCode == 42)	//STX
 		STX(instructionIn);
-	/*
+/*
 	else if (opCode == 10)	//JE
 		JE(instructionIn);
 	else if (opCode == 11)	//JNE
@@ -1283,7 +1291,7 @@ void OS::executeInstruction(bitset<16> &instructionIn)
 		JL(instructionIn);
 	else if (opCode == 16)	//JLE
 		JLE(instructionIn);
-	*/
+*/
 	else if (opCode == 17)	//CMP
 		CMP(instructionIn);
 	//else if (opCode == 18)	
@@ -1319,6 +1327,7 @@ void OS::executeInstruction(bitset<16> &instructionIn)
 	else if (opCode == 27)	//SUB
 		SUB(instructionIn);
 	*/
+	cout << "In executeInstruction() BOTTOM" << endl;
 }
 
 void OS::clearAllData()
@@ -1327,6 +1336,7 @@ void OS::clearAllData()
 	instructionSet_OS.clear();//removes all elements leaving the container with a size of 0
 	MyMemory.clearMemory();//removes all elements leaving the container with a size of 0
 }
+
 //Scrolls through file data for processing specific fields as required
 //Returns next data field as a string.
 string OS::fileIterator(istream &input, char delim)
@@ -1339,6 +1349,7 @@ string OS::fileIterator(istream &input, char delim)
 
 	return newString;
 }
+
 //allows skipping of parenthesis and iterates through whitespace after a word that may be 
 //or is expected to be the last entry in order to find next entry or eof
 //used only in fileIterator(). Returns next char as int
@@ -1362,6 +1373,7 @@ int OS::scrollChars(istream &instructionFile)
 	}
 	return temp;
 }
+
 //iterates through whitespace after a word that may be or is expected to be the last entry
 //in order to find eof. Used by UserPrompt() for user input processing (cin). Returns next char as int
 //Precondition: 2nd or 3rd word of getInstruction term input
@@ -1483,6 +1495,7 @@ void OS::LDR(bitset<16> temp)
 effective address. Bus class is used to temporarily hold address and data.*/
 void OS::STR(bitset<16> setIn)
 {
+//cout << "In STR top" << endl;
 	bitset<2> reg; //holds bits that identify the register
 	reg[1] = setIn[7];
 	reg[0] = setIn[6];
@@ -1491,6 +1504,7 @@ void OS::STR(bitset<16> setIn)
 	bitset<16> content; //holds values that are being transferred
 	if (setIn[9] == 0)
 	{
+	//	cout << "In STR 1st if" << endl;
 		if (setIn[8] == 0)
 		{
 			for (int i = 5; i >= 0; i--)
@@ -1523,6 +1537,7 @@ void OS::STR(bitset<16> setIn)
 	}
 	else if (setIn[9] == 1)
 	{
+		//cout << "In STR else if" << endl;
 		if (setIn[8] == 0)
 		{
 			//for (int i = 5; i >= 0; i--)
@@ -1553,6 +1568,7 @@ void OS::STR(bitset<16> setIn)
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
+//	cout << "In STR bottom" << endl;
 }
 
 /*Load Index Register from memory. Takes a 16 bitset and extracts necessary bits to calculate the
@@ -1562,10 +1578,14 @@ void OS::LDX(bitset<16> temp)
 	bitset<16> mar;
 	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
 	bitset<16> content; //holds values that are being transferred
+	cout << "LDX TOP" << endl;
 	if (temp[9] == 0)
 	{
+		cout << "LDX IF" << endl;
+
 		if (temp[8] == 0)
 		{
+		cout << "LDX IF IF" << endl;
 			for (int i = 5; i >= 0; i--)
 			{
 				effectiveAddress_EA[i] = temp[i];
@@ -1580,6 +1600,7 @@ void OS::LDX(bitset<16> temp)
 		}
 		else if (temp[8] == 1)
 		{
+			cout << "LDX IF, ELSE IF" << endl;
 			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			for (int i = 5; i >= 0; i--)
@@ -1602,8 +1623,10 @@ void OS::LDX(bitset<16> temp)
 	}
 	else if (temp[9] == 1)
 	{
+		cout << "LDX ELSE IF" << endl;
 		if (temp[8] == 0)
 		{
+cout << "LDX ELSE IF, IF" << endl;
 			//for (int i = 5; i >= 0; i--)
 			//{
 				//effectiveAddress_EA[i] = temp[i];
@@ -1615,9 +1638,11 @@ void OS::LDX(bitset<16> temp)
 			MyCache.setIndexRegister_X0(content);
 			MyCache.setMemoryAddressRegister_MAR(mar);
 			MyCache.setMemoryBufferRegister_MBR(content);
+cout << "Bottom of else if if..." << endl;
 		}
 		else if (temp[8] == 1)
 		{
+			cout << "LDX ELSE IF, ELSE IF" << endl;
 			bitset<16> index = MyCache.getIndexRegister_X0();
 			bitset<16> address;
 			//for (int i = 5; i >= 0; i--)
@@ -1638,16 +1663,19 @@ void OS::LDX(bitset<16> temp)
 			MyCache.setMemoryBufferRegister_MBR(content);
 		}
 	}
+	cout << "LDX BOTTOM" << endl;
 }
 
 /*Store Index Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
 effective address. Bus class is used to temporarily hold address and data.*/
 void OS::STX(bitset<16> setIn)
 {
+cout << "STX top" << endl;
 	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
 	bitset<16> content; //holds values that are being transferred
 	if (setIn[9] == 0)
 	{
+		cout << "STX IF" << endl;
 		if (setIn[8] == 0)
 		{
 			for (int i = 5; i >= 0; i--)
@@ -1680,6 +1708,7 @@ void OS::STX(bitset<16> setIn)
 	}
 	else if (setIn[9] == 1)
 	{
+		cout << "STX else if" << endl;
 		if (setIn[8] == 0)
 		{
 			//for (int i = 5; i >= 0; i--)
