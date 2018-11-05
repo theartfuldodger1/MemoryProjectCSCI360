@@ -551,7 +551,7 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 		int j = 10;
 		for (int i = 0; i < 6; i++)
 		{
-			buildSet[j] = opCode[i];
+			buildSet[j] = opCode[i];	
 			j++;
 		}
 		//Acquire and encode opCode - END
@@ -578,6 +578,7 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
         else if (opCode == 26 || opCode == 27 )
             codeRRII(inFile, buildSet, stringFlag);
 
+		instructionCount++;
 		instructions.push_back(buildSet);
 	}
 /*
@@ -663,29 +664,152 @@ void OS::codeIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	//for testing END
 }
 
+//Encodes 16 bit instruction for Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
 void OS::codeRimmed(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode r, immed;
 {
+	/*             R
+	Opcode  I  IX AC  Address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	char delim = ',';
+	//Acquire and encode R - BEGIN
+	bitset<2> twoBits;
+	string rCode = fileIterator(inFile, delim);
+	twoBits = stoi(rCode);
+	buildSet[6] = twoBits[0];
+	buildSet[7] = twoBits[1];
+	//Acquire and encode R - END
 
+	//Acquire and encode address BEGIN
+	encodeAddress(inFile, buildSet, stringFlag);
+	//Acquire and encode address END
+
+	//for testing BEGIN
+	//cout << "BUILD SET in codeRimmed: " << buildSet << endl;
+	//for testing END
 }
 
+//Encodes 16 instructions for //-> DEC(8), INC(9) //Form --> opCode, r, immed
 void OS::codeR(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode r;
 {
+	/*             R
+	Opcode  I  IX AC  Address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	char delim = ',';
+	//Acquire and encode R - BEGIN
+	bitset<2> twoBits;
+	string rCode = fileIterator(inFile, delim);
+	twoBits = stoi(rCode);
+	buildSet[6] = twoBits[0];
+	buildSet[7] = twoBits[1];
+	//Acquire and encode R - END
 
+	//for testing BEGIN
+	//cout << "BUILD SET in codeR: " << buildSet << endl;
+	//for testing END
 }
 
+//Encodes 16 bit instructions for Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
 void OS::codeRxRy(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode rx, ry;
 {
+	/*
+	Opcode  Rx  Ry  Address
+	000001  00  01  000000
+	15  10  98  76  5    0
+	*/
+	//MUL rx, ry
+	//ignores address
 
+	char delim = ',';
+	//Acquire and encode Rx - BEGIN
+	bitset<2> twoBits;
+	string rxCode = fileIterator(inFile, delim);
+	twoBits = stoi(rxCode);
+	buildSet[8] = twoBits[0];
+	buildSet[9] = twoBits[1];
+	//Acquire and encode Rx - END
+
+	delim = ',';
+	//Acquire and encode Ry - BEGIN
+	bitset<2> twoMoreBits;
+	string ryCode = fileIterator(inFile, delim);
+	twoMoreBits = stoi(ryCode);
+	buildSet[6] = twoMoreBits[0];
+	buildSet[7] = twoMoreBits[1];
+	//Acquire and encode Ry - END
+
+	//for testing BEGIN
+	//cout << "BUILD SET in codeRxRy: " << buildSet << endl;
+	//for testing END
 }
 
+//Encodes 16 bit instructions for  //-> NOT(25) //form --> opCode, rx
 void OS::codeRx(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode rx;
 {
+	/*
+	Opcode  Rx  Ry  Address
+	000001  00  01  000000
+	15  10  98  76  5    0
+	*/
+	//NOT rx
 
+	char delim = ',';
+	//Acquire and encode Ry - BEGIN
+	bitset<2> twoBits;
+	string rCode = fileIterator(inFile, delim);
+	twoBits = stoi(rCode);
+	buildSet[8] = twoBits[0];
+	buildSet[9] = twoBits[1];
+	//Acquire and encode Ry - END
 }
 
-void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode, r, r, i, i;
+//Encodes 16 bit instructions for //-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
+void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --> opCode, r, r, i, ix;
 {
+	/*
+	Opcode  Rx  Ry  I  IX
+	000001  00  01  0  0  0000
+	15  10  98  76  5  4  3  0
+	*/
+	//ADD rx, ry, i, ix
+	//SUB rx, ry, i, ix
 
+	char delim = ',';
+	//Acquire and encode Rx - BEGIN
+	bitset<2> twoBits;
+	string rxCode = fileIterator(inFile, delim);
+	twoBits = stoi(rxCode);
+	buildSet[8] = twoBits[0];
+	buildSet[9] = twoBits[1];
+	//Acquire and encode Rx - END
+
+	delim = ',';
+	//Acquire and encode Ry - BEGIN
+	bitset<2> twoMoreBits;
+	string ryCode = fileIterator(inFile, delim);
+	twoMoreBits = stoi(ryCode);
+	buildSet[6] = twoMoreBits[0];
+	buildSet[7] = twoMoreBits[1];
+	//Acquire and encode Rx - END
+	
+	//Acquire and encode I - BEGIN
+	delim = ',';
+	string iCode = fileIterator(inFile, delim);
+	buildSet[5] = stoi(iCode);
+	//Acquire and encode I - END
+
+	//Acquire and encode X - BEGIN
+	delim = ',';
+	string xCode = fileIterator(inFile, delim);
+	buildSet[4] = stoi(xCode);
+	//Acquire and encode X - END
+
+	//for testing BEGIN
+	//cout << "BUILD SET in codeRRII: " << buildSet << endl;
+	//for testing END
 }
 
 

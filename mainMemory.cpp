@@ -66,12 +66,14 @@ void mainMemory::setMemoryElement(unsigned long address, bitset<16> setIn)
 
 void mainMemory::printMemory()
 {
-	int countFront= 0;
-	int countBack = 1;
 	cout << "\n";
 	cout << right;
 	cout << setw(70) << "Memory Display"
 		<< "\n\t------------------------------------------------------------------------------------------------------------------";
+
+	int countFront= 0;
+	int countBack = 1;
+
 	if (memory.empty())
 		cout << "Memory is empty" << endl;
 	for (int i = 0; i < 2048; i++)

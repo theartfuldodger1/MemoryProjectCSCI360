@@ -121,6 +121,7 @@ private:
 	bool firstPassFlag = 0; //for stepInstructions()
 	int constant = 107;
 	unsigned int Pcount = 0;
+	unsigned int instructionCount = 0;//number of instructions in instruction set
 };
 #endif /* __OS_H__ */
 
