@@ -1124,6 +1124,7 @@ void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instructio
 			<< " R" << R.to_ulong() << ", " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
 }
+
 //for instruction display
 void OS::printCodeIXA(bitset<16> &instructionIn)
 {

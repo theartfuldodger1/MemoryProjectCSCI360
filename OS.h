@@ -52,6 +52,7 @@ public:
 	void loadInstructionsIntoMain();
 	void clearAllData();
 
+
 	//instruction display
 	void printInstructions();//when isntructions are not yet loaded
 	void stepInstructions();//instructions loaded in main memory
