@@ -1632,6 +1632,7 @@ cout << "LDX ELSE IF, IF" << endl;
 				//effectiveAddress_EA[i] = temp[i];
 			//}
 			unsigned long effective_address = temp.to_ulong();
+cout << "what is temp: " << temp.to_ulong() << endl;
 			mar = temp.to_ulong();
 			SystemBus.setAddressBus(effective_address);
 			content = SystemBus.getDataBus();
