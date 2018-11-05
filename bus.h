@@ -17,8 +17,6 @@ class Bus
 {
 	public:
 		Bus() {};
-
-
 		~Bus() {};
 		//  stores the address that is being used in load/store instuctions into addressBus and uses mainMemory function to getInstruction the memory for the data and loads data into dataBus
 		void setAddressBus (unsigned long address)

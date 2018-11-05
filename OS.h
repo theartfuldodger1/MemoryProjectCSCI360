@@ -14,9 +14,6 @@ Opcode  I  IX AC  Address
 #ifndef __OS_H__
 #define __OS_H__
 
-//#include "main_memory.h"
-//#include "processor.h"
-//#include "HDD.h"
 #include "cache.h"
 #include "mainMemory.h"
 #include "bus.h"
@@ -29,7 +26,6 @@ Opcode  I  IX AC  Address
 #include <bitset>
 #include <list>
 #include <string>
-//#include <vector>
 
 using namespace std;
 

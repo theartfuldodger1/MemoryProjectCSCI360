@@ -1222,7 +1222,7 @@ void OS::executeInstruction(bitset<16> &instructionIn)
 		LDX(instructionIn);
 	else if (opCode == 42)	//STX
 		STX(instructionIn);
-/*
+
 	else if (opCode == 10)	//JE
 		JE(instructionIn);
 	else if (opCode == 11)	//JNE
@@ -1237,7 +1237,7 @@ void OS::executeInstruction(bitset<16> &instructionIn)
 		JL(instructionIn);
 	else if (opCode == 16)	//JLE
 		JLE(instructionIn);
-*/
+
 	else if (opCode == 17)	//CMP
 		CMP(instructionIn);
 	//else if (opCode == 18)	
