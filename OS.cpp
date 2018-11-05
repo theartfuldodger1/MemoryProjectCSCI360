@@ -1925,3 +1925,144 @@ void OS::CMP(bitset<16> setIn)
 		}
 	}
 }
+
+void OS::JUMP(bitset<16> setIn)
+{
+	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
+	bitset<16> content; //holds values that are being transferred
+	bitset<16> mar;
+	
+	if (setIn[9] == 0)
+	{
+		if (setIn[8] == 0)
+		{
+			for (int i = 5; i >= 0; i--)
+			{
+				effectiveAddress_EA[i] = setIn[i];
+			}
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.getDataBus();
+			MyCache.setInstructionRegister_IR(content);		//IR register gets the instruction from the address in main mem
+			MyCache.set_ProgramCounter(effective_address++); //PC gets the next address 
+			
+		}
+		else if (setIn[8] == 1)
+		{
+			bitset<16> index = MyCache.getIndexRegister_X0();
+			bitset<16> address;
+			for (int i = 5; i >= 0; i--)
+			{
+				address[i] = setIn[i];
+			}
+			address = addBitSets(address, index);
+			for (int i = 15; i >= 0; i--)
+			{
+				effectiveAddress_EA[i] = address[i];
+			}
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.getDataBus();
+			MyCache.setInstructionRegister_IR(content);
+			MyCache.set_ProgramCounter(effective_address++);
+			
+		}
+	}
+	else if (setIn[9] == 1)
+	{
+		if (setIn[8] == 0)
+		{
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//effectiveAddress_EA[i] = temp[i];
+			//}
+			unsigned long effective_address = setIn.to_ulong();
+			mar = setIn.to_ulong();
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.getDataBus();
+			MyCache.setInstructionRegister_IR(content);
+			MyCache.set_ProgramCounter(effective_address++);
+			
+		}
+		else if (setIn[8] == 1)
+		{
+			bitset<16> index = MyCache.getIndexRegister_X0();
+			bitset<16> address;
+			//for (int i = 5; i >= 0; i--)
+			//{
+				//address[i] = temp[i];
+			//}
+			address = addBitSets(setIn, index);
+			for (int i = 15; i >= 0; i--)
+			{
+				effectiveAddress_EA[i] = address[i];
+			}
+			unsigned long effective_address = effectiveAddress_EA.to_ulong();
+			mar = effectiveAddress_EA.to_ulong();
+			SystemBus.setAddressBus(effective_address);
+			content = SystemBus.getDataBus();
+			MyCache.setInstructionRegister_IR(content);
+			MyCache.set_ProgramCounter(effective_address++);
+			
+		}
+	}
+	MyCache.setMemoryAddressRegister_MAR(mar);
+	MyCache.setMemoryBufferRegister_MBR(content);
+}
+
+void OS::JE(bitset<16> setIn)
+{
+	if(MyCache.get_ZF() == 1){
+		JUMP(setIn);
+	}
+	else{
+		return;
+	}
+}
+void OS::JNE(bitset<16> setIn)
+{
+	if(MyCache.get_ZF() == 1){
+		JUMP(setIn);
+	}
+	else{
+		return;
+	}
+}
+void OS::JG(bitset<16> setIn)
+{
+	if(MyCache.get_ZF() == 0 && MyCache.get_SF() == 0){
+		JUMP(setIn);
+	}
+	else{
+		return;
+	}
+}
+void OS::JGE(bitset<16> setIn)
+{
+	if(MyCache.get_ZF() == 1 || MyCache.get_SF() == 0){
+		JUMP(setIn);
+	}
+	else{
+		return;
+	}	
+}
+void OS::JL(bitset<16> setIn)
+{
+	if(MyCache.get_SF() == 1){
+		JUMP(setIn);
+	}
+	else{
+		return;
+	}
+}
+void OS::JLE(bitset<16> setIn)
+{
+	if(MyCache.get_ZF() == 1 || MyCache.get_SF() == 1){
+		JUMP(setIn);
+	}
+	else{
+		return;
+	}
+}
