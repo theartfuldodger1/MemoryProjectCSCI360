@@ -117,7 +117,7 @@ public:
 	void SUB(bitset<16> setIn);
 
 private:
-	bus SystemBus;
+	Bus SystemBus;
 	cache MyCache;
 	mainMemory MyMemory;
 	list <bitset<16>> instructionSet_OS;//all instructions loaded here from file
