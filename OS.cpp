@@ -1018,32 +1018,22 @@ void OS::stepInstructions()
 			if (input == 'R' || input == 'r')
 				runFlag = 1;
 		}
-		
-		//bitset<16> test = *setEnd;
 		if (*setEnd == MyCache.getInstructionRegister_IR())
 		{
 			runFlag = 0;
 			endOfInstructions = 1;
 		}
-		//cout << "Before getInstructionRegister_IR()" << endl;
-		if (/*endOfInstructions == 0 && */(input == 'R' || input == 'r' || input == 'S' || input == 's'))
-		{
-			cout << "IR: " << MyCache.getInstructionRegister_IR() << endl;
+		if (input == 'R' || input == 'r' || input == 'S' || input == 's')
 			executeInstruction(MyCache.getInstructionRegister_IR());
-		}
-	//cout << "IR Before: " << MyCache.getInstructionRegister_IR() << endl;
-		//JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JUMP(13) alters PC
+
 		MyCache.setInstructionRegister_IR(MyMemory.getInstruction(MyCache.getProgramCounter_PC()));
-	//cout << "IR AFTER: " << MyCache.getInstructionRegister_IR() << endl;
-	//cout << "next address before: " << MyCache.getProgramCounter_PC() << endl;
 		MyCache.set_ProgramCounter(MyCache.getProgramCounter_PC()++);
-	//cout << "next address after: " << MyCache.getProgramCounter_PC() << endl;
 
 		//call help file needed
 		if (input == 'H' || input == 'h')
 			cout << "\t\nHelp File incomplete..." << endl;
 
-	} while (input != 'Q' && input != 'q');
+	}while (input != 'Q' && input != 'q');
 }
 //called in stepInstructions(). this func calls a print function specific to the opCode 
 //of the instruction and prints it to console in the correct format
@@ -1121,19 +1111,7 @@ void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instructio
 		j++;
 	}
 
-	//MyCache.set_ProgramCounter(addressPC);
-	//int zPC = 0;
-	//instructionPC = *itExe;
-	/*
-	for (int i = 0; i < 6; i++)
-	{
-		//addressPC[zPC] = instructionPC[i];
-		//zPC++;
-	}
-	*/
 	cout << right;
-	//cout << "addressPC: " << addressPC << endl;
-	//bitset<6> PC = MyCache.getProgramCounter_PC();
 	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
 	{
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
@@ -1142,11 +1120,9 @@ void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instructio
 		firstPassFlag = 1;
 	}
 	else
-	{
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
 			<< " R" << R.to_ulong() << ", " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
-	}
 }
 //for instruction display
 void OS::printCodeIXA(bitset<16> &instructionIn)
@@ -1166,32 +1142,16 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 	15  10  9  8  76  5    0
 	*/
 	bitset<6> opCode;
-	//bitset<2> R;
 	bitset<6> address;
 	bitset<16> addressPC;
-	//vector <bitset<16>> instructionSet_OS = instructionSet_OS;//MyMemory.getInstructionSet();
-	//	vector<bitset<16>>::iterator iSetIter;
-	//	vector<bitset<16>>::iterator itExe = instructionSet_OS.begin();
-	//	bitset<16> instruction;
-	//	bitset<16> instructionPC;
 	string opCodeString;
-	//unsigned int count = 0;
 
-	//instructionIn = *iSetIter;
 	int j = 0;
 	for (int i = 10; i < 16; i++)//6 bits
 	{
 		opCode[j] = instructionIn[i];
 		j++;
 	}
-	/*
-	j = 0;
-	for (int i = 6; i < 8; i++)//2 bits
-	{
-		R[j] = instructionIn[i];
-		j++;
-	}
-	*/
 	j = 0;
 	for (int i = 0; i < 6; i++)//6 bits
 	{
@@ -1199,19 +1159,7 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 		j++;
 	}
 
-	/////////////////56745////////need to fixS
-	//MyCache.set_ProgramCounter(addressPC);
-	//int zPC = 0;
-	//instructionPC = *itExe;
-	for (int i = 0; i < 6; i++)
-	{
-		//addressPC[zPC] = instructionPC[i];
-		//zPC++;
-	}
 	cout << right;
-	//cout << "addressPC: " << addressPC << endl;
-	//bitset<6> PC = MyCache.getProgramCounter_PC();
-//cout << "\nin CodeIXA: " << MyCache.getProgramCounter_PC() << "      firstPassFlag: " << firstPassFlag << endl;
 	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
 	{
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
@@ -1220,11 +1168,9 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 		firstPassFlag = 1;
 	}
 	else
-	{
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
 			<< "     " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
-	}
 }
 
 //for instruction display
@@ -1402,8 +1348,8 @@ bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 	}
 	return result;
 }
-/*Load Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
-effective address. Bus class is used to temporarily hold address and data.*/
+//Load Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
+//effective address. Bus class is used to temporarily hold address and data.
 void OS::LDR(bitset<16> temp)
 {
 	bitset<2> reg; //holds bits that identify the register
@@ -1491,8 +1437,8 @@ void OS::LDR(bitset<16> temp)
 	}
 }
 
-/*Store Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
-effective address. Bus class is used to temporarily hold address and data.*/
+//Store Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
+//effective address. Bus class is used to temporarily hold address and data.
 void OS::STR(bitset<16> setIn)
 {
 //cout << "In STR top" << endl;
@@ -1571,8 +1517,8 @@ void OS::STR(bitset<16> setIn)
 //	cout << "In STR bottom" << endl;
 }
 
-/*Load Index Register from memory. Takes a 16 bitset and extracts necessary bits to calculate the
-effective address. Bus class is used to temporarily hold address and data.*/
+//Load Index Register from memory. Takes a 16 bitset and extracts necessary bits to calculate the
+//effective address. Bus class is used to temporarily hold address and data.
 void OS::LDX(bitset<16> temp)
 {
 	bitset<16> mar;
@@ -1667,8 +1613,8 @@ cout << "Bottom of else if if..." << endl;
 	cout << "LDX BOTTOM" << endl;
 }
 
-/*Store Index Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
-effective address. Bus class is used to temporarily hold address and data.*/
+//Store Index Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
+//effective address. Bus class is used to temporarily hold address and data.
 void OS::STX(bitset<16> setIn)
 {
 cout << "STX top" << endl;
