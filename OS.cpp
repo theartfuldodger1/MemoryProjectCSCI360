@@ -1598,7 +1598,7 @@ cout << "Bottom of else if if..." << endl;
 			bitset<16> address;
 			//for (int i = 5; i >= 0; i--)
 			//{
-				//address[i] = temp[i];
+			//address[i] = temp[i];
 			//}
 			address = addBitSets(temp, index);
 			for (int i = 15; i >= 0; i--)
