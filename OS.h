@@ -14,9 +14,6 @@ Opcode  I  IX AC  Address
 #ifndef __OS_H__
 #define __OS_H__
 
-//#include "main_memory.h"
-//#include "processor.h"
-//#include "HDD.h"
 #include "cache.h"
 #include "mainMemory.h"
 #include "bus.h"
@@ -29,7 +26,6 @@ Opcode  I  IX AC  Address
 #include <bitset>
 #include <list>
 #include <string>
-//#include <vector>
 
 using namespace std;
 
@@ -56,10 +52,11 @@ public:
 	void loadInstructionsIntoMain();
 	void clearAllData();
 
+
 	//instruction display
 	void printInstructions();//when isntructions are not yet loaded
 	void stepInstructions();//instructions loaded in main memory
-	void executeInstruction(bitset<16> &);//calls appropriate function to process an instruction based on instrcuction opCode
+	void executeInstruction(bitset<16>);//calls appropriate function to process an instruction based on instrcuction opCode
 	void instructionDisplaySwitch(bitset<16> &);
 	void printCodeRIXA(bitset<16> &);//for instruction display
 	void printCodeIXA(bitset<16> &);//for instruction display
