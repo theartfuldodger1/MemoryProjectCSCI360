@@ -1027,7 +1027,10 @@ void OS::stepInstructions()
 			executeInstruction(MyCache.getInstructionRegister_IR());
 
 		MyCache.setInstructionRegister_IR(MyMemory.getInstruction(MyCache.getProgramCounter_PC()));
-		MyCache.set_ProgramCounter(MyCache.getProgramCounter_PC()++);
+		int pc_int = MyCache.getProgramCounter_PC().to_ulong();
+		pc_int++;
+		bitset<16> temp1 = pc_int;
+		MyCache.set_ProgramCounter(temp1);
 
 		//call help file needed
 		if (input == 'H' || input == 'h')
@@ -1204,7 +1207,7 @@ void OS::printCodeRRII(bitset<16> &instructionIn)
 
 }
 
-void OS::executeInstruction(bitset<16> &instructionIn)
+void OS::executeInstruction(bitset<16> instructionIn)
 {
 	bitset<6> opCode;
 	int a = 0;

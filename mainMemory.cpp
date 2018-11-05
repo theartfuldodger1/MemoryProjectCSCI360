@@ -35,7 +35,7 @@ vector <bitset<16>> mainMemory::getInstructionSet()
 	return memory;
 }
 //returns next instruction in instruction set list
-bitset<16> mainMemory::getInstruction(bitset<16> &programCounter_In)
+bitset<16> mainMemory::getInstruction(bitset<16> programCounter_In)
 {
 	unsigned long tempLong = programCounter_In.to_ulong();
 	bitset<16> tempInstruction = memory[tempLong];

@@ -33,9 +33,9 @@ cache::~cache()
 {
 }
 //Postfix
-bitset<16> operator++ (bitset<16> &setIn, int)
+bitset<16> operator++ (bitset<16> &setIn, int tempInt)
 {
-	int tempInt = setIn.to_ulong();
+	tempInt = setIn.to_ulong();
 	tempInt++;
 	setIn = tempInt;
 	return setIn;

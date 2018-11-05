@@ -56,7 +56,7 @@ public:
 	//instruction display
 	void printInstructions();//when isntructions are not yet loaded
 	void stepInstructions();//instructions loaded in main memory
-	void executeInstruction(bitset<16> &);//calls appropriate function to process an instruction based on instrcuction opCode
+	void executeInstruction(bitset<16>);//calls appropriate function to process an instruction based on instrcuction opCode
 	void instructionDisplaySwitch(bitset<16> &);
 	void printCodeRIXA(bitset<16> &);//for instruction display
 	void printCodeIXA(bitset<16> &);//for instruction display

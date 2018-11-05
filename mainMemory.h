@@ -23,7 +23,7 @@ public:
 	mainMemory();
 	~mainMemory();
 	vector <bitset<16>> getInstructionSet();//returns instruction set vector
-	bitset<16> getInstruction(bitset<16> &);//returns instruction in instruction at input param address
+	bitset<16> getInstruction(bitset<16>);//returns instruction in instruction at input param address
 	bitset<16> getInstruction(unsigned long address); //getInstruction function that simply navigates to the specified place in the vector
 	void setMemoryElement(unsigned long address, bitset<16> setIn); //sets indicated memory location to specified value
 	
