@@ -263,7 +263,7 @@ void OS::processFile(istream &cin)
 	//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
 	if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17)
 		codeRIXA(cin, buildSet, stringFlag);
-	//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JUMP(13) //Form --> opCode i, x, address
+	//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JMP(13) //Form --> opCode i, x, address
 	else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode == 11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
 		codeIXA(cin, buildSet, stringFlag);
 	//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
@@ -551,7 +551,7 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 		//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
 		if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17 )
 			codeRIXA(inFile, buildSet, stringFlag);
-		//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JUMP(13) //Form --> opCode i, x, address
+		//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JMP(13) //Form --> opCode i, x, address
 		else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode ==11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
 			codeIXA(inFile, buildSet, stringFlag);
 		//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
@@ -623,7 +623,7 @@ void OS::codeRIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	//cout << "BUILD SET in codeRIXA: " << buildSet << endl;
 	//for testing END
 }
-//Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JUMP //Form --> opCode i, x, address
+//Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JMP //Form --> opCode i, x, address
 void OS::codeIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
 	/*             R
@@ -816,7 +816,7 @@ string OS::opCodeToString(bitset<6>&opCode)
 	else if (opCode == 16)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
 		opCodeString = "JLE";
 	else if (opCode == 13)//Form --> opCode i, x, address --> uses codeIXA(istream &inFile, bitset<16> &buildSet)
-		opCodeString = "JUMP";
+		opCodeString = "JMP";
 	//Basic Arithmetic and Logic Instructions
 	else if (opCode == 4)//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
 		opCodeString = "AMR";
@@ -1071,7 +1071,7 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 	//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
 	if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17)
 		printCodeRIXA(instructionIn);
-	//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JUMP(13) //Form --> opCode i, x, address
+	//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JMP(13) //Form --> opCode i, x, address
 	else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode == 11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
 		printCodeIXA(instructionIn);
 	//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
@@ -1091,7 +1091,7 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 		printCodeRRII(instructionIn);
 	//cout << "display Switch OUT" << endl;
 }
-//for instruction display
+//for instruction display //Encodes 16 bit instruction for LDR, STR, AMR, SMR, CMP
 void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instruction display
 {
 	/*
@@ -1136,17 +1136,17 @@ void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instructio
 	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
 	{
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
-			<< " R" << R.to_ulong() << ", " << instructionIn[9] << ", "
+			<< "  R" << R.to_ulong() << ", " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
 		firstPassFlag = 1;
 	}
 	else
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
-			<< " R" << R.to_ulong() << ", " << instructionIn[9] << ", "
+			<< "  R" << R.to_ulong() << ", " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
 }
 
-//for instruction display
+//for instruction display //Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JMP //Form --> opCode i, x, address
 void OS::printCodeIXA(bitset<16> &instructionIn)
 {
 	/*
@@ -1180,18 +1180,22 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 		address[j] = instructionIn[i];
 		j++;
 	}
-
+	string strOpCode = opCodeToString(opCode);
+	if (strOpCode == "JG" || strOpCode == "JE" || strOpCode == "JL")
+	{
+		strOpCode += " ";
+	}
 	cout << right;
 	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
 	{
-		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
-			<< "     " << instructionIn[9] << ", "
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << strOpCode/*opCodeToString(opCode)*/
+			<< "      " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
 		firstPassFlag = 1;
 	}
 	else
-		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
-			<< "     " << instructionIn[9] << ", "
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << strOpCode/*opCodeToString(opCode)*/
+			<< "      " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
 }
 
@@ -1251,7 +1255,7 @@ void OS::executeInstruction(bitset<16> instructionIn)
 		JNE(instructionIn);
 	else if (opCode == 12)	//JG
 		JG(instructionIn);
-	else if (opCode == 13)	//JUMP
+	else if (opCode == 13)	//JMP
 		JUMP(instructionIn);
 	else if (opCode == 14)	//JGE
 		JGE(instructionIn);
