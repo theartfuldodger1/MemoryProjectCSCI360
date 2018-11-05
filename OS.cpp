@@ -18,10 +18,12 @@ OS::OS()
 {
 	MyCache.setIndexRegister_X0(1);
 }
+
 //Destructor
 OS::~OS()
 {
 }
+
 //Switch - where all the magic happens. 
 void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 {
@@ -149,6 +151,7 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 	//for testing END
 	*/
 }
+
 //catches failed input cast and resets istream
 void OS::failCheck(istream &cin)
 {
@@ -174,6 +177,7 @@ void OS::initializationMenu()
 		<< "\n\t7. Quit"
 		<< "\n\n\t==>> ";
 }
+
 //add instruction file from Menu1, choice 1
 unsigned short int OS::menu1A()
 {
@@ -201,6 +205,7 @@ unsigned short int OS::menu1A()
 	unsigned short int paramOut = menu2();
 	return paramOut;
 }
+
 // add individual instructions from Menu1, choice 2
 unsigned short int OS::menu1B()
 {
@@ -286,6 +291,7 @@ void OS::processFile(istream &cin)
 	cin.clear();
 	cin.ignore(255, '\n');
 }
+
 //accepts a bitset<16> instruction. The instruction's effective address is calculated based on values of I and IX
 //A new bitset<16> is returned with the effective address ///////////////////////////////////////////////////////////////////////////WORK IN PROGRESS
 bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
@@ -322,6 +328,7 @@ bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
 	}
 	return effectiveAddress_EA;
 }
+
 //simulation menu, follows addition of instructions (menu1A or 1B). Choice 1 returns the user to Menu 1 (Initialization Menu)
 unsigned short int OS::menu2()
 {
@@ -426,6 +433,7 @@ unsigned short int OS::menu2()
 	} while (param != 8);
 	return paramOut;
 }
+
 //follows loading of program into main memory - choice 3 from menu2/simulation menu
 //if user selects choice 1, return to Menu 1, initializatinMenu()
 unsigned short int  OS::menu2A()
@@ -586,6 +594,7 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 	//for testing END
 */
 }
+
 //Encodes 16 bit instruction for LDR, STR, AMR, SMR, CMP
 void OS::codeRIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
@@ -623,6 +632,7 @@ void OS::codeRIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	//cout << "BUILD SET in codeRIXA: " << buildSet << endl;
 	//for testing END
 }
+
 //Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JMP //Form --> opCode i, x, address
 void OS::codeIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 {
@@ -694,6 +704,7 @@ void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	for (int i = 0; i < 6; i++)
 		buildSet[i] = sixBits[i];
 }
+
 //encodes 6 bit address onto a bitset<16>
 bitset<16> OS::getAddress(bitset<16> &instructionIn)
 {
@@ -703,6 +714,7 @@ bitset<16> OS::getAddress(bitset<16> &instructionIn)
 
 	return temp;
 }
+
 /*
 01
 LDR r, i, x, address
@@ -879,6 +891,7 @@ void OS::loadInstructionsIntoMain()
 		}
 	}
 }
+
 //when isntructions are not yet loaded
 void OS::printInstructions()
 {
@@ -965,6 +978,7 @@ void OS::printInstructions()
 
 	} while (input != 'Q' && input != 'q');
 }
+
 //instructions already loaded in main memory. this function can step or run through the instructions
 void OS::stepInstructions()
 {
@@ -1056,6 +1070,7 @@ void OS::stepInstructions()
 
 	}while (input != 'Q' && input != 'q');
 }
+
 //called in stepInstructions(). this func calls a print function specific to the opCode 
 //of the instruction and prints it to console in the correct format
 void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
@@ -1091,6 +1106,7 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 		printCodeRRII(instructionIn);
 	//cout << "display Switch OUT" << endl;
 }
+
 //for instruction display //Encodes 16 bit instruction for LDR, STR, AMR, SMR, CMP
 void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instruction display
 {
@@ -1993,6 +2009,7 @@ void OS::JE(bitset<16> setIn)
 		return;
 	}
 }
+
 void OS::JNE(bitset<16> setIn)
 {
 	if(MyCache.get_ZF() == 0){
@@ -2002,6 +2019,7 @@ void OS::JNE(bitset<16> setIn)
 		return;
 	}
 }
+
 void OS::JG(bitset<16> setIn)
 {
 	if(MyCache.get_ZF() == 0 && MyCache.get_SF() == 0){
@@ -2011,6 +2029,7 @@ void OS::JG(bitset<16> setIn)
 		return;
 	}
 }
+
 void OS::JGE(bitset<16> setIn)
 {
 	if(MyCache.get_ZF() == 1 || MyCache.get_SF() == 0){
@@ -2020,6 +2039,7 @@ void OS::JGE(bitset<16> setIn)
 		return;
 	}	
 }
+
 void OS::JL(bitset<16> setIn)
 {
 	if(MyCache.get_SF() == 1){
@@ -2029,6 +2049,7 @@ void OS::JL(bitset<16> setIn)
 		return;
 	}
 }
+
 void OS::JLE(bitset<16> setIn)
 {
 	if(MyCache.get_ZF() == 1 || MyCache.get_SF() == 1){
