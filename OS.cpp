@@ -241,57 +241,6 @@ unsigned short int OS::menu1B()
 	return paramOut;
 }
 
-void OS::processFile(istream &cin)
-{
-	/*             R
-	Opcode  I  IX AC  Address
-	000001  0  0  11  101100
-	15  10  9  8  76  5    0
-	*/
-	bitset<16> buildSet;
-	bool firstPass = 1;
-	bool stringFlag = 1;
-	string inFile;
-
-	buildSet.reset();
-
-	//Acquire and encode opCode - BEGIN
-	bitset<6> opCode = streamToOpCode(cin);
-	int j = 10;
-	for (int i = 0; i < 6; i++)
-	{
-		buildSet[j] = opCode[i];
-		j++;
-	}
-	//Acquire and encode opCode - END
-
-	//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
-	if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17)
-		codeRIXA(cin, buildSet, stringFlag);
-	//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JMP(13) //Form --> opCode i, x, address
-	else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode == 11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
-		codeIXA(cin, buildSet, stringFlag);
-	//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
-	else if (opCode == 6 || opCode == 7)
-		codeRimmed(cin, buildSet, stringFlag);
-	//-> DEC(8), INC(9) //Form --> opCode, r, immed
-	else if (opCode == 8 || opCode == 9)
-		codeR(cin, buildSet, stringFlag);
-	//Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
-	else if (opCode == 20 || opCode == 21 || opCode == 22 || opCode == 23 || opCode == 24)
-		codeRxRy(cin, buildSet, stringFlag);
-	//-> NOT(25) //form --> opCode, rx
-	else if (opCode == 25)
-		codeRx(cin, buildSet, stringFlag);
-	//-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
-	else if (opCode == 26 || opCode == 26)
-		codeRRII(cin, buildSet, stringFlag);
-
-	instructionSet_OS.push_back(buildSet);
-	cin.clear();
-	cin.ignore(255, '\n');
-}
-
 //accepts a bitset<16> instruction. The instruction's effective address is calculated based on values of I and IX
 //A new bitset<16> is returned with the effective address ///////////////////////////////////////////////////////////////////////////WORK IN PROGRESS
 bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
@@ -531,6 +480,57 @@ unsigned short int  OS::menu2A()
 	return paramOut;
 }
 
+void OS::processFile(istream &cin)
+{
+	/*             R
+	Opcode  I  IX AC  Address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<16> buildSet;
+	bool firstPass = 1;
+	bool stringFlag = 1;
+	string inFile;
+
+	buildSet.reset();
+
+	//Acquire and encode opCode - BEGIN
+	bitset<6> opCode = streamToOpCode(cin);
+	int j = 10;
+	for (int i = 0; i < 6; i++)
+	{
+		buildSet[j] = opCode[i];
+		j++;
+	}
+	//Acquire and encode opCode - END
+
+	//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
+	if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17)
+		codeRIXA(cin, buildSet, stringFlag);
+	//Load/Store Instructions //Transfer Instructions -> LDX(41), STX(42), JE(10), JNE(11), JG(12), JGE(14), JL(15), JLE(16), JMP(13) //Form --> opCode i, x, address
+	else if (opCode == 41 || opCode == 42 || opCode == 10 || opCode == 11 || opCode == 12 || opCode == 13 || opCode == 14 || opCode == 15 || opCode == 16)
+		codeIXA(cin, buildSet, stringFlag);
+	//Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
+	else if (opCode == 6 || opCode == 7)
+		codeRimmed(cin, buildSet, stringFlag);
+	//-> DEC(8), INC(9) //Form --> opCode, r, immed
+	else if (opCode == 8 || opCode == 9)
+		codeR(cin, buildSet, stringFlag);
+	//Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
+	else if (opCode == 20 || opCode == 21 || opCode == 22 || opCode == 23 || opCode == 24)
+		codeRxRy(cin, buildSet, stringFlag);
+	//-> NOT(25) //form --> opCode, rx
+	else if (opCode == 25)
+		codeRx(cin, buildSet, stringFlag);
+	//-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
+	else if (opCode == 26 || opCode == 26)
+		codeRRII(cin, buildSet, stringFlag);
+
+	instructionSet_OS.push_back(buildSet);
+	cin.clear();
+	cin.ignore(255, '\n');
+}
+
 void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 {
 	/*             R
@@ -541,20 +541,35 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 	bitset<16> buildSet;
 	bool firstPass = 1;
 	bool stringFlag = 0;
+
+	bitset<6> opCode;
 	
 	while(!inFile.eof())
 	{ 
 		buildSet.reset();
-		
+
+		char line[256];
+/*
+if (opCode == 8)
+{
+	inFile.getline(line, 256, '\n');
+	cout << "////////////////ProcFile GEt: " << line << endl;
+}
+*/
+//char peek0 = inFile.peek();
+//cout << "**inFile : " << peek0;
+
 		//Acquire and encode opCode - BEGIN
-		bitset<6> opCode = streamToOpCode(inFile);
+		opCode = streamToOpCode(inFile);
 		int j = 10;
 		for (int i = 0; i < 6; i++)
 		{
 			buildSet[j] = opCode[i];	
 			j++;
 		}
-		//Acquire and encode opCode - END
+		//Acquire and encode opCode - END 
+//cout << " OpCode in proc file top: " << opCode << " " << opCodeToString(opCode) << endl;
+//cout << " buildSet: " << buildSet << endl;
 
 		//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
 		if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17 )
@@ -579,6 +594,8 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
             codeRRII(inFile, buildSet, stringFlag);
 
 		instructionCount++;
+//char char1 = inFile.peek();
+//cout << "   inFilePeek: " << char1 << " opCode in processFile: " << opCodeToString(opCode) << " Count: " << instructionCount << endl;
 		instructions.push_back(buildSet);
 	}
 /*
@@ -683,8 +700,10 @@ void OS::codeRimmed(istream &inFile, bitset<16> &buildSet, bool stringFlag)//For
 
 	//Acquire and encode address BEGIN
 	encodeAddress(inFile, buildSet, stringFlag);
+//char peek1 = inFile.peek();
+//cout << " out1 peek: " << peek1 << endl;
 	//Acquire and encode address END
-
+//cout << "inFile: " << inFile.peek() << endl;
 	//for testing BEGIN
 	//cout << "BUILD SET in codeRimmed: " << buildSet << endl;
 	//for testing END
@@ -698,7 +717,7 @@ void OS::codeR(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form -->
 	000001  0  0  11  101100
 	15  10  9  8  76  5    0
 	*/
-	char delim = ',';
+	char delim = '\n';
 	//Acquire and encode R - BEGIN
 	bitset<2> twoBits;
 	string rCode = fileIterator(inFile, delim);
@@ -706,6 +725,14 @@ void OS::codeR(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form -->
 	buildSet[6] = twoBits[0];
 	buildSet[7] = twoBits[1];
 	//Acquire and encode R - END
+	instructionCount++;
+//char peek1 = inFile.peek();
+//cout << " out2 rCode: " << rCode << endl;
+//	delim = '\n';
+//	fileIterator(inFile, delim);
+//	instructionCount++;
+
+//cout << "inFile: " << inFile.peek() << " twoBits: " << twoBits << endl;
 
 	//for testing BEGIN
 	//cout << "BUILD SET in codeR: " << buildSet << endl;
@@ -732,7 +759,7 @@ void OS::codeRxRy(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form 
 	buildSet[9] = twoBits[1];
 	//Acquire and encode Rx - END
 
-	delim = ',';
+	delim = '\n';
 	//Acquire and encode Ry - BEGIN
 	bitset<2> twoMoreBits;
 	string ryCode = fileIterator(inFile, delim);
@@ -740,6 +767,9 @@ void OS::codeRxRy(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form 
 	buildSet[6] = twoMoreBits[0];
 	buildSet[7] = twoMoreBits[1];
 	//Acquire and encode Ry - END
+
+	
+	//fileIterator(inFile, delim);
 
 	//for testing BEGIN
 	//cout << "BUILD SET in codeRxRy: " << buildSet << endl;
@@ -756,7 +786,7 @@ void OS::codeRx(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --
 	*/
 	//NOT rx
 
-	char delim = ',';
+	char delim = '\n';
 	//Acquire and encode Ry - BEGIN
 	bitset<2> twoBits;
 	string rCode = fileIterator(inFile, delim);
@@ -802,7 +832,7 @@ void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form 
 	//Acquire and encode I - END
 
 	//Acquire and encode X - BEGIN
-	delim = ',';
+	delim = '\n';
 	string xCode = fileIterator(inFile, delim);
 	buildSet[4] = stoi(xCode);
 	//Acquire and encode X - END
@@ -920,7 +950,7 @@ bitset<6> OS::streamToOpCode(istream &input)
 		bitOpCode = 26;
 	else if (opCode == "SUB")//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 27;
-//cout << "streamToOpCode end" << endl;
+//cout << "  streamToOpCode:: " << opCode << endl;
 	return bitOpCode;
 }
 
@@ -985,9 +1015,9 @@ string OS::opCodeToString(bitset<6>&opCode)
 		opCodeString = "ADD";
 	else if (opCode == 27)//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
 		opCodeString = "SUB";
+//cout <<"  Opcodestring" << opCodeString;
 
 	return opCodeString;
-	//cout << opCodeString;
 }
 
 void OS::loadInstructionsIntoMain()
@@ -1231,7 +1261,7 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 	//cout << "display Switch OUT" << endl;
 }
 
-//for instruction display //Encodes 16 bit instruction for LDR, STR, AMR, SMR, CMP
+//for instruction display //LDR, STR, AMR, SMR, CMP
 void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instruction display
 {
 	/*
@@ -1286,7 +1316,7 @@ void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instructio
 			<< instructionIn[8] << "  " << address;
 }
 
-//for instruction display //Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JMP //Form --> opCode i, x, address
+//for instruction display //LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JMP //Form --> opCode i, x, address
 void OS::printCodeIXA(bitset<16> &instructionIn)
 {
 	/*
@@ -1305,8 +1335,8 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 	*/
 	bitset<6> opCode;
 	bitset<6> address;
-	bitset<16> addressPC;
-	string opCodeString;
+	//bitset<16> addressPC;
+	//string opCodeString;
 
 	int j = 0;
 	for (int i = 10; i < 16; i++)//6 bits
@@ -1339,19 +1369,120 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 			<< instructionIn[8] << "  " << address;
 }
 
-//for instruction display
+//for instruction display // Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
 void OS::printCodeRimmed(bitset<16> &instructionIn)
 {
+	/*
+	Instructions
+	------------------------------------------------------
+	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
+	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
+	------------------------------------------------------
+	R.Run	     S.Step       Q.Menu    	H.Help
+	*/
+	/*             R
+	Opcode  I  IX AC  address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<6> opCode;
+	bitset<2> R;
+	bitset<6> address;
+	//bitset<16> addressPC;
+	//string opCodeString;
 
+	int j = 0;
+	for (int i = 10; i < 16; i++)//6 bits
+	{
+		opCode[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 6; i < 8; i++)//2 bits
+	{
+		R[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 0; i < 6; i++)//6 bits
+	{
+		address[j] = instructionIn[i];
+		j++;
+	}
+
+	cout << right;
+	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
+			<< "  R" << R.to_ulong() << "   " /*<< instructionIn[9]*/ << "   "
+			/*<< instructionIn[8]*/ << "  " << address;
+		firstPassFlag = 1;
+	}
+	else
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
+		<< "  R" << R.to_ulong() << "   " /*<< instructionIn[9]*/ << "   "
+		/*<< instructionIn[8]*/ << "  " << address;
 }
 
-//for instruction display
+//for instruction display //-> DEC(8), INC(9) //Form --> opCode, r, immed	
 void OS::printCodeR(bitset<16> &instructionIn)
 {
+	/*
+	Instructions
+	------------------------------------------------------
+	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
+	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
+	------------------------------------------------------
+	R.Run	     S.Step       Q.Menu    	H.Help
+	*/
+	/*             R
+	Opcode  I  IX AC  address
+	000001  0  0  11  101100
+	15  10  9  8  76  5    0
+	*/
+	bitset<6> opCode;
+	bitset<2> R;
+	bitset<6> address;
+	//bitset<16> addressPC;
+	//string opCodeString;
 
+	int j = 0;
+	for (int i = 10; i < 16; i++)//6 bits
+	{
+		opCode[j] = instructionIn[i];
+		j++;
+	}
+//cout << "opCode!!: " << opCode << endl;
+	j = 0;
+	for (int i = 6; i < 8; i++)//2 bits
+	{
+		R[j] = instructionIn[i];
+		j++;
+	}
+	/*
+	j = 0;
+	for (int i = 0; i < 6; i++)//6 bits
+	{
+		address[j] = instructionIn[i];
+		j++;
+	}
+	*/
+	cout << right;
+	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
+			<< "  R" << R.to_ulong() << "   " /*<< instructionIn[9]*/ << "   "
+			/*<< instructionIn[8] << "  " << address*/;
+		firstPassFlag = 1;
+	}
+	else
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
+		<< "  R" << R.to_ulong() << "   " /*<< instructionIn[9]*/ << "   "
+		/*<< instructionIn[8] << "  " << address*/;
 }
 
-//for instruction display
+//for instruction display // Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
+
 void OS::printCodeRxRy(bitset<16> &instructionIn)
 {
 
