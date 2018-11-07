@@ -16,7 +16,7 @@ using namespace std;
 
 OS::OS()
 {
-	MyCache.setIndexRegister_X0(1);
+	MyCache.setIndexRegister_X0(1);//hard coded and not modified anywhere in code at this time
 }
 
 //Destructor
@@ -61,7 +61,6 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 		check = 0;
 		if (cin.fail())
 		{
-			//cout << "check!:" << endl;
 			check = 1;
 			cin.clear();
 			cin.ignore(255, '\n');
@@ -137,19 +136,6 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			break;
 			}
 	} while (param != 7);
-	/*
-	//for testing BEGIN
-	int temp = 0;
-	vector <bitset<16>>::iterator iter = instructionSet_OS.begin();
-	while (iter != instructionSet_OS.end())
-	{
-		cout << "vector position:: " << temp << ", Item:: " << *iter << endl;
-		cout << "\tposition:: " << temp << ", size:: " << iter->size() << endl;
-		iter++;
-		temp++;
-	}
-	//for testing END
-	*/
 }
 
 //catches failed input cast and resets istream
@@ -221,7 +207,7 @@ unsigned short int OS::menu1B()
 	string instructionIn;
 
 	int peek = cin.peek();
-	//do
+
 	while (peek != 81 && peek != 113)
 	{
 		peek = cin.peek();
@@ -242,7 +228,7 @@ unsigned short int OS::menu1B()
 }
 
 //accepts a bitset<16> instruction. The instruction's effective address is calculated based on values of I and IX
-//A new bitset<16> is returned with the effective address ///////////////////////////////////////////////////////////////////////////WORK IN PROGRESS
+//A new bitset<16> is returned with the effective address /////////////////////////////////////////////////////////////      WORK IN PROGRESS
 bitset<16> OS::effectiveAddress_EA(bitset<16> & instructionIn)
 {
 	/*             R
@@ -548,17 +534,6 @@ void OS::processFile(ifstream &inFile, list <bitset<16>> &instructions)
 	{ 
 		buildSet.reset();
 
-		char line[256];
-/*
-if (opCode == 8)
-{
-	inFile.getline(line, 256, '\n');
-	cout << "////////////////ProcFile GEt: " << line << endl;
-}
-*/
-//char peek0 = inFile.peek();
-//cout << "**inFile : " << peek0;
-
 		//Acquire and encode opCode - BEGIN
 		opCode = streamToOpCode(inFile);
 		int j = 10;
@@ -568,8 +543,6 @@ if (opCode == 8)
 			j++;
 		}
 		//Acquire and encode opCode - END 
-//cout << " OpCode in proc file top: " << opCode << " " << opCodeToString(opCode) << endl;
-//cout << " buildSet: " << buildSet << endl;
 
 		//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
 		if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17 )
@@ -594,23 +567,14 @@ if (opCode == 8)
             codeRRII(inFile, buildSet, stringFlag);
 
 		instructionCount++;
-//char char1 = inFile.peek();
-//cout << "   inFilePeek: " << char1 << " opCode in processFile: " << opCodeToString(opCode) << " Count: " << instructionCount << endl;
+
+//for testing BEGIN
+char char1 = inFile.peek();
+cout << "   inFilePeek: " << char1 << " opCode in processFile: " << opCodeToString(opCode) << " Count: " << instructionCount << endl;
+//for testing END
+
 		instructions.push_back(buildSet);
 	}
-/*
-	//for testing BEGIN
-	int tempTest = 0;
-	vector <bitset<16>>::iterator iter = instructions.begin();
-	while (iter != instructions.end())
-	{
-		cout << "vector position:: " << tempTest << ", Item:: " << *iter << endl;
-		cout << "\tposition:: " << tempTest << ", size:: " << iter->size() << endl;
-		iter++;
-		tempTest++;
-	}
-	//for testing END
-*/
 }
 
 //Encodes 16 bit instruction for LDR, STR, AMR, SMR, CMP
@@ -621,8 +585,8 @@ void OS::codeRIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	000001  0  0  11  101100
 	15  10  9  8  76  5    0
 	*/
-	char delim = ',';
 	//Acquire and encode R - BEGIN
+	char delim = ',';
 	bitset<2> twoBits;
 	string rCode = fileIterator(inFile, delim);
 	twoBits = stoi(rCode);
@@ -645,10 +609,6 @@ void OS::codeRIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	//Acquire and encode address BEGIN
 	encodeAddress(inFile, buildSet, stringFlag);
 	//Acquire and encode address END
-
-	//for testing BEGIN
-	//cout << "BUILD SET in codeRIXA: " << buildSet << endl;
-	//for testing END
 }
 
 //Encodes 16 bit instruction for LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JMP //Form --> opCode i, x, address
@@ -676,9 +636,6 @@ void OS::codeIXA(istream &inFile, bitset<16> &buildSet, bool stringFlag)
 	//Acquire and encode address BEGIN
 	encodeAddress(inFile, buildSet, stringFlag);
 	//Acquire and encode address END
-	//for testing BEGIN
-	//cout << "BUILD SET in codeIXA: " << buildSet << endl;
-	//for testing END
 }
 
 //Encodes 16 bit instruction for Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
@@ -698,15 +655,9 @@ void OS::codeRimmed(istream &inFile, bitset<16> &buildSet, bool stringFlag)//For
 	buildSet[7] = twoBits[1];
 	//Acquire and encode R - END
 
-	//Acquire and encode address BEGIN
+	//Acquire and encode immidiate value BEGIN
 	encodeAddress(inFile, buildSet, stringFlag);
-//char peek1 = inFile.peek();
-//cout << " out1 peek: " << peek1 << endl;
-	//Acquire and encode address END
-//cout << "inFile: " << inFile.peek() << endl;
-	//for testing BEGIN
-	//cout << "BUILD SET in codeRimmed: " << buildSet << endl;
-	//for testing END
+	//Acquire and encode immidiate value END
 }
 
 //Encodes 16 instructions for //-> DEC(8), INC(9) //Form --> opCode, r, immed
@@ -717,26 +668,15 @@ void OS::codeR(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form -->
 	000001  0  0  11  101100
 	15  10  9  8  76  5    0
 	*/
-	char delim = '\n';
+
 	//Acquire and encode R - BEGIN
+	char delim = '\n';
 	bitset<2> twoBits;
 	string rCode = fileIterator(inFile, delim);
 	twoBits = stoi(rCode);
 	buildSet[6] = twoBits[0];
 	buildSet[7] = twoBits[1];
 	//Acquire and encode R - END
-	instructionCount++;
-//char peek1 = inFile.peek();
-//cout << " out2 rCode: " << rCode << endl;
-//	delim = '\n';
-//	fileIterator(inFile, delim);
-//	instructionCount++;
-
-//cout << "inFile: " << inFile.peek() << " twoBits: " << twoBits << endl;
-
-	//for testing BEGIN
-	//cout << "BUILD SET in codeR: " << buildSet << endl;
-	//for testing END
 }
 
 //Encodes 16 bit instructions for Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
@@ -767,13 +707,6 @@ void OS::codeRxRy(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form 
 	buildSet[6] = twoMoreBits[0];
 	buildSet[7] = twoMoreBits[1];
 	//Acquire and encode Ry - END
-
-	
-	//fileIterator(inFile, delim);
-
-	//for testing BEGIN
-	//cout << "BUILD SET in codeRxRy: " << buildSet << endl;
-	//for testing END
 }
 
 //Encodes 16 bit instructions for  //-> NOT(25) //form --> opCode, rx
@@ -787,13 +720,13 @@ void OS::codeRx(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form --
 	//NOT rx
 
 	char delim = '\n';
-	//Acquire and encode Ry - BEGIN
+	//Acquire and encode Rx - BEGIN
 	bitset<2> twoBits;
 	string rCode = fileIterator(inFile, delim);
 	twoBits = stoi(rCode);
 	buildSet[8] = twoBits[0];
 	buildSet[9] = twoBits[1];
-	//Acquire and encode Ry - END
+	//Acquire and encode Rx - END
 }
 
 //Encodes 16 bit instructions for //-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
@@ -823,7 +756,7 @@ void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form 
 	twoMoreBits = stoi(ryCode);
 	buildSet[6] = twoMoreBits[0];
 	buildSet[7] = twoMoreBits[1];
-	//Acquire and encode Rx - END
+	//Acquire and encode Ry - END
 	
 	//Acquire and encode I - BEGIN
 	delim = ',';
@@ -831,17 +764,12 @@ void OS::codeRRII(istream &inFile, bitset<16> &buildSet, bool stringFlag)//Form 
 	buildSet[5] = stoi(iCode);
 	//Acquire and encode I - END
 
-	//Acquire and encode X - BEGIN
+	//Acquire and encode IX - BEGIN
 	delim = '\n';
 	string xCode = fileIterator(inFile, delim);
 	buildSet[4] = stoi(xCode);
-	//Acquire and encode X - END
-
-	//for testing BEGIN
-	//cout << "BUILD SET in codeRRII: " << buildSet << endl;
-	//for testing END
+	//Acquire and encode IX - END
 }
-
 
 //encodes 6 bit address from user input from string or file from input file into buildSet
 void OS::encodeAddress(istream &inFile, bitset<16> &buildSet, bool stringFlag)
@@ -869,23 +797,7 @@ bitset<16> OS::getAddress(bitset<16> &instructionIn)
 	return temp;
 }
 
-/*
-01
-LDR r, i, x, address
-Load Register From Memory : r << c(EA)
-
-02
-STR r, i, x, address
-Store Register To Memory : EA << c(r)
-
-41 
-LDX i, x, address
-Load Index Register from Memory : X0 << c(EA)
-
-42
-STX i, x, address
-Store Index Register to Memory : EA << c(X0)
-*/
+//stream input is read and encoded onto a bitset that is them returned
 bitset<6> OS::streamToOpCode(istream &input)
 {
 	char delim = ' ';
@@ -923,8 +835,6 @@ bitset<6> OS::streamToOpCode(istream &input)
 		bitOpCode = 4;
 	else if (opCode == "SMR")//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 5;
-
-//below has no encoder function fully defined as of yet/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	else if (opCode == "AIR")//Form --> opCode, r, immed --> usus codeRimmed(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 6;
 	else if (opCode == "SIR")//Form --> opCode, r, immed --> usus codeRimmed(istream &inFile, bitset<16> &buildSet)
@@ -950,10 +860,11 @@ bitset<6> OS::streamToOpCode(istream &input)
 		bitOpCode = 26;
 	else if (opCode == "SUB")//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
 		bitOpCode = 27;
-//cout << "  streamToOpCode:: " << opCode << endl;
+
 	return bitOpCode;
 }
 
+//bitset opCode is read and encoded onto a string in letters form and returned
 string OS::opCodeToString(bitset<6>&opCode)
 {
 	string opCodeString;
@@ -988,8 +899,6 @@ string OS::opCodeToString(bitset<6>&opCode)
 		opCodeString = "AMR";
 	else if (opCode == 5)//Form --> opCode r, i, x, address --> uses codeRIXA(istream &inFile, bitset<16> &buildSet)
 		opCodeString = "SMR";
-
-	//below has no encoder function fully defined as of yet//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	else if (opCode == 6)//Form --> opCode, r, immed --> usus codeRimmed(istream &inFile, bitset<16> &buildSet)
 		opCodeString = "AIR";
 	else if (opCode == 7)//Form --> opCode, r, immed --> usus codeRimmed(istream &inFile, bitset<16> &buildSet)
@@ -1015,11 +924,11 @@ string OS::opCodeToString(bitset<6>&opCode)
 		opCodeString = "ADD";
 	else if (opCode == 27)//form --> opCode, rx, ry, i, ix -->uses codeRRII(istream &inFile, bitset<16> &buildSet)
 		opCodeString = "SUB";
-//cout <<"  Opcodestring" << opCodeString;
 
 	return opCodeString;
 }
 
+//takes list from OS of all instructions input by user and copies the list into MM vector sequentially using MyMemory.insertInstruction()
 void OS::loadInstructionsIntoMain()
 {
 	if (instructionSet_OS.empty())
@@ -1037,7 +946,6 @@ void OS::loadInstructionsIntoMain()
 			if(count == 1)
 				MyCache.set_ProgramCounter(1);//loads next sequential instruction into PC
 
-			//MyMemory.insertInstruction(*iterInstSet, effectiveAddress_EA(*iterInstSet));//loads instructions into MM using EA
 			MyMemory.insertInstruction(*iterInstSet, count);//Loads instructions into MM sequentially
 
 			iterInstSet++;
@@ -1072,15 +980,13 @@ void OS::printInstructions()
 	char input;
 	do
 	{
-		
 		cout << right;
 		cout << setw(40) << "Instructions"
 			<< "\n\t\t----------------------------------";
 		if (instructionSet_OS.empty())
 		{
-			cout << "\n";
-			//cout << right;
-			cout << setw(45) << "Instructions not loaded" << endl;
+			cout << "\n" << setw(45) << "Instructions not loaded" << endl;
+
 			bitset<1> OneBitZeroed = 0;
 			cout << "\t\t" << setw(4) << setfill(' ') << "1" << "       " << "N/A"
 				<< " R" << reg.to_ulong() << ", " << OneBitZeroed << ", "
@@ -1152,35 +1058,24 @@ void OS::stepInstructions()
 	list<bitset<16>>::iterator iSetIter;//for displaying entire instruction set from OS
 	list<bitset<16>>::iterator setEnd = instructionSet_OS.end();//for executing instructions
 	setEnd--;
+
 	char input;
 	bool runFlag = 0;
 	bool endOfInstructions = 0;
-	//bool firstPassFlag = 0;
-	Pcount = 0;
 
 	do
-	{	
-		/*
-		if (iSetIter != instructionSet_OS.end())//(count < instructionSet_OS.size())
-			for (unsigned int i = 0; i < Pcount; i++)
-				itExe++;
-		*/
-		
+	{
 		cout << "\n";
 		cout << right;
 		cout << setw(40) << "Instructions"
 			<< "\n\t\t----------------------------------";
-		//cout << "TOP!!!!!!!!!!!!" << endl;
-		//cout << "FPF1: " << firstPassFlag << endl;
 		firstPassFlag = 0;
-		//cout << "FPF2: " << firstPassFlag << endl;
-		Pcount = 0;
+
 		iSetIter = instructionSet_OS.begin();
 		while (iSetIter != instructionSet_OS.end())
 		{
 			instructionDisplaySwitch(*iSetIter);
 			iSetIter++;
-			Pcount++;
 		}
 		if (endOfInstructions != 1)
 			cout << "\n\t\t----------------------------------"
@@ -1236,7 +1131,6 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 		opCode[j] = instructionIn[i];
 		j++;
 	}
-	//cout << "display Switch IN" << endl;
 	//Load/Store Instructions //Comparison Instruction -> LDR(1), STR(2), AMR(4), SMR(5), CMP(17) //Form --> opCode r, i, x, address
 	if (opCode == 1 || opCode == 2 || opCode == 4 || opCode == 5 || opCode == 17)
 		printCodeRIXA(instructionIn);
@@ -1258,20 +1152,19 @@ void OS::instructionDisplaySwitch(bitset<16> &instructionIn)
 	//-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
 	else if (opCode == 26 || opCode == 27)
 		printCodeRRII(instructionIn);
-	//cout << "display Switch OUT" << endl;
 }
 
+/*
+Instructions
+------------------------------------------------------
+0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
+1         STR  R1, 0, 0, 5    000000  0  0  00  000000
+------------------------------------------------------
+R.Run	     S.Step       Q.Menu    	H.Help
+*/
 //for instruction display //LDR, STR, AMR, SMR, CMP
 void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instruction display
 {
-	/*
-	Instructions
-	------------------------------------------------------
-	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
-	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
-	------------------------------------------------------
-	R.Run	     S.Step       Q.Menu    	H.Help
-	*/
 	/*             R
 	Opcode  I  IX AC  address
 	000001  0  0  11  101100
@@ -1319,15 +1212,6 @@ void OS::printCodeRIXA(bitset<16> &instructionIn/*, int count*/)//for instructio
 //for instruction display //LDX, LDX, JE, JNE, JG, JGE, JL, JLE, JMP //Form --> opCode i, x, address
 void OS::printCodeIXA(bitset<16> &instructionIn)
 {
-	/*
-	Instructions
-	------------------------------------------------------
-	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
-	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
-	2         LDX  R2, 0, 9		  000000  0  0  00  000000
-	------------------------------------------------------
-	R.Run	     S.Step       Q.Menu    	H.Help
-	*/
 	/*             R
 	Opcode  I  IX AC  address
 	000001  0  0  00  101100
@@ -1335,8 +1219,6 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 	*/
 	bitset<6> opCode;
 	bitset<6> address;
-	//bitset<16> addressPC;
-	//string opCodeString;
 
 	int j = 0;
 	for (int i = 10; i < 16; i++)//6 bits
@@ -1358,13 +1240,13 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 	cout << right;
 	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
 	{
-		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << strOpCode/*opCodeToString(opCode)*/
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << strOpCode
 			<< "      " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
 		firstPassFlag = 1;
 	}
 	else
-		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << strOpCode/*opCodeToString(opCode)*/
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << strOpCode
 			<< "      " << instructionIn[9] << ", "
 			<< instructionIn[8] << "  " << address;
 }
@@ -1372,14 +1254,6 @@ void OS::printCodeIXA(bitset<16> &instructionIn)
 //for instruction display // Basic Arithmetic and Logic Instructions -> AIR(6), SIR(7) //Form --> opCode, r, immed
 void OS::printCodeRimmed(bitset<16> &instructionIn)
 {
-	/*
-	Instructions
-	------------------------------------------------------
-	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
-	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
-	------------------------------------------------------
-	R.Run	     S.Step       Q.Menu    	H.Help
-	*/
 	/*             R
 	Opcode  I  IX AC  address
 	000001  0  0  11  101100
@@ -1388,8 +1262,6 @@ void OS::printCodeRimmed(bitset<16> &instructionIn)
 	bitset<6> opCode;
 	bitset<2> R;
 	bitset<6> address;
-	//bitset<16> addressPC;
-	//string opCodeString;
 
 	int j = 0;
 	for (int i = 10; i < 16; i++)//6 bits
@@ -1414,27 +1286,17 @@ void OS::printCodeRimmed(bitset<16> &instructionIn)
 	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
 	{
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
-			<< "  R" << R.to_ulong() << "   " /*<< instructionIn[9]*/ << "   "
-			/*<< instructionIn[8]*/ << "  " << address;
+			<< "  R" << R.to_ulong() << "        " << address;
 		firstPassFlag = 1;
 	}
 	else
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
-		<< "  R" << R.to_ulong() << "   " /*<< instructionIn[9]*/ << "   "
-		/*<< instructionIn[8]*/ << "  " << address;
+		<< "  R" << R.to_ulong() << "        " << address;
 }
 
 //for instruction display //-> DEC(8), INC(9) //Form --> opCode, r, immed	
 void OS::printCodeR(bitset<16> &instructionIn)
 {
-	/*
-	Instructions
-	------------------------------------------------------
-	0 PC ==>> LDR  R0, 0, 0, 63   000000  0  0  00  000000
-	1         STR  R1, 0, 0, 5    000000  0  0  00  000000
-	------------------------------------------------------
-	R.Run	     S.Step       Q.Menu    	H.Help
-	*/
 	/*             R
 	Opcode  I  IX AC  address
 	000001  0  0  11  101100
@@ -1442,9 +1304,6 @@ void OS::printCodeR(bitset<16> &instructionIn)
 	*/
 	bitset<6> opCode;
 	bitset<2> R;
-	bitset<6> address;
-	//bitset<16> addressPC;
-	//string opCodeString;
 
 	int j = 0;
 	for (int i = 10; i < 16; i++)//6 bits
@@ -1452,54 +1311,158 @@ void OS::printCodeR(bitset<16> &instructionIn)
 		opCode[j] = instructionIn[i];
 		j++;
 	}
-//cout << "opCode!!: " << opCode << endl;
 	j = 0;
 	for (int i = 6; i < 8; i++)//2 bits
 	{
 		R[j] = instructionIn[i];
 		j++;
 	}
-	/*
-	j = 0;
-	for (int i = 0; i < 6; i++)//6 bits
-	{
-		address[j] = instructionIn[i];
-		j++;
-	}
-	*/
+
 	cout << right;
 	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
 	{
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
-			<< "  R" << R.to_ulong() << "   " /*<< instructionIn[9]*/ << "   "
-			/*<< instructionIn[8] << "  " << address*/;
+			<< "  R" << R.to_ulong() << "   " << "   ";
 		firstPassFlag = 1;
 	}
 	else
 		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
-		<< "  R" << R.to_ulong() << "   " /*<< instructionIn[9]*/ << "   "
-		/*<< instructionIn[8] << "  " << address*/;
+		<< "  R" << R.to_ulong() << "   " << "   ";
 }
 
 //for instruction display // Advanced Arithmetic and Logical Instructions -> MUL(20), DIV(21), TER(22), AND(23), ORR(24) //form --> opCode, rx, ry
-
 void OS::printCodeRxRy(bitset<16> &instructionIn)
 {
+	/*
+	Opcode  Rx  Ry  Address
+	000001  00  01  000000
+	15  10  98  76  5    0
+	*/
+	//MUL rx, ry
+	//ignores address
 
+	bitset<6> opCode;
+	bitset<2> Rx;
+	bitset<2> Ry;
+
+	int j = 0;
+	for (int i = 10; i < 16; i++)//6 bits
+	{
+		opCode[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 6; i < 8; i++)//2 bits
+	{
+		Ry[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 8; i < 10; i++)//2 bits
+	{
+		Rx[j] = instructionIn[i];
+		j++;
+	}
+
+	cout << right;
+	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
+			<< "  Rx" << Rx.to_ulong() << ", Ry" << Rx.to_ulong();
+		firstPassFlag = 1;
+	}
+	else
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
+			<< "  Rx" << Rx.to_ulong() << ", Ry" << Rx.to_ulong();
 }
 
-//for instruction display
+//for instruction display //-> NOT(25) //form --> opCode, rx
 void OS::printCodeRx(bitset<16> &instructionIn)
 {
+	/*
+	Opcode  Rx  Ry  Address
+	000001  00  01  000000
+	15  10  98  76  5    0
+	*/
+	//ignores address
 
+	bitset<6> opCode;
+	bitset<2> Rx;
+
+	int j = 0;
+	for (int i = 10; i < 16; i++)//6 bits
+	{
+		opCode[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 8; i < 10; i++)//2 bits
+	{
+		Rx[j] = instructionIn[i];
+		j++;
+	}
+
+	cout << right;
+	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
+			<< "  R" << Rx.to_ulong();
+		firstPassFlag = 1;
+	}
+	else
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
+			<< "  R" << Rx.to_ulong();
 }
 
-//for instruction display
+//for instruction display //-> ADD(26), SUB(27) //form --> opCode, rx, ry, i, ix
 void OS::printCodeRRII(bitset<16> &instructionIn)
 {
+	/*
+	Opcode  Rx  Ry  I  IX
+	000001  00  01  0  0  0000
+	15  10  98  76  5  4  3  0
+	*/
+	//ADD rx, ry, i, ix
+	//SUB rx, ry, i, ix
 
+	bitset<6> opCode;
+	bitset<2> Rx;
+	bitset<2> Ry;
+
+	int j = 0;
+	for (int i = 10; i < 16; i++)//6 bits
+	{
+		opCode[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 6; i < 8; i++)//2 bits
+	{
+		Ry[j] = instructionIn[i];
+		j++;
+	}
+	j = 0;
+	for (int i = 8; i < 10; i++)//2 bits
+	{
+		Rx[j] = instructionIn[i];
+		j++;
+	}
+
+	cout << right;
+	if (MyCache.getProgramCounter_PC().to_ulong() == Pcount && firstPassFlag == 0)
+	{
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "  PC==>" << opCodeToString(opCode)
+			<< "  Rx" << Rx.to_ulong() << ", Ry" << Rx.to_ulong() << ", " << instructionIn[5] << ", "
+			<< instructionIn[4];
+		firstPassFlag = 1;
+	}
+	else
+		cout << "\n\t\t" << setw(4) << setfill(' ') << Pcount << "       " << opCodeToString(opCode)
+		<< "  Rx" << Rx.to_ulong() << ", Ry" << Rx.to_ulong() << ", " << instructionIn[5] << ", "
+		<< instructionIn[4];
 }
 
+//calls functions for executing instructions
 void OS::executeInstruction(bitset<16> instructionIn)
 {
 	bitset<6> opCode;
@@ -1510,7 +1473,7 @@ void OS::executeInstruction(bitset<16> instructionIn)
 		opCode[a] = instructionIn[i];
 		a++;	
 	}
-	cout << "In executeInstruction() topish" << endl;
+
 	if (opCode == 1)		//LDR
 		LDR(instructionIn);
 	else if (opCode == 2)	//STR
@@ -1570,9 +1533,9 @@ void OS::executeInstruction(bitset<16> instructionIn)
 	else if (opCode == 27)	//SUB
 		SUB(instructionIn);
 	*/
-	cout << "In executeInstruction() BOTTOM" << endl;
 }
 
+//effects containers as appropriate to empty or clear contents. Memory container is NEVER destroyed, just emptied
 void OS::clearAllData()
 {
 	MyCache.resetAllRegisters();//resets all bitsets to 0's
@@ -1639,12 +1602,14 @@ bitset<16> addBitSets(std::bitset<16> a, std::bitset<16> b) //adds bitsets
 {
 	std::bitset<16> const m("1");
 	std::bitset<16> result;
+
 	for (unsigned int i = 0; i < result.size(); ++i) {
 		std::bitset<16> const diff(((a >> i)&m).to_ullong() + ((b >> i)&m).to_ullong() + (result >> i).to_ullong());
 		result ^= (diff ^ (result >> i)) << i;
 	}
 	return result;
 }
+
 //Load Register to memory. Takes a 16 bitset and extracts necessary bits to calculate the
 //effective address. Bus class is used to temporarily hold address and data.
 void OS::LDR(bitset<16> temp)
@@ -1738,7 +1703,6 @@ void OS::LDR(bitset<16> temp)
 //effective address. Bus class is used to temporarily hold address and data.
 void OS::STR(bitset<16> setIn)
 {
-//cout << "In STR top" << endl;
 	bitset<2> reg; //holds bits that identify the register
 	reg[1] = setIn[7];
 	reg[0] = setIn[6];
@@ -1747,7 +1711,6 @@ void OS::STR(bitset<16> setIn)
 	bitset<16> content; //holds values that are being transferred
 	if (setIn[9] == 0)
 	{
-	//	cout << "In STR 1st if" << endl;
 		if (setIn[8] == 0)
 		{
 			for (int i = 5; i >= 0; i--)
@@ -1780,7 +1743,6 @@ void OS::STR(bitset<16> setIn)
 	}
 	else if (setIn[9] == 1)
 	{
-		//cout << "In STR else if" << endl;
 		if (setIn[8] == 0)
 		{
 			//for (int i = 5; i >= 0; i--)
@@ -1811,7 +1773,6 @@ void OS::STR(bitset<16> setIn)
 			MyMemory.setMemoryElement(effective_address, content);
 		}
 	}
-//	cout << "In STR bottom" << endl;
 }
 
 //Load Index Register from memory. Takes a 16 bitset and extracts necessary bits to calculate the
@@ -1914,12 +1875,10 @@ cout << "Bottom of else if if..." << endl;
 //effective address. Bus class is used to temporarily hold address and data.
 void OS::STX(bitset<16> setIn)
 {
-cout << "STX top" << endl;
 	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
 	bitset<16> content; //holds values that are being transferred
 	if (setIn[9] == 0)
 	{
-		cout << "STX IF" << endl;
 		if (setIn[8] == 0)
 		{
 			for (int i = 5; i >= 0; i--)
@@ -1952,7 +1911,6 @@ cout << "STX top" << endl;
 	}
 	else if (setIn[9] == 1)
 	{
-		cout << "STX else if" << endl;
 		if (setIn[8] == 0)
 		{
 			//for (int i = 5; i >= 0; i--)

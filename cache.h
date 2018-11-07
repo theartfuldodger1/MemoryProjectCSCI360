@@ -80,7 +80,7 @@ public:
 
 private:
 	Register GeneralPurposeRegisters_GPRs[4]; //Array of structs containing a bitset, 16 bits each, 0-3, referred to as R0 – R3. May be used as accumulators
-	bitset<16> IndexRegister_X0; //the index register contains 16-bit base address for base register addressing of memory.
+	bitset<16> IndexRegister_X0; //HARD CODED IN OS CONSTRUCTOR //the index register contains 16-bit base address for base register addressing of memory.
 	bitset<16> InstructionRegister_IR; //instruction to be executed
 	bitset<16> MemoryAddressRegister_MAR; // 16 bit - address of the word to be fetched from memory (0-2047) as bitset<16>
 	bitset<16> MemoryBufferRegister_MBR; //data just fetched from or stored into memory

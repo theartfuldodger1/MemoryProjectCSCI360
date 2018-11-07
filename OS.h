@@ -44,14 +44,13 @@ public:
 	unsigned short int menu2();//simulation menu, follows addition of instructions (menu1A or 1B). Choice 1 returns the user to Menu 1 (Initialization Menu)
 	unsigned short int menu2A();//follows loading of program into main memory - choice 3 from menu2/simulation menu 
 	
-	bitset<6> streamToOpCode(istream &cin);
-	string opCodeToString(bitset<6>&);
+	bitset<6> streamToOpCode(istream &cin);//stream input is read and encoded onto a bitset that is them returned
+	string opCodeToString(bitset<6>&);//bitset opCode is read and encoded onto a string in letters form and returned
 	void processFile(istream & cin);//modified version of processFile, esp for istream cin
 	void processFile(ifstream &inFile, list <bitset<16>>&);//For file processing only
 	
-	void loadInstructionsIntoMain();
-	void clearAllData();
-
+	void loadInstructionsIntoMain();//takes list from OS of all instructions input by user and copies the list into MM vector sequentially using MyMemory.insertInstruction()
+	void clearAllData();//effects ALL containers as appropriate to empty or clear contents. Memory container is NEVER destroyed, just emptied
 
 	//instruction display
 	void printInstructions();//when isntructions are not yet loaded
@@ -68,8 +67,8 @@ public:
 
 	//void voidLowerCase(string &wordIn);
 	string fileIterator(istream &input, char delim);//uses either space, ' ' or ',' or '\n' as char delimeter per calling function requirements
-	int scrollChars(istream &instructionFile);
-	int scrollWhiteSpace(istream &cin);
+	int scrollChars(istream &instructionFile);//allows skipping of parenthesis and iterates through whitespace after a word that may be or is expected to be the last entry in order to find next entry or eof. used only in fileIterator(). Returns next char as int
+	int scrollWhiteSpace(istream &cin);//iterates through whitespace after a word that may be or is expected to be the last entry in order to find eof. for user input processing (cin). Returns next char as int. Postcondition: cin loaded with next non-whitespace data
 
 	//Instruction encoding
 	void codeRIXA(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode r, i, x, address;
@@ -81,7 +80,7 @@ public:
     void codeRRII(istream &inFile, bitset<16> &buildSet, bool);//Form --> opCode, r, r, i, i;
 
 	void encodeAddress(istream &inFile, bitset<16> &buildSet, bool);//encodes 6 bit address from user input or file onto a 16bit bitset
-	bitset<16> getAddress(bitset<16> &instructionIn);
+	bitset<16> getAddress(bitset<16> &instructionIn);//encodes 6 bit address onto a bitset<16>
 	bitset<16> effectiveAddress_EA(bitset<16> &); //accepts a bitset<16> instruction and returns its effective address as a bitset<16>
 
 	void LDR(bitset<16> setIn); //Load register from memory
@@ -120,7 +119,7 @@ private:
 	list <bitset<16>> instructionSet_OS;//all instructions loaded here from file
 	bool firstPassFlag = 0; //for stepInstructions()
 	int constant = 107;
-	unsigned int Pcount = 0;
+	unsigned int Pcount = 0;//maintains list count across all print forms of instructions
 	unsigned int instructionCount = 0;//number of instructions in instruction set
 };
 #endif /* __OS_H__ */
