@@ -1503,10 +1503,10 @@ void OS::executeInstruction(bitset<16> instructionIn)
 	//else if (opCode == 18)	
 
 	//else if (opCode == 19)
-	/*
+	
 	else if (opCode == 4)	//AMR
 		AMR(instructionIn);
-	else if (opCode == 5)	// SMR
+	else if (opCode == 5)	//SMR
 		SMR(instructionIn);
 	else if (opCode == 6)	//AIR
 		AIR(instructionIn);
@@ -1532,7 +1532,6 @@ void OS::executeInstruction(bitset<16> instructionIn)
 		ADD(instructionIn);
 	else if (opCode == 27)	//SUB
 		SUB(instructionIn);
-	*/
 }
 
 //effects containers as appropriate to empty or clear contents. Memory container is NEVER destroyed, just emptied
