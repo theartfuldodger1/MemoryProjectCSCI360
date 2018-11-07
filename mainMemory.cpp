@@ -66,6 +66,8 @@ void mainMemory::setMemoryElement(unsigned long address, bitset<16> setIn)
 
 void mainMemory::printMemory()
 {
+	char input;
+	
 	cout << "\n";
 	cout << right;
 	cout << setw(70) << "Memory Display"
@@ -81,7 +83,6 @@ void mainMemory::printMemory()
 		
 		if ( i % 3 != 0)
 		{
-			//cout << memory[i] << "   ";
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
 			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 		}
@@ -91,15 +92,26 @@ void mainMemory::printMemory()
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
 			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 		}
+
+		if (countFront != 0 && i % 60 == 0)
+		{
+			cout << "\n\t------------------------------------------------------------------------------------------------------------------"
+				<< "\n\n\tMore memory elements exist. You can enter Q to quit or continue by entering any other key. "
+				<< "\n\n\t==>> ";
+			cin >> input;
+			cin.ignore(255, '\n');
+			failCheck(cin);
+			if (input == 'Q' || input == 'q')
+				break;
+		}
 		countFront += 2;
 		countBack += 2;
 	}
-
 	cout << "\n\t------------------------------------------------------------------------------------------------------------------\n"
 		<< setw(52) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
 		<< "\n\n\t==>> ";
 
-	char input;
+	
 	do
 	{
 		cin >> input;
@@ -112,9 +124,9 @@ void mainMemory::printMemory()
 		if (input == 'R' || input == 'r'){
 			string from;
 			string to;
-			cout << "From?" << endl;
+			cout << "\n\n\t\tFrom?" << endl;
 			cin >> from;
-			cout << "To?" << endl;
+			cout << "\n\n\t\tTo?" << endl;
 			cin >> to;
 			int start = stoi(from);
 			int end = stoi(to);
@@ -122,25 +134,28 @@ void mainMemory::printMemory()
 			end = end - (end % 3) + 2;			//sets it to the last number of the last line to be displayed
 			countFront = start;
 			countBack = start + 2;
-			cout << setw(50) << "Memory Display"
-			<< "\n\t\t---------------------------------------------------";
+			cout << setw(70) << "Memory Display"
+				<< "\n\t------------------------------------------------------------------------------------------------------------------";
 			
 			for (int i = start; i <= end; i++)
 			{
-		
-				if ( i % 3 != 0)
+				if (i % 3 != 0)
 				{
-					cout << memory[i] << "   ";
+					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+					cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 				}
 				else
 				{
 					cout << endl;
 					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-					cout << "   " << memory[i] << "   ";
+					cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 				}
 				countFront++;
 				countBack++;
 			}
+			cout << "\n\t------------------------------------------------------------------------------------------------------------------\n"
+				<< setw(52) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
+				<< "\n\n\t==>> ";
 		}
 	}while(input != 'Q' && input != 'q');
 }

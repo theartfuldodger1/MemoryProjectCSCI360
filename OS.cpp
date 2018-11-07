@@ -2127,6 +2127,66 @@ void OS::CMP(bitset<16> setIn)
 	}
 }
 
+void OS::JE(bitset<16> setIn)
+{
+	if (MyCache.get_ZF() == 1) {
+		JUMP(setIn);
+	}
+	else {
+		return;
+	}
+}
+
+void OS::JNE(bitset<16> setIn)
+{
+	if (MyCache.get_ZF() == 0) {
+		JUMP(setIn);
+	}
+	else {
+		return;
+	}
+}
+
+void OS::JG(bitset<16> setIn)
+{
+	if (MyCache.get_ZF() == 0 && MyCache.get_SF() == 0) {
+		JUMP(setIn);
+	}
+	else {
+		return;
+	}
+}
+
+void OS::JGE(bitset<16> setIn)
+{
+	if (MyCache.get_ZF() == 1 || MyCache.get_SF() == 0) {
+		JUMP(setIn);
+	}
+	else {
+		return;
+	}
+}
+
+void OS::JL(bitset<16> setIn)
+{
+	if (MyCache.get_SF() == 1) {
+		JUMP(setIn);
+	}
+	else {
+		return;
+	}
+}
+
+void OS::JLE(bitset<16> setIn)
+{
+	if (MyCache.get_ZF() == 1 || MyCache.get_SF() == 1) {
+		JUMP(setIn);
+	}
+	else {
+		return;
+	}
+}
+
 void OS::JUMP(bitset<16> setIn)
 {
 	bitset<16> effectiveAddress_EA; //indexed addressing requires 16, i believe it is okay to simply bufffer the unused bits with 0s
@@ -2213,62 +2273,58 @@ void OS::JUMP(bitset<16> setIn)
 	MyCache.setMemoryBufferRegister_MBR(content);
 }
 
-void OS::JE(bitset<16> setIn)
+void OS::AMR(bitset<16> setIn)
 {
-	if(MyCache.get_ZF() == 1){
-		JUMP(setIn);
-	}
-	else{
-		return;
-	}
 }
 
-void OS::JNE(bitset<16> setIn)
+void OS::SMR(bitset<16> setIn)
 {
-	if(MyCache.get_ZF() == 0){
-		JUMP(setIn);
-	}
-	else{
-		return;
-	}
 }
 
-void OS::JG(bitset<16> setIn)
+void OS::AIR(bitset<16> setIn)
 {
-	if(MyCache.get_ZF() == 0 && MyCache.get_SF() == 0){
-		JUMP(setIn);
-	}
-	else{
-		return;
-	}
 }
 
-void OS::JGE(bitset<16> setIn)
+void OS::SIR(bitset<16> setIn)
 {
-	if(MyCache.get_ZF() == 1 || MyCache.get_SF() == 0){
-		JUMP(setIn);
-	}
-	else{
-		return;
-	}	
 }
 
-void OS::JL(bitset<16> setIn)
+void OS::DEC(bitset<16> setIn)
 {
-	if(MyCache.get_SF() == 1){
-		JUMP(setIn);
-	}
-	else{
-		return;
-	}
 }
 
-void OS::JLE(bitset<16> setIn)
+void OS::INC(bitset<16> setIn)
 {
-	if(MyCache.get_ZF() == 1 || MyCache.get_SF() == 1){
-		JUMP(setIn);
-	}
-	else{
-		return;
-	}
+}
+
+void OS::MUL(bitset<16> setIn)
+{
+}
+
+void OS::DIV(bitset<16> setIn)
+{
+}
+
+void OS::TER(bitset<16> setIn)
+{
+}
+
+void OS::AND(bitset<16> setIn)
+{
+}
+
+void OS::ORR(bitset<16> setIn)
+{
+}
+
+void OS::NOT(bitset<16> setIn)
+{
+}
+
+void OS::ADD(bitset<16> setIn)
+{
+}
+
+void OS::SUB(bitset<16> setIn)
+{
 }
