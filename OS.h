@@ -91,7 +91,7 @@ public:
 
 	void JE(bitset<16> setIn);
 	void JNE(bitset<16> setIn);
-	void JG(bitset<16> setIn);
+	void JG(bitset<16> setIn); 
 	void JGE(bitset<16> setIn);
 	void JL(bitset<16> setIn);
 	void JLE(bitset<16> setIn);
