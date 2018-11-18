@@ -11,7 +11,10 @@ This program...
 
 mainMemory::mainMemory()
 {
-	bitset<16>temp;
+	Mem temp = {
+		0, //empty bitset for instruction
+		0 //data set to 0
+	};
 	for (int i = 0; i < 2048; i++)
 		memory.push_back(temp);
 	/*
@@ -30,7 +33,7 @@ mainMemory::~mainMemory()
 }
 
 //returns instruction set vector
-vector <bitset<16>> mainMemory::getInstructionSet()
+vector <mainMemory::Mem> mainMemory::getInstructionSet()
 {
 	return memory;
 }
@@ -38,30 +41,35 @@ vector <bitset<16>> mainMemory::getInstructionSet()
 bitset<16> mainMemory::getInstruction(bitset<16> programCounter_In)
 {
 	unsigned long tempLong = programCounter_In.to_ulong();
-	bitset<16> tempInstruction = memory[tempLong];
+	bitset<16> tempInstruction = memory[tempLong].instruction;
 	return tempInstruction;
+}
+//returns data stored at the specified location
+int mainMemory::getData(unsigned long address)
+{
+	return memory[address].data;
 }
 //returns the bitset stored at the specified location
 bitset<16> mainMemory::getInstruction(unsigned long address)
 {
-	return memory[address];
+	return memory[address].instruction;
 }
 //"loads" instructions into main memory accoring to address/EA
 void mainMemory::insertInstruction(bitset<16> &instructionsIn, bitset<16> &effectiveAddress_EA)
 {
 	//cout << "EA: " << effectiveAddress_EA << endl;
-	memory[effectiveAddress_EA.to_ulong()] = instructionsIn;
+	memory[effectiveAddress_EA.to_ulong()].instruction = instructionsIn;
 }
 //"loads" instructions into main memory accoring to sequence
 void mainMemory::insertInstruction(bitset<16> &instructionsIn, int count)
 {
 	//cout << "EA: " << effectiveAddress_EA << endl;
-	memory[count] = instructionsIn;
+	memory[count].instruction = instructionsIn;
 }
 //sets the bitset at specified location to the provided value
 void mainMemory::setMemoryElement(unsigned long address, bitset<16> setIn)
 {
-	memory[address] = setIn;
+	memory[address].instruction = setIn;
 }
 
 void mainMemory::printMemory()
@@ -84,13 +92,13 @@ void mainMemory::printMemory()
 		if ( i % 3 != 0)
 		{
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
+			cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
 		}
 		else
 		{
 			cout << endl;
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
+			cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
 		}
 
 		if (countFront != 0 && i % 60 == 0)
@@ -142,13 +150,13 @@ void mainMemory::printMemory()
 				if (i % 3 != 0)
 				{
 					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-					cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
+					cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
 				}
 				else
 				{
 					cout << endl;
 					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-					cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
+					cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
 				}
 				countFront++;
 				countBack++;
@@ -167,7 +175,8 @@ void mainMemory::clearMemory()
 
 	for (int i = 0; i < 2048; i++)
 	{
-		memory[i].reset();//does not destroy the elements. only sets all bits to 0;
+		memory[i].instruction.reset();//does not destroy the elements. only sets all bits to 0;
+		memory[i].data = 0;
 	}
 }
 //catches failed input cast and resets istream
