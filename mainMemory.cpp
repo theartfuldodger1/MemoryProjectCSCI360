@@ -71,22 +71,32 @@ void mainMemory::setMemoryElement(unsigned long address, bitset<16> setIn)
 {
 	memory[address].instruction = setIn;
 }
-
-void mainMemory::printMemory()
+//countFront and countBack default to 0, if ONLY instStart param is present in call. IN OTHER WORDS, ONLY instStart is required to call
+//If do not want the memory print to start at 0 - you must provide the element you want to start at as param 2 - countFront
+void mainMemory::printMemory(int instStart, int countFront)
 {
 	char input;
-	
+	int i = instStart;//for loop param - instStart == first element of instruction block in MM
+	int countBack = countFront + 1;
+	int endOfMemory = 2048;//adjust hardcoded number to where you want memory to stop during normal printq
+	int distance = 32;//how may loops you want to print befor pausing for input or just plain stopping print.
+
+	bool specialCall = 0;
+	int countFrontCheck;
+	if(countFront != 0)
+	{
+		specialCall = 1;
+		countFrontCheck = countFront;
+		endOfMemory = instStart + distance;//adjust hardcoded number to where you want memory to stop during special print
+	}
+
 	cout << "\n";
 	cout << right;
 	cout << setw(70) << "Memory Display"
-		<< "\n\t------------------------------------------------------------------------------------------------------------------";
-
-	int countFront= 0;
-	int countBack = 1;
-
+		<< "\n\t------------------------------------------------------------------------------------------------------------------\n";
 	if (memory.empty())
 		cout << "Memory is empty" << endl;
-	for (int i = 0; i < 2048; i++)
+	for (; i < endOfMemory; i++)
 	{
 		
 		if ( i % 3 != 0)
@@ -100,72 +110,77 @@ void mainMemory::printMemory()
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
 			cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
 		}
-
-		if (countFront != 0 && i % 60 == 0)
+		if (!specialCall)
 		{
-			cout << "\n\t------------------------------------------------------------------------------------------------------------------"
-				<< "\n\n\tMore memory elements exist. You can enter Q to quit or continue by entering any other key. "
-				<< "\n\n\t==>> ";
-			cin >> input;
-			cin.ignore(255, '\n');
-			failCheck(cin);
-			if (input == 'Q' || input == 'q')
-				break;
+			if (countFront != 0 && i % distance == 0)
+			{
+				cout << "\n\t------------------------------------------------------------------------------------------------------------------"
+					<< "\n\n\tMore memory elements exist. You can enter Q to quit or continue by entering any other key. "
+					<< "\n\n\t==>> ";
+				cin >> input;
+				cin.ignore(255, '\n');
+				failCheck(cin);
+				if (input == 'Q' || input == 'q')
+					break;
+			}
 		}
 		countFront += 2;
 		countBack += 2;
 	}
-	cout << "\n\t------------------------------------------------------------------------------------------------------------------\n"
-		<< setw(52) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
+	cout << "\n\t------------------------------------------------------------------------------------------------------------------";
+	if(!specialCall)
+	{
+		cout << setw(52) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
 		<< "\n\n\t==>> ";
 
 	
-	do
-	{
-		cin >> input;
-		cin.ignore(255, '\n');
-		failCheck(cin);
+		do
+		{
+			cin >> input;
+			cin.ignore(255, '\n');
+			failCheck(cin);
 
-		//calls for display of a range and help file needed
-		if (input == 'H' || input == 'h')
-			cout << "\t\nHelp File incomplete..." << endl;
-		if (input == 'R' || input == 'r'){
-			string from;
-			string to;
-			cout << "\n\n\t\tFrom?" << endl;
-			cin >> from;
-			cout << "\n\n\t\tTo?" << endl;
-			cin >> to;
-			int start = stoi(from);
-			int end = stoi(to);
-			start = start - (start % 3);		//sets it to the first number of the first line to be displayed
-			end = end - (end % 3) + 2;			//sets it to the last number of the last line to be displayed
-			countFront = start;
-			countBack = start + 2;
-			cout << setw(70) << "Memory Display"
-				<< "\n\t------------------------------------------------------------------------------------------------------------------";
+			//calls for display of a range and help file needed
+			if (input == 'H' || input == 'h')
+				cout << "\t\nHelp File incomplete..." << endl;
+			if (input == 'R' || input == 'r'){
+				string from;
+				string to;
+				cout << "\n\n\t\tFrom?" << endl;
+				cin >> from;
+				cout << "\n\n\t\tTo?" << endl;
+				cin >> to;
+				int start = stoi(from);
+				int end = stoi(to);
+				start = start - (start % 3);		//sets it to the first number of the first line to be displayed
+				end = end - (end % 3) + 2;			//sets it to the last number of the last line to be displayed
+				countFront = start;
+				countBack = start + 2;
+				cout << setw(70) << "Memory Display"
+					<< "\n\t------------------------------------------------------------------------------------------------------------------\n";
 			
-			for (int i = start; i <= end; i++)
-			{
-				if (i % 3 != 0)
+				for (int i = start; i <= end; i++)
 				{
-					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-					cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
+					if (i % 3 != 0)
+					{
+						cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+						cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
+					}
+					else
+					{
+						cout << endl;
+						cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+						cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
+					}
+					countFront++;
+					countBack++;
 				}
-				else
-				{
-					cout << endl;
-					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-					cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
-				}
-				countFront++;
-				countBack++;
+				cout << "\n\t------------------------------------------------------------------------------------------------------------------\n"
+					<< setw(52) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
+					<< "\n\n\t==>> ";
 			}
-			cout << "\n\t------------------------------------------------------------------------------------------------------------------\n"
-				<< setw(52) << setfill(' ') << "R. Range Lookup" << setw(20) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
-				<< "\n\n\t==>> ";
-		}
-	}while(input != 'Q' && input != 'q');
+		}while(input != 'Q' && input != 'q');
+	}
 }
 //Removes all elements, leaving all containers with a size of 0.
 void mainMemory::clearMemory()

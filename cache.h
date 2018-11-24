@@ -70,7 +70,7 @@ public:
 	void set_SF(int);
 	
 	//Utility
-	void printRegisters();
+	void printRegisters(bool special = 0);
 	void failCheck(istream &);//catches failed input cast and resets istream
 	void increment_ProgramCounter();
 	friend bitset<16> operator++ (bitset<16>&, int);//Postfix, ie bit_Set++; bitset<16> ONLY

@@ -53,7 +53,7 @@ public:
 	void clearAllData();//effects ALL containers as appropriate to empty or clear contents. Memory container is NEVER destroyed, just emptied
 
 	//instruction display
-	void printInstructions();//when isntructions are not yet loaded
+	void printInstructions();//when isntructions are not yet loaded			
 	void stepInstructions();//instructions loaded in main memory
 	void executeInstruction(bitset<16>);//calls appropriate function to process an instruction based on instrcuction opCode
 	void instructionDisplaySwitch(bitset<16> &);
@@ -119,6 +119,10 @@ private:
 	list <bitset<16>> instructionSet_OS;//all instructions loaded here from file
 	bool firstPassFlag = 0; //for stepInstructions()
 	int constant = 107;
+	/////////////////////////////////////////////////////
+	int instructionStart = 1000;//Set for starting element in MM for instruction block. Remember for 1000, in display this will be shown at 2000
+	int memoryPrintCountStart = 2000;//for count label for memory print - should be double instructionStart. Only affects printMemory in stepInstructions()
+	/////////////////////////////////////////////////////
 	unsigned int Pcount = 0;//maintains list count across all print forms of instructions
 	unsigned int instructionCount = 0;//number of instructions in instruction set
 };

@@ -90,7 +90,7 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			break;
 			case 5: //Display Empty Memory
 			{
-				MyMemory.printMemory();
+				MyMemory.printMemory(0);
 			}
 			break;
 			case 6: //Help
@@ -331,9 +331,11 @@ unsigned short int OS::menu2()
 				break;
 				case 3://3. Load Program into Main Memory
 				{
-					loadInstructionsIntoMain();
+					loadInstructionsIntoMain();//cleared or quit all data in from menu2A and will now return to initializationMenu
 					paramOut = menu2A();
-					if(paramOut == 7)
+					if(paramOut == 7 || paramOut == 1)
+						param = 8;
+					if (paramOut == 1)
 						param = 8;
 				}
 				break;
@@ -349,7 +351,7 @@ unsigned short int OS::menu2()
 				break;
 				case 6://6. Display Empty Memory
 				{
-					MyMemory.printMemory();
+					MyMemory.printMemory(0);
 				}
 				break;
 				case 7://7. Help
@@ -427,6 +429,7 @@ unsigned short int  OS::menu2A()
 			{
 				clearAllData();
 				param = 7;
+				paramOut = 1;
 			}
 			break;
 			case 2://2. Add Instruction Line to End of Queue
@@ -447,7 +450,7 @@ unsigned short int  OS::menu2A()
 			break;
 			case 5://5. Display Memory
 			{
-				MyMemory.printMemory();
+				MyMemory.printMemory(instructionStart);
 			}
 			break;
 			case 6://6. Help
@@ -937,7 +940,7 @@ void OS::loadInstructionsIntoMain()
 	else
 	{
 		list<bitset<16>>::iterator iterInstSet = instructionSet_OS.begin();
-		int count = 0;
+		int count = instructionStart;
 
 		while (iterInstSet != instructionSet_OS.end())
 		{
@@ -1065,9 +1068,12 @@ void OS::stepInstructions()
 
 	do
 	{
+		MyMemory.printMemory(instructionStart, memoryPrintCountStart);
+		MyCache.printRegisters(1);
+	
 		cout << "\n";
 		cout << right;
-		cout << setw(40) << "Instructions"
+		cout << setw(40) << setfill(' ') << "Instructions"
 			<< "\n\t\t----------------------------------";
 		firstPassFlag = 0;
 
@@ -1077,6 +1083,7 @@ void OS::stepInstructions()
 			instructionDisplaySwitch(*iSetIter);
 			iSetIter++;
 		}
+		
 		if (endOfInstructions != 1)
 			cout << "\n\t\t----------------------------------"
 				<< "\n\t" << setw(13) << setfill(' ') << "R. Run" << setw(10) << setfill(' ')

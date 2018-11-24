@@ -179,7 +179,7 @@ void cache::resetAllRegisters()
 	MemoryBufferRegister_MBR.reset();
 }
 
-void cache::printRegisters()
+void cache::printRegisters(bool special)//param only needed for stepInstructions() in OS. otherwise, defaults to false
 {
 /*
 	//'Q' option returns to main menu
@@ -203,7 +203,7 @@ void cache::printRegisters()
 */
 	cout << "\n";
 	cout << right;
-	cout << setw(38) << "Registers"
+	cout << setw(38) << setfill(' ') << "Registers"
 		<< "\n\t\t----------------------------------"
 		<< "\n\t\tGPRx4";
 
@@ -269,22 +269,25 @@ void cache::printRegisters()
 		cout << programCounter_PC[i];
 	}
 
-	cout << "\n\t\t----------------------------------"
-		<< "\n\t\t" << setw(10) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
-		<< "\n\n\t\t==>> ";
-
-	char input;
-	do
+	cout << "\n\t\t----------------------------------";
+	if(!special)
 	{
-		cin >> input;
-		cin.ignore(255, '\n');
-		failCheck(cin);
+		cout << "\n\t\t" << setw(10) << setfill(' ') << "Q. Menu" << setw(20) << setfill(' ') << "H. Help"
+			<< "\n\n\t\t==>> ";
 
-		//call help file needed
-		if (input == 'H' || input == 'h')
-			cout << "\t\nHelp File incomplete..." << endl;
+		char input;
+		do
+		{
+			cin >> input;
+			cin.ignore(255, '\n');
+			failCheck(cin);
 
-	} while (input != 'Q' && input != 'q');
+			//call help file needed
+			if (input == 'H' || input == 'h')
+				cout << "\t\nHelp File incomplete..." << endl;
+
+		}while (input != 'Q' && input != 'q');
+	}
 }
 //catches failed input cast and resets istream
 void cache::failCheck(istream &cin)

@@ -38,7 +38,7 @@ public:
 	void insertInstruction(bitset<16> &, int);//accepts bitset<16> instruction and int sequential count. Inserts instruction into MM vector
 	
 	void clearMemory();
-	void printMemory();
+	void printMemory(int instStart, int countFront = 0);
 	void failCheck(istream &cin);
 
 private:
