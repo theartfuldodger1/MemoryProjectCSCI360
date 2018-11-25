@@ -335,8 +335,6 @@ unsigned short int OS::menu2()
 					paramOut = menu2A();
 					if(paramOut == 7 || paramOut == 1)
 						param = 8;
-					if (paramOut == 1)
-						param = 8;
 				}
 				break;
 				case 4://4. Display Empty Registers
