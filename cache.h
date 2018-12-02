@@ -26,6 +26,7 @@ Opcode  I  IX AC  Address
 #include <string>
 #include <iostream>
 #include <array>
+#include <cmath>
 #include <iomanip> //for cout.setf, etc
 
 using namespace std;
@@ -39,6 +40,7 @@ class cache
 {
 public:
 	cache();
+	cache(int set_assoc, int word_num);
 	~cache();
 	//Getters
 	Register* getGeneralPurposeRegisters_GPRs(); //Returns list of registers
@@ -78,6 +80,30 @@ public:
 	//friend bitset<16> operator> (bitset<16>&, bitset<16>&);
 	//friend bitset<16> operator< (bitset<16>&, bitset<16>&);
 
+
+	//cache design
+	void printCache();
+	int getOffset();
+	int getIndex();
+	int getTag();
+	void hitInc();
+	void missInc();
+	void replaceInc();
+	int getTagValue(bitset<16> setIn);
+	int getIndexValue(bitset<16> setIn);
+	void addInstruction(bitset<16> setIn);
+	
+	struct BLOCK 
+        {
+            bitset<16> instruction;
+            int data = 0;
+            bool valid = false;
+            int timer = 0;
+        };
+        struct SET
+        {
+            BLOCK *blocks;
+        };
 private:
 	Register GeneralPurposeRegisters_GPRs[4]; //Array of structs containing a bitset, 16 bits each, 0-3, referred to as R0 – R3. May be used as accumulators
 	bitset<16> IndexRegister_X0; //HARD CODED IN OS CONSTRUCTOR //the index register contains 16-bit base address for base register addressing of memory.
@@ -89,6 +115,16 @@ private:
 	bitset<1> ZF;
 	bitset<1> CF;
 	bitset<1> SF;
+	
+	SET *cache_table;
+	int set_size;
+	int word_amount;
+	int offset;
+	int index;
+	int tag;
+	int miss;
+	int hit;
+	int replace; 
 };
 #endif /* __cache_H__ */
 
