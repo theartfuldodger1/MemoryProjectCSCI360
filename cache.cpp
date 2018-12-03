@@ -30,7 +30,7 @@ cache::cache()
 	}
 }
 
-cache::cache(int set_assoc, int word_num)
+/*cache::cache(int set_assoc, int word_num)
 	{
 		set_size = set_assoc;
 		word_amount = word_num;
@@ -61,7 +61,7 @@ cache::~cache()
 		}
 		delete[]cache_table;
 
-}
+}*/
 //Postfix
 bitset<16> operator++ (bitset<16> &setIn, int tempInt)
 {
@@ -332,18 +332,48 @@ void cache::failCheck(istream &cin)
 
 
 //cache design
+
+void cache::setInstrCache(int set_assoc, int word_num)
+{
+	set_size = set_assoc;
+	word_amount = word_num;
+	cache_table = new SET[set_size];
+	for (int i = 0; i < set_size; i++)
+	{
+		cache_table[i].blocks = new BLOCK[word_amount];
+	}
+
+	offset = log2(word_amount);
+	index = log2(set_size);
+	tag = 16 - offset - index;
+
+	
+	//cache_table[0].blocks[0].instruction.flip();
+	//cache_table[0].blocks[0].data = cache_table[0].blocks[0].instruction.to_ulong();
+	//cache_table[0].blocks[0].valid = true;
+	//cache_table[0].blocks[0].timer = 1;
+}
+
+/*~Cache()
+{
+	for (int i = 0; i < set_size; i++)
+	{
+		delete[]cache_table[i].blocks;
+	}
+	delete[]cache_table;
+}*/
 void cache::printCache()
 {
 	for (int i = 0; i < set_size; i++)
 	{
 		for (int j = 0; j < word_amount; j++)
 		{
-			cout << cache_table[i].blocks[j].instruction << " ";
-			cout << cache_table[i].blocks[j].data << " ";
-			cout << cache_table[i].blocks[j].valid << " ";
-			cout << cache_table[i].blocks[j].timer << "		";
+			cout << "\t\t" << setw(4) << setfill(' ') << cache_table[i].blocks[j].instruction << " ";
+			cout << setw(4) << setfill(' ') << cache_table[i].blocks[j].data << " ";
+			cout << setw(4) << setfill(' ') << cache_table[i].blocks[j].valid << " ";
+			cout << setw(4) << setfill(' ') << cache_table[i].blocks[j].timer;
 		}
-		cout << endl;
+		cout << "\n";
 	}
 }
 int cache::getOffset()
@@ -372,102 +402,103 @@ void cache::replaceInc() {
 	}
 
 int cache::getTagValue(bitset<16> setIn)
+{
+	int ind_num = getIndex();
+	int off_num = getOffset();
+	bitset<16> tag_bits;
+	for (int i = 15; i > 15 - ind_num - off_num; i--)
 	{
-		const int tag_num = 13;
-		bitset<tag_num> tag_bits;
-		for (int i = 15; i > 15 - tag_num; i--)
-		{
-			tag_bits[i] = setIn[i];
-		}
-		int tag_value = tag_bits.to_ulong();
-		return tag_value;
+		tag_bits[i] = setIn[i];
 	}
+	int tag_value = tag_bits.to_ulong();
+	return tag_value;
+}
 
 int cache::getIndexValue(bitset<16> setIn)
+{
+	int index_num = getIndex();
+	int offset_num = getOffset();
+	bitset<16> index_bits;
+	for (int i = index_num; i >= offset; i--)
 	{
-		const int index_num = 2;
-		const int offset_num = 1;
-		bitset<index_num> index_bits;
-		for (int i = index_num; i >= offset; i--)
-		{
-			index_bits[i] = setIn[i];
-		}
-		int index_value = index_bits.to_ulong();
-		return index_value;
+		index_bits[i] = setIn[i];
 	}
+	int index_value = index_bits.to_ulong();
+	return index_value;
+}
 
 void cache::addInstruction(bitset<16> setIn)
-        {
-			string result;
-            int tag_value = getTagValue(setIn);
-            int index_value = getIndexValue(setIn);
-			bool notFull;
+{
+	string result;
+    int tag_value = getTagValue(setIn);
+    int index_value = getIndexValue(setIn);
+	bool notFull;
            
             
-                for(int j = 0; j < word_amount; j++)
-                {
-                    //cout  << getTagValue(cache_table[i].blocks[j].instruction) << " ";
-                    //cout  << getIndexValue(cache_table[i].blocks[j].instruction) << endl;
-                    //cache_table[i].blocks[j].data;
-                    //cache_table[i].blocks[j].valid;
-                    cache_table[index_value].blocks[j].timer++;
-                    if (getTagValue(cache_table[index_value].blocks[j].instruction) == getTagValue(setIn))
-                    {
-                        if (cache_table[index_value].blocks[j].valid == true)
-                        {
-                            cache_table[index_value].blocks[j].timer = 0;
+    for(int j = 0; j < word_amount; j++)
+    {
+        //cout  << getTagValue(cache_table[i].blocks[j].instruction) << " ";
+        //cout  << getIndexValue(cache_table[i].blocks[j].instruction) << endl;
+        //cache_table[i].blocks[j].data;
+        //cache_table[i].blocks[j].valid;
+        cache_table[index_value].blocks[j].timer++;
+        if (getTagValue(cache_table[index_value].blocks[j].instruction) == getTagValue(setIn))
+        {
+            if (cache_table[index_value].blocks[j].valid == true)
+            {
+                cache_table[index_value].blocks[j].timer = 0;
                             
-							hitInc();
-							return; //if a hit then the function ends as there is nothing left to do
-                            //return block data
-                        }
-						else {
-							notFull = true;
-						}
-                    }
+				hitInc();
+				return; //if a hit then the function ends as there is nothing left to do
+                //return block data
+            }
+			else {
+				notFull = true;
+			}
+        }
 
-					if (cache_table[index_value].blocks[j].valid == false) {
-						notFull = true;
-					}
-                }
-				if (notFull == true) { //result is a miss if the set is not full or the the sought after tag has a false valid
-					missInc();
-					result = "MISS";
-				}
-				else {	//if set is full we have to replace
-					replaceInc();
-					result = "REPLACE";
-				}
+		if (cache_table[index_value].blocks[j].valid == false) {
+			notFull = true;
+		}
+    }
+	if (notFull == true) { //result is a miss if the set is not full or the the sought after tag has a false valid
+		missInc();
+		result = "MISS";
+	}
+	else {	//if set is full we have to replace
+		replaceInc();
+		result = "REPLACE";
+	}
 				
 	
                
                     
-                    if(result == "MISS"){
+    if(result == "MISS"){
                        
-                            for(int j = 0; j < word_amount; j++){
-                                if(cache_table[index_value].blocks[j].valid == false){ //if the valid bit is 0 then block is empty
-									cache_table[index_value].blocks[j].instruction = setIn;
-									cache_table[index_value].blocks[j].data = setIn.to_ulong();
-									cache_table[index_value].blocks[j].valid = true;
-									cache_table[index_value].blocks[j].timer = 0;
-                                }
-                            }
+            for(int j = 0; j < word_amount; j++){
+                if(cache_table[index_value].blocks[j].valid == false){ //if the valid bit is 0 then block is empty
+					cache_table[index_value].blocks[j].instruction = setIn;
+					cache_table[index_value].blocks[j].data = setIn.to_ulong();
+					cache_table[index_value].blocks[j].valid = true;
+					cache_table[index_value].blocks[j].timer = 0;
+                }
+            }
                         
-                    }
-                    else if(result == "REPLACE"){
-                        int max = 0;
-                        int y;
+    }
+    else if(result == "REPLACE"){
+        int max = 0;
+        int y;
                         
-                            for(int j = 0; j < word_amount; j++){
-                                if(max < cache_table[index_value].blocks[j].timer){ //if there is a block with a bigger timer
-                                    max = cache_table[index_value].blocks[j].timer;
-                                    y = j;
-                                }
-                            }
-							cache_table[index_value].blocks[y].instruction = setIn;
-							cache_table[index_value].blocks[y].data = setIn.to_ulong();
-							cache_table[index_value].blocks[y].valid = true;
-							cache_table[index_value].blocks[y].timer = 0;
+            for(int j = 0; j < word_amount; j++){
+                if(max < cache_table[index_value].blocks[j].timer){ //if there is a block with a bigger timer
+                    max = cache_table[index_value].blocks[j].timer;
+                    y = j;
+                }
+            }
+			cache_table[index_value].blocks[y].instruction = setIn;
+			cache_table[index_value].blocks[y].data = setIn.to_ulong();
+			cache_table[index_value].blocks[y].valid = true;
+			cache_table[index_value].blocks[y].timer = 0;
                        
-                    }
-		}
+    }
+}

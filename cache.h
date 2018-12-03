@@ -40,8 +40,8 @@ class cache
 {
 public:
 	cache();
-	cache(int set_assoc, int word_num);
-	~cache();
+	//cache(int set_assoc, int word_num);
+	//~cache();
 	//Getters
 	Register* getGeneralPurposeRegisters_GPRs(); //Returns list of registers
 	bitset<16> getProgramCounter_PC();
@@ -82,6 +82,7 @@ public:
 
 
 	//cache design
+	void setInstrCache(int, int);
 	void printCache();
 	int getOffset();
 	int getIndex();
@@ -94,16 +95,16 @@ public:
 	void addInstruction(bitset<16> setIn);
 	
 	struct BLOCK 
-        {
-            bitset<16> instruction;
-            int data = 0;
-            bool valid = false;
-            int timer = 0;
-        };
-        struct SET
-        {
-            BLOCK *blocks;
-        };
+    {
+        bitset<16> instruction;
+        int data = 0;
+        bool valid = false;
+        int timer = 0;
+    };
+    struct SET
+    {
+        BLOCK *blocks;
+    };
 private:
 	Register GeneralPurposeRegisters_GPRs[4]; //Array of structs containing a bitset, 16 bits each, 0-3, referred to as R0 – R3. May be used as accumulators
 	bitset<16> IndexRegister_X0; //HARD CODED IN OS CONSTRUCTOR //the index register contains 16-bit base address for base register addressing of memory.

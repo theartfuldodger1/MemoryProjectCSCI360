@@ -11,10 +11,7 @@ This program...
 
 mainMemory::mainMemory()
 {
-	Mem temp = {
-		0, //empty bitset for instruction
-		0 //data set to 0
-	};
+	bitset<16>temp;
 	for (int i = 0; i < 2048; i++)
 		memory.push_back(temp);
 	/*
@@ -33,7 +30,7 @@ mainMemory::~mainMemory()
 }
 
 //returns instruction set vector
-vector <mainMemory::Mem> mainMemory::getInstructionSet()
+vector <bitset<16>> mainMemory::getInstructionSet()
 {
 	return memory;
 }
@@ -41,35 +38,35 @@ vector <mainMemory::Mem> mainMemory::getInstructionSet()
 bitset<16> mainMemory::getInstruction(bitset<16> programCounter_In)
 {
 	unsigned long tempLong = programCounter_In.to_ulong();
-	bitset<16> tempInstruction = memory[tempLong].instruction;
+	bitset<16> tempInstruction = memory[tempLong];
 	return tempInstruction;
 }
 //returns data stored at the specified location
-int mainMemory::getData(unsigned long address)
+/*int mainMemory::getData(unsigned long address)
 {
-	return memory[address].data;
-}
+	return memory[address].instruction.to_ulong();
+}*/
 //returns the bitset stored at the specified location
 bitset<16> mainMemory::getInstruction(unsigned long address)
 {
-	return memory[address].instruction;
+	return memory[address];
 }
 //"loads" instructions into main memory accoring to address/EA
 void mainMemory::insertInstruction(bitset<16> &instructionsIn, bitset<16> &effectiveAddress_EA)
 {
 	//cout << "EA: " << effectiveAddress_EA << endl;
-	memory[effectiveAddress_EA.to_ulong()].instruction = instructionsIn;
+	memory[effectiveAddress_EA.to_ulong()] = instructionsIn;
 }
 //"loads" instructions into main memory accoring to sequence
 void mainMemory::insertInstruction(bitset<16> &instructionsIn, int count)
 {
 	//cout << "EA: " << effectiveAddress_EA << endl;
-	memory[count].instruction = instructionsIn;
+	memory[count] = instructionsIn;
 }
 //sets the bitset at specified location to the provided value
 void mainMemory::setMemoryElement(unsigned long address, bitset<16> setIn)
 {
-	memory[address].instruction = setIn;
+	memory[address] = setIn;
 }
 //countFront and countBack default to 0, if ONLY instStart param is present in call. IN OTHER WORDS, ONLY instStart is required to call
 //If do not want the memory print to start at 0 - you must provide the element you want to start at as param 2 - countFront
@@ -102,13 +99,13 @@ void mainMemory::printMemory(int instStart, int countFront)
 		if ( i % 3 != 0)
 		{
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-			cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
+			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 		}
 		else
 		{
 			cout << endl;
 			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-			cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
+			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 		}
 		if (!specialCall)
 		{
@@ -164,13 +161,13 @@ void mainMemory::printMemory(int instStart, int countFront)
 					if (i % 3 != 0)
 					{
 						cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-						cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
+						cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 					}
 					else
 					{
 						cout << endl;
 						cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
-						cout << "   " << memory[i].instruction << " " << memory[i].data << "   ";
+						cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 					}
 					countFront++;
 					countBack++;
@@ -190,8 +187,7 @@ void mainMemory::clearMemory()
 
 	for (int i = 0; i < 2048; i++)
 	{
-		memory[i].instruction.reset();//does not destroy the elements. only sets all bits to 0;
-		memory[i].data = 0;
+		memory[i].reset();//does not destroy the elements. only sets all bits to 0;
 	}
 }
 //catches failed input cast and resets istream

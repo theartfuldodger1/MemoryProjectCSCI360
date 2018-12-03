@@ -46,7 +46,7 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 	{
 		cout << "\n";
 		param = 0;
-		if (param < 0 || param > 8)
+		if (param < 0 || param > 9)
 		{
 			cout << "\n\tIncorrect input:" << endl;
 			param = 0;
@@ -108,11 +108,11 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 				//bitset<16> comp("0100010000000000");
 				//CMP(comp);
 				//cout << "ZF: " << MyCache.get_ZF() << " CF: " << MyCache.get_CF() << " SF: " << MyCache.get_SF() << endl;
-				bitset<16> load_val("0000000000001010");
-				int load_v;
+				//bitset<16> load_val("0000000000001010");
+				//int load_v;
 				//bitset<16> comp_val("0100010000000000");
 				//bitset<16> head("");
-				while (MyCache.get_ZF() != 1) {
+				/*while (MyCache.get_ZF() != 1) {
 					MyCache.setGeneralPurposeRegisters_GPRs(0, load_val);
 					CMP(MyCache.getIndexRegister_X0());
 					load_v = load_val.to_ulong();
@@ -123,19 +123,28 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 					load_val = temp;
 					cout << "ZF: " << MyCache.get_ZF() << " CF: " << MyCache.get_CF() << " SF: " << MyCache.get_SF() << endl;
 				} 
-				
+				*/
 				//cout << "ZF: " << MyCache.get_ZF() << " CF: " << MyCache.get_CF() << " SF: " << MyCache.get_SF() << endl;
 				//JGE();
 			}
 			break;
-			case 7: //Quit
+			case 7: //Set cache
+			{
+				int set_num, block_num;
+				cout << "Enter set number: ";
+				cin >> set_num;
+				cout << "Enter block number: ";
+				cin >> block_num;
+				MyCache.setInstrCache(set_num, block_num);
+			}
+			case 8: //Quit
 			{
 				//exit
 				cout << "Bye!" << endl;
 			}
 			break;
 			}
-	} while (param != 7);
+	} while (param != 8);
 }
 
 //catches failed input cast and resets istream
@@ -160,7 +169,8 @@ void OS::initializationMenu()
 		<< "\n\t4. Display Instructions"
 		<< "\n\t5. Display Empty Memory"
 		<< "\n\t6. Help"
-		<< "\n\t7. Quit"
+		<< "\n\t7. Set cache"
+		<< "\n\t8. Quit"
 		<< "\n\n\t==>> ";
 }
 
@@ -1068,6 +1078,11 @@ void OS::stepInstructions()
 	{
 		MyMemory.printMemory(instructionStart, memoryPrintCountStart);
 		MyCache.printRegisters(1);
+		cout << endl;
+		cout << endl;
+		cout << "\t\t" << "Instruction Cache" << " Instruction. Value. Valid. Timer" << endl;
+		cout << endl;
+		MyCache.printCache();
 	
 		cout << "\n";
 		cout << right;
@@ -1110,7 +1125,12 @@ void OS::stepInstructions()
 			endOfInstructions = 1;
 		}
 		if (input == 'R' || input == 'r' || input == 'S' || input == 's')
+		{
 			executeInstruction(MyCache.getInstructionRegister_IR());
+			bitset<16> instr_c = MyCache.getInstructionRegister_IR();
+			MyCache.addInstruction(instr_c);
+		}
+			
 
 		MyCache.setInstructionRegister_IR(MyMemory.getInstruction(MyCache.getProgramCounter_PC()));
 		int pc_int = MyCache.getProgramCounter_PC().to_ulong();
