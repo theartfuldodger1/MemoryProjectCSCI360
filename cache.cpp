@@ -432,69 +432,71 @@ void cache::addInstruction(bitset<16> setIn)
 	string result;
     int tag_value = getTagValue(setIn);
     int index_value = getIndexValue(setIn);
-	bool notFull;
+	bool notFull = false;
            
-            
-    for(int j = 0; j < word_amount; j++)
-    {
-        //cout  << getTagValue(cache_table[i].blocks[j].instruction) << " ";
-        //cout  << getIndexValue(cache_table[i].blocks[j].instruction) << endl;
-        //cache_table[i].blocks[j].data;
-        //cache_table[i].blocks[j].valid;
-        cache_table[index_value].blocks[j].timer++;
-        if (getTagValue(cache_table[index_value].blocks[j].instruction) == getTagValue(setIn))
-        {
-            if (cache_table[index_value].blocks[j].valid == true)
-            {
-                cache_table[index_value].blocks[j].timer = 0;
-                            
-				hitInc();
-				return; //if a hit then the function ends as there is nothing left to do
-                //return block data
-            }
-			else {
+	for (int i = 0; i < set_size; i++)
+	{
+		for (int j = 0; j < word_amount; j++)
+		{
+			//cout  << getTagValue(cache_table[i].blocks[j].instruction) << " ";
+			//cout  << getIndexValue(cache_table[i].blocks[j].instruction) << endl;
+			//cache_table[i].blocks[j].data;
+			//cache_table[i].blocks[j].valid;
+			cache_table[i].blocks[j].timer++;
+			if (getTagValue(cache_table[i].blocks[j].instruction) == getTagValue(setIn))
+			{
+				if (cache_table[i].blocks[j].valid == true)
+				{
+					cache_table[i].blocks[j].timer = 0;
+
+					hitInc();
+					return; //if a hit then the function ends as there is nothing left to do
+					//return block data
+				}
+				else {
+					notFull = true;
+				}
+			}
+
+			if (cache_table[i].blocks[j].valid == false) {
 				notFull = true;
 			}
-        }
-
-		if (cache_table[index_value].blocks[j].valid == false) {
-			notFull = true;
 		}
-    }
-	if (notFull == true) { //result is a miss if the set is not full or the the sought after tag has a false valid
-		missInc();
-		result = "MISS";
+		if (notFull == true) { //result is a miss if the set is not full or the the sought after tag has a false valid
+			missInc();
+			result = "MISS";
+		}
+		else {	//if set is full we have to replace
+			replaceInc();
+			result = "REPLACE";
+		}
 	}
-	else {	//if set is full we have to replace
-		replaceInc();
-		result = "REPLACE";
-	}
-				
 	
                
                     
     if(result == "MISS"){
-                       
-            for(int j = 0; j < word_amount; j++){
-                if(cache_table[index_value].blocks[j].valid == false){ //if the valid bit is 0 then block is empty
-					cache_table[index_value].blocks[j].instruction = setIn;
-					cache_table[index_value].blocks[j].data = setIn.to_ulong();
-					cache_table[index_value].blocks[j].valid = true;
-					cache_table[index_value].blocks[j].timer = 0;
-                }
-            }
-                        
+		for (int i = 0; i < set_size; i++) {
+			for (int j = 0; j < word_amount; j++) {
+				if (cache_table[i].blocks[j].valid == false) { //if the valid bit is 0 then block is empty
+					cache_table[i].blocks[j].instruction = setIn;
+					cache_table[i].blocks[j].data = setIn.to_ulong();
+					cache_table[i].blocks[j].valid = true;
+					cache_table[i].blocks[j].timer = 0;
+				}
+			}
+		}
     }
-    else if(result == "REPLACE"){
-        int max = 0;
-        int y;
-                        
-            for(int j = 0; j < word_amount; j++){
-                if(max < cache_table[index_value].blocks[j].timer){ //if there is a block with a bigger timer
-                    max = cache_table[index_value].blocks[j].timer;
-                    y = j;
-                }
-            }
+	else if (result == "REPLACE") {
+		int max = 0;
+		int y;
+		for (int i = 0; i < set_size; i++){
+			for (int j = 0; j < word_amount; j++) {
+				if (max < cache_table[i].blocks[j].timer) { //if there is a block with a bigger timer
+					max = cache_table[i].blocks[j].timer;
+					y = j;
+				}
+			}
+		}
 			cache_table[index_value].blocks[y].instruction = setIn;
 			cache_table[index_value].blocks[y].data = setIn.to_ulong();
 			cache_table[index_value].blocks[y].valid = true;

@@ -90,7 +90,7 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			break;
 			case 5: //Display Empty Memory
 			{
-				MyMemory.printMemory(0);
+				MyMemory.printMemory();
 			}
 			break;
 			case 6: //Help
@@ -359,7 +359,7 @@ unsigned short int OS::menu2()
 				break;
 				case 6://6. Display Empty Memory
 				{
-					MyMemory.printMemory(0);
+					MyMemory.printMemory();
 				}
 				break;
 				case 7://7. Help
@@ -458,7 +458,7 @@ unsigned short int  OS::menu2A()
 			break;
 			case 5://5. Display Memory
 			{
-				MyMemory.printMemory(instructionStart);
+				MyMemory.printMemory();
 			}
 			break;
 			case 6://6. Help
@@ -948,7 +948,7 @@ void OS::loadInstructionsIntoMain()
 	else
 	{
 		list<bitset<16>>::iterator iterInstSet = instructionSet_OS.begin();
-		int count = instructionStart;
+		int count = 0;//instructionStart;
 
 		while (iterInstSet != instructionSet_OS.end())
 		{
@@ -1076,7 +1076,7 @@ void OS::stepInstructions()
 
 	do
 	{
-		MyMemory.printMemory(instructionStart, memoryPrintCountStart);
+		MyMemory.printMemory();
 		MyCache.printRegisters(1);
 		cout << endl;
 		cout << endl;
