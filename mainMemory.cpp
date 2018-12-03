@@ -16,12 +16,12 @@ mainMemory::mainMemory()
 		memory.push_back(temp);
 	
 	//testing demo purpose below
-	memory[9].flip();
-	memory[23].set(1, 1);
-	memory[23].set(3, 1);
-	memory[23].set(6, 1);
-	memory[23].set(7, 1);
-	memory[23].set(11, 1);
+	memory[35].flip();
+	memory[30].set(1, 1);
+	memory[30].set(3, 1);
+	memory[30].set(6, 1);
+	memory[30].set(7, 1);
+	memory[30].set(11, 1);
 	
 }
 

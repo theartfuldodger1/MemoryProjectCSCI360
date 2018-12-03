@@ -1083,6 +1083,8 @@ void OS::stepInstructions()
 		cout << "\t\t" << "Instruction Cache" << " Instruction. Value. Valid. Timer" << endl;
 		cout << endl;
 		MyCache.printCache();
+		cout << endl;
+		MyCache.printHits();
 	
 		cout << "\n";
 		cout << right;

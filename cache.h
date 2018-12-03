@@ -84,6 +84,7 @@ public:
 	//cache design
 	void setInstrCache(int, int);
 	void printCache();
+	void printHits();
 	int getOffset();
 	int getIndex();
 	int getTag();

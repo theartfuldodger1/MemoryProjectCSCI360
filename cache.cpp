@@ -419,11 +419,23 @@ int cache::getIndexValue(bitset<16> setIn)
 	int index_num = getIndex();
 	int offset_num = getOffset();
 	bitset<16> index_bits;
+	bitset<2> index_bits2;
 	for (int i = index_num; i >= offset; i--)
 	{
 		index_bits[i] = setIn[i];
 	}
-	int index_value = index_bits.to_ulong();
+	if (index_num == 2)
+	{
+		for (int i = index_num-1; i >= offset; i--)
+		{
+			if (index_bits[i] == 1)
+			{
+				index_bits2[i] = index_bits[i];
+			}
+		}
+	}
+	cout << index_bits2 << " Index bits " << index_bits2.to_ulong() << endl;
+	int index_value = index_bits2.to_ulong();
 	return index_value;
 }
 
@@ -443,11 +455,14 @@ void cache::addInstruction(bitset<16> setIn)
 			//cache_table[i].blocks[j].data;
 			//cache_table[i].blocks[j].valid;
 			cache_table[i].blocks[j].timer++;
-			if (getTagValue(cache_table[i].blocks[j].instruction) == getTagValue(setIn))
+			if (cache_table[index_value].blocks[j].valid == false) {
+				notFull = true;
+			}
+			if (getTagValue(cache_table[index_value].blocks[j].instruction) == getTagValue(setIn))
 			{
-				if (cache_table[i].blocks[j].valid == true)
+				if (cache_table[index_value].blocks[j].valid == true)
 				{
-					cache_table[i].blocks[j].timer = 0;
+					cache_table[index_value].blocks[j].timer = 0;
 
 					hitInc();
 					return; //if a hit then the function ends as there is nothing left to do
@@ -458,30 +473,34 @@ void cache::addInstruction(bitset<16> setIn)
 				}
 			}
 
-			if (cache_table[i].blocks[j].valid == false) {
-				notFull = true;
-			}
+
 		}
 		if (notFull == true) { //result is a miss if the set is not full or the the sought after tag has a false valid
 			missInc();
 			result = "MISS";
+			break;
 		}
 		else {	//if set is full we have to replace
 			replaceInc();
 			result = "REPLACE";
+			break;
 		}
 	}
 	
-               
-                    
+	bool place_found = false;
     if(result == "MISS"){
 		for (int i = 0; i < set_size; i++) {
 			for (int j = 0; j < word_amount; j++) {
-				if (cache_table[i].blocks[j].valid == false) { //if the valid bit is 0 then block is empty
-					cache_table[i].blocks[j].instruction = setIn;
-					cache_table[i].blocks[j].data = setIn.to_ulong();
-					cache_table[i].blocks[j].valid = true;
-					cache_table[i].blocks[j].timer = 0;
+				cache_table[i].blocks[j].timer++;
+				if (place_found == false) {
+					if (cache_table[i].blocks[j].valid == false) { //if the valid bit is 0 then block is empty
+						cache_table[i].blocks[j].instruction = setIn;
+						cache_table[i].blocks[j].data = setIn.to_ulong();
+						cache_table[i].blocks[j].valid = true;
+						cache_table[i].blocks[j].timer = 0;
+						place_found = true;
+						break;
+					}
 				}
 			}
 		}
@@ -489,18 +508,23 @@ void cache::addInstruction(bitset<16> setIn)
 	else if (result == "REPLACE") {
 		int max = 0;
 		int y;
-		for (int i = 0; i < set_size; i++){
+		//for (int i = 0; i < set_size; i++) {
 			for (int j = 0; j < word_amount; j++) {
-				if (max < cache_table[i].blocks[j].timer) { //if there is a block with a bigger timer
-					max = cache_table[i].blocks[j].timer;
+				if (max < cache_table[index_value].blocks[j].timer) { //if there is a block with a bigger timer
+					max = cache_table[index_value].blocks[j].timer;
 					y = j;
 				}
 			}
-		}
+
 			cache_table[index_value].blocks[y].instruction = setIn;
 			cache_table[index_value].blocks[y].data = setIn.to_ulong();
 			cache_table[index_value].blocks[y].valid = true;
 			cache_table[index_value].blocks[y].timer = 0;
-                       
+		//}
     }
+}
+
+void cache::printHits()
+{
+	cout << "Hits: " << hit << " Miss: " << miss << " Replace: " << replace << endl;
 }
