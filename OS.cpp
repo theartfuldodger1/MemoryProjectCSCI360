@@ -97,35 +97,6 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			{
 				//call help file needed
 				cout << "\t\nHelp File incomplete..." << endl;
-				//bitset<16> tt("0000010011010111");
-				//LDR(tt);
-				//bitset<16> aa = MyCache.getGeneralPurposeRegisters_GPRs(3);
-				//STR(aa);
-				//bitset<16> dd("1010010000001001");
-				//LDX(dd);
-				//bitset<16> xx("1010100000110010");
-				//STX(xx);
-				//bitset<16> comp("0100010000000000");
-				//CMP(comp);
-				//cout << "ZF: " << MyCache.get_ZF() << " CF: " << MyCache.get_CF() << " SF: " << MyCache.get_SF() << endl;
-				//bitset<16> load_val("0000000000001010");
-				//int load_v;
-				//bitset<16> comp_val("0100010000000000");
-				//bitset<16> head("");
-				/*while (MyCache.get_ZF() != 1) {
-					MyCache.setGeneralPurposeRegisters_GPRs(0, load_val);
-					CMP(MyCache.getIndexRegister_X0());
-					load_v = load_val.to_ulong();
-					load_v--;
-					cout << MyCache.getIndexRegister_X0().to_ulong() << endl;
-					cout << load_v << endl;
-					bitset<16> temp (load_v);
-					load_val = temp;
-					cout << "ZF: " << MyCache.get_ZF() << " CF: " << MyCache.get_CF() << " SF: " << MyCache.get_SF() << endl;
-				} 
-				*/
-				//cout << "ZF: " << MyCache.get_ZF() << " CF: " << MyCache.get_CF() << " SF: " << MyCache.get_SF() << endl;
-				//JGE();
 			}
 			break;
 			case 7: //Set cache
