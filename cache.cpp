@@ -460,7 +460,7 @@ void cache::addInstruction(bitset<16> setIn)
 				{
 					cache_table[index_value].blocks[j].timer = 0;
 					hitInc();
-					return; //if a hit then the function ends as there is nothing left to do
+					//return; //if a hit then the function ends as there is nothing left to do
 					//return block data
 				}
 				else {
