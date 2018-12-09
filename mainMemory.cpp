@@ -198,13 +198,13 @@ void mainMemory::printMemory()
 
 		if (i % 3 != 0)
 		{
-			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+			cout << "\t" << setw(4) << setfill('0') << i;
 			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 		}
 		else
 		{
 			cout << endl;
-			cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+			cout << "\t" << setw(4) << setfill('0') << i;
 			cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 		}
 
@@ -256,13 +256,13 @@ void mainMemory::printMemory()
 			{
 				if (i % 3 != 0)
 				{
-					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+					cout << "\t" << setw(4) << setfill('0') << i;
 					cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 				}
 				else
 				{
 					cout << endl;
-					cout << "\t" << setw(4) << setfill('0') << countFront << "-" << setw(4) << setfill('0') << countBack;
+					cout << "\t" << setw(4) << setfill('0') << i;
 					cout << "   " << memory[i] << " " << memory[i].to_ulong() << "   ";
 				}
 				countFront++;
