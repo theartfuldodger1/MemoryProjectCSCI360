@@ -1099,8 +1099,10 @@ void OS::stepInstructions()
 		}
 		if (input == 'R' || input == 'r' || input == 'S' || input == 's')
 		{
-			executeInstruction(MyCache.getInstructionRegister_IR());
 			bitset<16> instr_c = MyCache.getInstructionRegister_IR();
+			//executeInstruction(MyCache.getInstructionRegister_IR());
+			//bitset<16> instr_c = MyCache.getInstructionRegister_IR();
+			executeInstruction(instr_c);
 			MyCache.addInstruction(instr_c);
 		}
 			

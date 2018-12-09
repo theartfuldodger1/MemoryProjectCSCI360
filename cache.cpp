@@ -501,20 +501,20 @@ void cache::addInstruction(bitset<16> setIn)
     }
 	else if (result == "REPLACE") {
 		int max = 0;
-		int y;
+		int y,z;
 		for (int i = 0; i < set_size; i++) {
 			for (int j = 0; j < word_amount; j++) {
 				if (max < cache_table[i].blocks[j].timer) { //if there is a block with a bigger timer
 					max = cache_table[i].blocks[j].timer;
 					y = j;
+					z = i;
 				}
 			}
-
-			cache_table[i].blocks[y].instruction = setIn;
-			cache_table[i].blocks[y].data = setIn.to_ulong();
-			cache_table[i].blocks[y].valid = true;
-			cache_table[i].blocks[y].timer = 0;
 		}
+		cache_table[z].blocks[y].instruction = setIn;
+		cache_table[z].blocks[y].data = setIn.to_ulong();
+		cache_table[z].blocks[y].valid = true;
+		cache_table[z].blocks[y].timer = 0;
     }
 }
 
