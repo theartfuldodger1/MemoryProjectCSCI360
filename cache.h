@@ -94,6 +94,9 @@ public:
 	int getTagValue(bitset<16> setIn);
 	int getIndexValue(bitset<16> setIn);
 	void addInstruction(bitset<16> setIn);
+	bool getNotFull();
+	void setNotFullTrue();
+	void setNotFullFalse();
 	
 	struct BLOCK 
     {
@@ -127,6 +130,7 @@ private:
 	int miss;
 	int hit;
 	int replace; 
+	bool not_full;
 };
 #endif /* __cache_H__ */
 

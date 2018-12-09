@@ -439,21 +439,43 @@ int cache::getIndexValue(bitset<16> setIn)
 	return index_value;
 }
 
+bool cache::getNotFull()
+{
+	return not_full;
+}
+
+void cache::setNotFullTrue()
+{
+	not_full = true;
+}
+
+void cache::setNotFullFalse()
+{
+	not_full = false;
+}
+
 void cache::addInstruction(bitset<16> setIn)
 {
 	string result;
     int tag_value = getTagValue(setIn);
     int index_value = getIndexValue(setIn);
-	bool notFull = false;
-           
+	setNotFullFalse();
+
 	for (int i = 0; i < set_size; i++)
 	{
 		for (int j = 0; j < word_amount; j++)
 		{
 			cache_table[i].blocks[j].timer++;
-			if (cache_table[index_value].blocks[j].valid == false) {
-				notFull = true;
+			if (cache_table[i].blocks[j].valid == false) {
+				setNotFullTrue();
 			}
+		}
+	}
+           
+	for (int i = 0; i < set_size; i++)
+	{
+		for (int j = 0; j < word_amount; j++)
+		{
 			if (getTagValue(cache_table[index_value].blocks[j].instruction) == getTagValue(setIn))
 			{
 				if (cache_table[index_value].blocks[j].valid == true)
@@ -471,7 +493,7 @@ void cache::addInstruction(bitset<16> setIn)
 		}
 	}
 
-	if (notFull == true) { //result is a miss if the set is not full or the the sought after tag has a false valid
+	if (getNotFull() == true) { //result is a miss if the set is not full or the the sought after tag has a false valid
 		missInc();
 		result = "MISS";
 		//break;
