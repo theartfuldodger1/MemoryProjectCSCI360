@@ -101,12 +101,14 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 			break;
 			case 7: //Set cache
 			{
-				int set_num, block_num;
+				int set_num, block_num, word_num;
 				cout << "Enter set number: ";
 				cin >> set_num;
 				cout << "Enter block number: ";
 				cin >> block_num;
-				MyCache.setInstrCache(set_num, block_num);
+				cout << "Enter word number: ";
+				cin >> word_num;
+				MyCache.setInstrCache(set_num, block_num, word_num);
 			}
 			case 8: //Quit
 			{

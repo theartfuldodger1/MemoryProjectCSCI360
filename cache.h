@@ -82,7 +82,7 @@ public:
 
 
 	//cache design
-	void setInstrCache(int, int);
+	void setInstrCache(int, int, int);
 	void printCache();
 	void printHits();
 	int getOffset();
@@ -101,7 +101,7 @@ public:
 	struct BLOCK 
     {
         bitset<16> instruction;
-        int data = 0;
+        int block_tag = 0;
         bool valid = false;
         int timer = 0;
     };
@@ -123,13 +123,14 @@ private:
 	
 	SET *cache_table;
 	int set_size;
+	int block_amount;
 	int word_amount;
 	int offset;
 	int index;
 	int tag;
-	int miss;
-	int hit;
-	int replace; 
+	int miss = 0;
+	int hit = 0;
+	int replace = 0; 
 	bool not_full;
 };
 #endif /* __cache_H__ */
