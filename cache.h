@@ -28,6 +28,7 @@ Opcode  I  IX AC  Address
 #include <array>
 #include <cmath>
 #include <iomanip> //for cout.setf, etc
+#include "mainMemory.h"
 
 using namespace std;
 //thought about inserting just the bitset into the array rather than this struct but I feel this gives us flexability to expand if reqired.
@@ -82,7 +83,7 @@ public:
 
 
 	//cache design
-	void setInstrCache(int, int, int);
+	void setInstrCache(int, int, int, vector<bitset<16>>);
 	void printCache();
 	void printHits();
 	int getOffset();
@@ -122,6 +123,7 @@ private:
 	bitset<1> SF;
 	
 	SET *cache_table;
+	vector<bitset<16>> temp;
 	int set_size;
 	int block_amount;
 	int word_amount;

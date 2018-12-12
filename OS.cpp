@@ -99,25 +99,14 @@ void OS::switchGo(/*processor CPU, main_memory memory_module, HDD HDDArray*/)
 				cout << "\t\nHelp File incomplete..." << endl;
 			}
 			break;
-			case 7: //Set cache
-			{
-				int set_num, block_num, word_num;
-				cout << "Enter set number: ";
-				cin >> set_num;
-				cout << "Enter block number: ";
-				cin >> block_num;
-				cout << "Enter word number: ";
-				cin >> word_num;
-				MyCache.setInstrCache(set_num, block_num, word_num);
-			}
-			case 8: //Quit
+			case 7: //Quit
 			{
 				//exit
 				cout << "Bye!" << endl;
 			}
 			break;
 			}
-	} while (param != 8);
+	} while (param != 7);
 }
 
 //catches failed input cast and resets istream
@@ -142,8 +131,7 @@ void OS::initializationMenu()
 		<< "\n\t4. Display Instructions"
 		<< "\n\t5. Display Empty Memory"
 		<< "\n\t6. Help"
-		<< "\n\t7. Set cache"
-		<< "\n\t8. Quit"
+		<< "\n\t7. Quit"
 		<< "\n\n\t==>> ";
 }
 
@@ -386,12 +374,12 @@ unsigned short int  OS::menu2A()
 					<< "\n\t---------------------------------------------------"
 					<< "\n\t1. Clear All Data and Start Over"
 					<< "\n\t2. Add Instruction Line to End of Queue"
-
 					<< "\n\t3. Display Registers"
 					<< "\n\t4. Display Instructions"
 					<< "\n\t5. Display Memory"
 					<< "\n\t6. Help"
-					<< "\n\t7. Quit"
+					<< "\n\t7. Set cache"
+					<< "\n\t8. Quit"
 					<< "\n\n\t=>> ";
 			}
 			cin >> param;
@@ -440,13 +428,25 @@ unsigned short int  OS::menu2A()
 				cout << "\t\nHelp File incomplete..." << endl;
 			}
 			break;
-			case 7://7. Quit
+			case 7: //Set cache
 			{
-				paramOut = 7;
+				int set_num, block_num, word_num;
+				cout << "Enter set number: ";
+				cin >> set_num;
+				cout << "Enter block number: ";
+				cin >> block_num;
+				cout << "Enter word number: ";
+				cin >> word_num;
+				MyCache.setInstrCache(set_num, block_num, word_num, MyMemory.getInstructionSet());
+			}
+			break;
+			case 8://7. Quit
+			{
+				paramOut = 8;
 			}
 			break;
 			}
-	} while (param != 7);
+	} while (param != 8);
 	return paramOut;
 }
 
@@ -1053,7 +1053,7 @@ void OS::stepInstructions()
 		MyCache.printRegisters(1);
 		cout << endl;
 		cout << endl;
-		cout << "\t\t" << "Instruction Cache" << " Instruction. Value. Valid. Timer" << endl;
+		cout << "Instruction Cache" << " Instruction. Tag. Index. Valid. Timer" << endl;
 		cout << endl;
 		MyCache.printCache();
 		cout << endl;

@@ -301,8 +301,9 @@ void cache::failCheck(istream &cin)
 
 //cache design
 
-void cache::setInstrCache(int set_assoc, int block_num, int word_num)
+void cache::setInstrCache(int set_assoc, int block_num, int word_num, vector<bitset<16>> memIn)
 {
+	temp = memIn;
 	set_size = set_assoc;
 	block_amount = block_num;
 	word_amount = word_num;
@@ -324,6 +325,7 @@ void cache::printCache()
 		{
 			cout << cache_table[i].blocks[j].instruction << " " << setw(4) << setfill(' ');
 			cout << cache_table[i].blocks[j].block_tag << setw(4) << setfill(' ');
+			cout << getIndexValue(cache_table[i].blocks[j].instruction) << setw(4) << setfill(' ');
 			cout << cache_table[i].blocks[j].valid << setw(4) << setfill(' ');
 			cout << cache_table[i].blocks[j].timer;
 			cout << "	";
@@ -360,52 +362,49 @@ int cache::getTagValue(bitset<16> setIn)
 {
 	int ind_num = getIndex();
 	int off_num = getOffset();
-	bitset<16> tag_bits;
-	for (int i = 15; i >= (ind_num + off_num); i--)
+	int tag = 0;
+	for (int i = 0; i < temp.size(); i++)
 	{
-		tag_bits[i] = setIn[i];
-		//cout << "tag bit: " << tag_bits[i] << " set bit: " << setIn[i] << endl;
+		if (setIn == temp[i])
+		{
+			tag = i;
+			break;
+		}
 	}
-	bitset<15> tag_bits1; //index 1
-	for (int i = 14; i >= 0; i--)
-	{
-		tag_bits1[i] = tag_bits[i + 1];
-	}
-	bitset<14> tag_bits2; //index 2
-	for (int i = 13; i >= 0; i--)
-	{
-		tag_bits2[i] = tag_bits[i + 2];
-	}
-	bitset<13> tag_bits3; //index 3
-	for (int i = 12; i >= 0; i--)
-	{
-		tag_bits3[i] = tag_bits[i + 3];
-	}
-	//cout << endl;
-	//cout << tag_bits << endl;
-	//cout << endl;
+	bitset<16> tag_bits(tag);
 	if (ind_num == 0)
 	{
 		int tag_value = tag_bits.to_ulong();
-		//cout << tag_value << " bits: " << tag_bits << endl;
 		return tag_value;
 	}
 	else if (ind_num == 1)
 	{
+		bitset<15> tag_bits1; //index 1
+		for (int i = 14; i >= 0; i--)
+		{
+			tag_bits1[i] = tag_bits[i + 1];
+		}
 		int tag_value = tag_bits1.to_ulong();
-		//cout << tag_value <<" bits: " << tag_bits1 << endl;
 		return tag_value;
 	}
 	else if (ind_num == 2)
 	{
+		bitset<14> tag_bits2; //index 2
+		for (int i = 13; i >= 0; i--)
+		{
+			tag_bits2[i] = tag_bits[i + 2];
+		}
 		int tag_value = tag_bits2.to_ulong();
-		//cout << tag_value << " bits: " << tag_bits2 <<endl;
 		return tag_value;
 	}
 	else if (ind_num == 3)
 	{
+		bitset<13> tag_bits3; //index 3
+		for (int i = 12; i >= 0; i--)
+		{
+			tag_bits3[i] = tag_bits[i + 3];
+		}
 		int tag_value = tag_bits3.to_ulong();
-		//cout << tag_value <<" bits: " << tag_bits3 << endl;
 		return tag_value;
 	}
 }
@@ -414,17 +413,22 @@ int cache::getIndexValue(bitset<16> setIn)
 {
 	int index_num = getIndex();
 	int offset_num = getOffset();
-	bitset<16> index_bits;
 	bitset<3> index_bits3;
 	bitset<2> index_bits2;
 	bitset<1> index_bits1;
-	for (int i = index_num; i >= offset; i--)
+	int index = 0;
+	for (int i = 0; i < temp.size(); i++)
 	{
-		index_bits[i] = setIn[i];
+		if (setIn == temp[i])
+		{
+			index = i;
+			break;
+		}
 	}
+	bitset<16> index_bits(index);
 	if (index_num == 3)
 	{
-		for (int i = index_num; i >= offset; i--)
+		for (int i = index_num - 1; i >= offset; i--)
 		{
 			if (index_bits[i] == 1)
 			{
@@ -432,7 +436,6 @@ int cache::getIndexValue(bitset<16> setIn)
 			}
 		}
 		int index_value = index_bits3.to_ulong();
-		//cout << index_bits2 << " Index bits " << index_bits2.to_ulong() << endl;
 		return index_value;
 	}
 	else if (index_num == 2)
@@ -445,12 +448,11 @@ int cache::getIndexValue(bitset<16> setIn)
 			}
 		}
 		int index_value = index_bits2.to_ulong();
-		//cout << index_bits2 << " Index bits " << index_bits2.to_ulong() << endl;
 		return index_value;
 	}
 	else if (index_num == 1)
 	{
-		for (int i = index_num - 2; i >= offset; i--)
+		for (int i = index_num - 1; i >= offset; i--)
 		{
 			if (index_bits[i] == 1)
 			{
@@ -458,7 +460,6 @@ int cache::getIndexValue(bitset<16> setIn)
 			}
 		}
 		int index_value = index_bits1.to_ulong();
-		//cout << index_bits2 << " Index bits " << index_bits2.to_ulong() << endl;
 		return index_value;
 	}
 	else
@@ -487,36 +488,29 @@ void cache::addInstruction(bitset<16> setIn)
 {
 	string result;
 	int tag_value = getTagValue(setIn);
-	//cout << setIn << " " << tag_value << endl;
 	int index_value = getIndexValue(setIn);
 	setNotFullFalse();
 
-	for (int i = 0; i < set_size; i++)
+	for (int j = 0; j < block_amount; j++)
 	{
-		for (int j = 0; j < block_amount; j++)
-		{
-			cache_table[i].blocks[j].timer++;
-			if (cache_table[i].blocks[j].valid == false) {
-				setNotFullTrue();
-			}
+		cache_table[index_value].blocks[j].timer++;
+		if (cache_table[index_value].blocks[j].valid == false) {
+			setNotFullTrue();
 		}
 	}
 
-	for (int i = 0; i < set_size; i++)
+	for (int j = 0; j < block_amount; j++)
 	{
-		for (int j = 0; j < block_amount; j++)
+		if (getTagValue(cache_table[index_value].blocks[j].instruction) == getTagValue(setIn))
 		{
-			if (getTagValue(cache_table[i].blocks[j].instruction) == getTagValue(setIn))
+			if (cache_table[index_value].blocks[j].valid == true)
 			{
-				if (cache_table[i].blocks[j].valid == true)
-				{
-					cache_table[i].blocks[j].timer = 0;
-					hitInc();
-					return; //return block data
-				}
-				else {
-					result = "MISS";
-				}
+				cache_table[index_value].blocks[j].timer = 0;
+				hitInc();
+				return; //return block data
+			}
+			else {
+				result = "MISS";
 			}
 		}
 	}
@@ -532,37 +526,32 @@ void cache::addInstruction(bitset<16> setIn)
 
 	bool place_found = false;
 	if (result == "MISS") {
-		for (int i = 0; i < set_size; i++) {
-			for (int j = 0; j < block_amount; j++) {
-				if (place_found == false) {
-					if (cache_table[i].blocks[j].valid == false) { //if the valid bit is 0 then block is empty
-						cache_table[i].blocks[j].instruction = setIn;
-						cache_table[i].blocks[j].block_tag = getTagValue(setIn);
-						cache_table[i].blocks[j].valid = true;
-						cache_table[i].blocks[j].timer = 0;
-						place_found = true;
-						break;
-					}
+		for (int j = 0; j < block_amount; j++) {
+			if (place_found == false) {
+				if (cache_table[index_value].blocks[j].valid == false) { //if the valid bit is 0 then block is empty
+					cache_table[index_value].blocks[j].instruction = setIn;
+					cache_table[index_value].blocks[j].block_tag = getTagValue(setIn);
+					cache_table[index_value].blocks[j].valid = true;
+					cache_table[index_value].blocks[j].timer = 0;
+					place_found = true;
+					break;
 				}
 			}
 		}
 	}
 	else if (result == "REPLACE") {
 		int max = 0;
-		int y, z;
-		for (int i = 0; i < set_size; i++) {
-			for (int j = 0; j < block_amount; j++) {
-				if (max < cache_table[i].blocks[j].timer) { //if there is a block with a bigger timer
-					max = cache_table[i].blocks[j].timer;
-					y = j;
-					z = i;
-				}
+		int y;
+		for (int j = 0; j < block_amount; j++) {
+			if (max < cache_table[index_value].blocks[j].timer) { //if there is a block with a bigger timer
+				max = cache_table[index_value].blocks[j].timer;
+				y = j;
 			}
 		}
-		cache_table[z].blocks[y].instruction = setIn;
-		cache_table[z].blocks[y].block_tag = getTagValue(setIn);
-		cache_table[z].blocks[y].valid = true;
-		cache_table[z].blocks[y].timer = 0;
+		cache_table[index_value].blocks[y].instruction = setIn;
+		cache_table[index_value].blocks[y].block_tag = getTagValue(setIn);
+		cache_table[index_value].blocks[y].valid = true;
+		cache_table[index_value].blocks[y].timer = 0;
 	}
 }
 
